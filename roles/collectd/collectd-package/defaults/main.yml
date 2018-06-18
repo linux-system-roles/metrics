@@ -1,0 +1,9 @@
+---
+# collectd package name.
+collectd_package_name: collectd
+
+# a list of additional packages to install (presumably ones that
+# provide collectd plugins).
+collectd_plugin_packages:
+  - collectd-disk
+  - collectd-write_http

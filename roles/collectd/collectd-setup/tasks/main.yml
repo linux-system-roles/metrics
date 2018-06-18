@@ -1,0 +1,26 @@
+---
+- name: Enable collectd
+  service:
+    name: '{{ collectd_service_name }}'
+    enabled: yes
+  when: manage_services|default(true)
+
+- name: Set collectd_tcp_network_connect
+  seboolean:
+    name: collectd_tcp_network_connect
+    state: yes
+    persistent: yes
+  when: 'ansible_selinux.mode in ["enforcing", "permissive"]'
+
+- name: Stop collectd service
+  service:
+      name: '{{ collectd_service_name }}'
+      state: stopped
+  when: fluentd_is_running|default(false)|bool == false
+<add when fluentd is the target>
+
+- name: Place global-configuration
+  template:
+    src: global_configuration.conf.j2
+    dest: /etc/collectd.d/05-global-configuration.conf
+  notify: restart collectd

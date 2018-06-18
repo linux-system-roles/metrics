@@ -1,0 +1,13 @@
+---
+- name: Initial validations
+  hosts: localhost
+
+  roles:
+    - role: metrics/roles/initial-validations
+
+- name: Configure Metrics
+  hosts: all
+
+  roles:
+    - role: metrics/roles/collectd
+      when: hostvars['localhost']['failed_validation'] is undefined

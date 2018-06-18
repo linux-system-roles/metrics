@@ -1,0 +1,3 @@
+---
+# name of the collectd service.
+collectd_service_name: collectd

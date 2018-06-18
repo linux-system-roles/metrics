@@ -1,0 +1,7 @@
+---
+dependencies:
+  - include-vars-files
+  - collectd/check-fluentd-status
+  - collectd/collectd-package
+  - collectd/collectd-setup
+

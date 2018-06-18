@@ -1,0 +1,32 @@
+---
+- name: restart collectd if fluentd is up
+  debug:
+    msg="trigger collectd restart, since fluentd is up"
+  when: fluentd_is_running|default(false)|bool == true
+  changed_when: fluentd_is_running|default(false)|bool == true
+  notify: restart collectd
+<add when fluentd is the target>
+
+- name: force all notified handlers to run at this point, not waiting for normal sync points
+  meta: flush_handlers
+
+- name: pause for collectd to start
+  pause:
+    seconds: 5
+  when: fluentd_is_running|default(false)|bool == true
+
+- name: Check if collectd is running
+  command: systemctl is-active '{{ collectd_service_name }}'
+  register: service_collectd_status
+  ignore_errors: yes
+  changed_when: false
+  failed_when: false
+
+- name: set collectd_is_running fact
+  set_fact:
+    collectd_is_running: >-
+      {{ service_collectd_status.rc == 0 }}
+
+- name: Is collectd running
+  debug:
+    msg="{{ collectd_is_running }}"
