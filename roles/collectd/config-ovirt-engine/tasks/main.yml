@@ -1,0 +1,15 @@
+---
+- block:
+    - name: Place builtins-conf-for-ovirt-engine-config
+      template:
+        src: builtins-conf-for-ovirt-engine.conf.j2
+        dest: /etc/collectd.d/20-builtins-conf-for-ovirt-engine.conf
+      notify: restart collectd
+
+    - name: Place collectd_postgresql config
+      template:
+        src: collectd_postgresql.conf.j2
+        dest: /etc/collectd.d/20-collectd_postgresql.conf
+      notify: restart collectd
+      when: configure_collectd_postgresql
+  when: configure_ovirt_metrics|default(false)|bool and inventory_hostname in groups.engine

@@ -1,0 +1,4 @@
+---
+
+# Whether to configure collectd_postgresql
+configure_collectd_postgresql: true
