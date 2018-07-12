@@ -1,4 +1,4 @@
-## oVirt.ovirt-collectd/Config-ovirt-engine
+## Collectd/Config-ovirt-engine
 
 This role loads and configures oVirt engine collectd plugins.
 collectd gathers oVirt statistics from the oVirt engine and hypervisors, and transfers the data to fluentd.
