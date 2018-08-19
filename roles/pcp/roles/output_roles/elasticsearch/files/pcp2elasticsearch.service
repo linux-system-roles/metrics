@@ -1,0 +1,11 @@
+[Unit]
+Description=pcp2elasticsearch service
+After=network-online.target elasticsearch.service pmcd.service
+
+[Service]
+ExecStart=/usr/bin/pcp2elasticsearch :rhel8-zeroconf
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

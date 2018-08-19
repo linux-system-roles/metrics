@@ -1,0 +1,18 @@
+---
+
+# The host that collectd will write to using http
+collectd_write_http_host: localhost
+
+# The port that collectd will write to using http. This is the default
+# port on which fluentd listens for http data. Change to write elsewhere.
+collectd_write_http_port: 9880
+
+# The full URL that collectd will write to. Normally should not be changed.
+# yamllint disable-line rule:line-length
+collectd_write_http_url: "http://{{ collectd_write_http_host }}:{{ collectd_write_http_port }}/ovirt_collectd"
+
+# Sets the maximum time in milliseconds given for HTTP POST operations to complete
+collectd_write_http_timeout: 3000
+
+# Sets the send buffer size to Bytes
+collectd_write_http_buffersize: 65536

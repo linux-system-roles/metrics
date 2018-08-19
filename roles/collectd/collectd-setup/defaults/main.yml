@@ -1,5 +1,0 @@
----
-# collectd collection interval
-collectd_interval: 10
-collectd_write_queue_limit_high: 500000
-collectd_write_queue_limit_low: 400000

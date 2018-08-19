@@ -1,0 +1,113 @@
+---
+- name: Check if oVirt metrics config.yml file exist
+  stat:
+    path: "{{ ovirt_metrics_config_yml_file }}"
+  register: stat_result
+  run_once: true
+  delegate_to: localhost
+
+- name: Include oVirt metrics config.yml file
+  include_vars:
+    file: '{{ ovirt_metrics_config_yml_file }}'
+  when: stat_result.stat.exists == True
+  run_once: true
+  delegate_to: localhost
+
+- name: Include oVirt metrics config.yml.d vars directory
+  include_vars:
+    dir: '{{ ovirt_metrics_config_yml_dir }}'
+    ignore_files: ['README.md']
+  run_once: true
+  delegate_to: localhost
+
+- name: Install collectd plugins on engine
+  yum:
+    name: '{{ item }}'
+    state: latest
+  with_items:
+    - '{{ collectd_engine_plugin_packages }}'
+  when:
+    - manage_packages|default(true)
+    - ovirt_metrics_host_deploy is undefined
+    - inventory_hostname in groups.engine
+  notify: restart collectd
+
+- name: Install collectd plugins on hosts
+  yum:
+    name: '{{ item }}'
+    state: latest
+  with_items:
+    - '{{ collectd_host_plugin_packages }}'
+  when:
+    - manage_packages|default(true)
+    - ovirt_metrics_host_deploy is defined or inventory_hostname in groups.hosts
+  notify: restart collectd
+
+- name: Get ovirt_engine_db_name
+  delegate_to: localhost
+  shell: ". {{ engine_prolog_path }}; echo $ENGINE_DB_DATABASE"
+  register: ovirt_engine_db_name_result
+
+- name: Save ovirt_engine_db_name as fact
+  set_fact:
+    ovirt_engine_db_name: "{{ ovirt_engine_db_name_result.stdout }}"
+
+- name: Get ovirt_engine_db_user
+  delegate_to: localhost
+  shell: ". {{ engine_prolog_path }}; echo $ENGINE_DB_USER"
+  register: ovirt_engine_db_user_result
+
+- name: Save ovirt_engine_db_user as fact
+  set_fact:
+    ovirt_engine_db_user: "{{ ovirt_engine_db_user_result.stdout }}"
+
+- name: Get ovirt_engine_history_db_name
+  delegate_to: localhost
+  shell: ". {{ engine_prolog_path }}; echo $DWH_DB_DATABASE"
+  register: ovirt_engine_history_db_name_result
+
+- name: Save ovirt_engine_db_name as fact
+  set_fact:
+    ovirt_engine_history_db_name: "{{ ovirt_engine_history_db_name_result.stdout }}"
+
+- name: Get ovirt_engine_history_db_user
+  delegate_to: localhost
+  shell: ". {{ engine_prolog_path }}; echo $DWH_DB_USER"
+  register: ovirt_engine_history_db_user_result
+
+- name: Save ovirt_engine_history_db_user as fact
+  set_fact:
+    ovirt_engine_history_db_user: "{{ ovirt_engine_history_db_user_result.stdout }}"
+
+- name: Allow Collectd to listen on statsd port
+  seport:
+    ports: "{{ collectd_read_statsd_port }}"
+    proto: udp
+    setype: collectd_port_t
+    state: present
+  when:
+    - 'ansible_selinux.mode in ["enforcing", "permissive"]'
+    - ovirt_metrics_host_deploy is defined or inventory_hostname in groups.hosts
+  notify: restart collectd
+
+- name: Place oVirt host config file
+  template:
+    src: '{{ item }}.j2'
+    dest: '/etc/collectd.d/{{ item }}'
+  with_items:
+    - 10-read-statsd.conf
+    - 20-builtins-conf-for-ovirt.conf
+  notify: restart collectd
+  when: (ovirt_metrics_host_deploy is defined) or (inventory_hostname in groups.hosts)
+
+- name: Place oVirt engine config file
+  template:
+    src: '{{ item }}.j2'
+    dest: '/etc/collectd.d/{{ item }}'
+  with_items:
+    - 20-builtins-conf-for-ovirt-engine.conf
+    - 20-collectd_postgresql.conf
+  notify: restart collectd
+  when:
+    - ovirt_metrics_host_deploy is undefined
+    - inventory_hostname in groups.engine

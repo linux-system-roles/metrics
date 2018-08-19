@@ -1,0 +1,56 @@
+---
+ovirt_metrics_pkg_sysconf_dir: /etc/ovirt-engine-metrics
+
+ovirt_metrics_config_yml_dir: "{{ ovirt_metrics_pkg_sysconf_dir }}/config.yml.d"
+
+ovirt_metrics_config_yml_file: "{{ ovirt_metrics_pkg_sysconf_dir }}/config.yml"
+
+# User that will own oVirt config.yml.d vars files.
+ovirt_metrics_config_yml_d_owner: root
+
+# Group that will own config.yml.d vars files.
+ovirt_metrics_config_yml_d_group: root
+
+# File mode for config.yml.d vars files.
+ovirt_metrics_config_yml_d_mode: 0644
+
+# File mode for config.yml.d vars directories.
+ovirt_metrics_config_yml_d_dir_mode: 0750
+
+# a list of additional packages to install (presumably ones that
+# provide collectd plugins).
+collectd_engine_plugin_packages:
+  - collectd-disk
+  - collectd-write_http
+  - collectd-postgresql
+
+# a list of additional packages to install (presumably ones that
+# provide collectd plugins).
+collectd_host_plugin_packages:
+  - collectd-disk
+  - collectd-write_http
+  - collectd-virt
+
+# oVirt engine database name
+ovirt_engine_db_name: engine
+
+# oVirt engine database user
+ovirt_engine_db_user: engine
+
+#oVirt engine dwh database name
+ovirt_engine_history_db_name: ovirt_engine_history
+
+# oVirt engine dwh database user
+ovirt_engine_history_db_user: engine_history
+
+#oVirt engine DATAROOT dir
+engine_dataroot_dir: /usr/share
+
+# Path to engine-prolog.sh
+engine_prolog_path: "{{ engine_dataroot_dir }}/ovirt-engine/bin/engine-prolog.sh"
+
+# The port that collectd will listen on for incoming statsd data
+collectd_read_statsd_port: 8125
+
+# The address that collectd will listen on for incoming statsd data
+collectd_read_statsd_bind_host: localhost

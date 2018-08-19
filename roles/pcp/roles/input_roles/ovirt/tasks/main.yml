@@ -1,0 +1,7 @@
+---
+
+- name: place oVirt config file
+  copy:
+    src: ovirt.conf
+    dest: /etc/pcp/pmrep/ovirt.conf
+    force: yes

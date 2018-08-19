@@ -1,0 +1,20 @@
+---
+# Default metrics collector is PCP
+metrics_collector: pcp
+
+metrics_enabled: true
+
+metrics_output_list: []
+
+metrics_custom_config_files: []
+
+metrics_purge_confs: false
+
+metrics_elasticsearch_default_ca_cert_path: /path/to/ca-cert.pem
+metrics_elasticsearch_default_client_cert_path: /path/to/cert.pem
+metrics_elasticsearch_default_client_key_path: /path/to/cert-key.pem
+
+## oVirt Specific default variables
+
+# oVirt environment name.
+ovirt_env_name: engine

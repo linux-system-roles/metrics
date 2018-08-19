@@ -1,3 +1,37 @@
 ---
 # name of the collectd service.
 collectd_service_name: collectd
+
+ovirt_metrics_pkg_sysconf_dir: /etc/ovirt-engine-metrics
+
+ovirt_metrics_config_yml_dir: "{{ ovirt_metrics_pkg_sysconf_dir }}/config.yml.d"
+
+ovirt_metrics_config_yml_file: "{{ ovirt_metrics_pkg_sysconf_dir }}/config.yml"
+
+# User that will own oVirt config.yml.d vars files.
+ovirt_metrics_config_yml_d_owner: root
+
+# Group that will own config.yml.d vars files.
+ovirt_metrics_config_yml_d_group: root
+
+# File mode for config.yml.d vars files.
+ovirt_metrics_config_yml_d_mode: 0644
+
+# File mode for config.yml.d vars directories.
+ovirt_metrics_config_yml_d_dir_mode: 0750
+
+# collectd package name.
+collectd_package_name: collectd
+
+# collectd collection interval
+collectd_interval: 10
+
+collectd_write_queue_limit_high: 500000
+
+collectd_write_queue_limit_low: 400000
+
+# The port that collectd will listen on for incoming statsd data
+collectd_read_statsd_port: 8125
+
+# The address that collectd will listen on for incoming statsd data
+collectd_read_statsd_bind_host: localhost

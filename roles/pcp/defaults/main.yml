@@ -1,0 +1,24 @@
+---
+# name of the pcp service
+pcp_service_name: pcp
+
+pcp_pmcd_service_name: pmcd
+
+pmlogger_service_name: pmlogger
+
+pmie_service_name: pmie
+
+pmmgr_service_name: pmmgr
+
+pmwebd_service_name: pmwebd
+
+# pcp package name.
+pcp_package_name: pcp
+
+# list of additional packages to install (pmdas/exporters/etc)
+pcp_packages:
+  - pcp-selinux
+  - pcp-conf
+  - pcp-libs
+  - pcp-webapi
+  - pcp-export-pcp2elasticsearch

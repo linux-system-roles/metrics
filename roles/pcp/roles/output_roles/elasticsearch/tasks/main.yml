@@ -1,0 +1,24 @@
+---
+- block:
+
+    - name: Place pcp2elasticsearch service file
+      copy:
+        src: pcp2elasticsearch.service
+        dest: /usr/lib/systemd/system/pcp2elasticsearch.service
+        force: yes
+
+    - name: place elasticsearch config file
+      copy:
+        src: rhel8.conf
+        dest: /etc/pcp/pmrep/rhel8.conf
+        force: yes
+
+    - name: start pcp2elasticsearch service
+      service:
+        name: '{{ pcp2elasticsearch-service }}'
+        state: started
+        enabled: yes
+
+  when:
+    - metrics_collector|d('pcp') == 'pcp'
+    - metrics_target|d('elasticsearch') == 'elasticsearch'

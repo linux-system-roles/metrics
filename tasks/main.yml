@@ -1,9 +1,18 @@
-- name: Run initial validations sub-role
-  include_role:
-    name: "metrics/roles/initial-validations"
+---
+# Set facts
 
-- name: Run collectd sub-role
-  include_role:
-    name: "metrics/roles/collectd"
-  when:
-    - failed_validation is undefined
+- block:
+    - name: Set metrics_outputs
+      set_fact:
+        metrics_outputs: "{{ metrics_outputs|d([]) }} + {{ [ item.type ] }}"
+      with_items: "{{ metrics_output_list }}"
+
+    - set_fact:
+        metrics_outputs: "{{ metrics_outputs|d([]) | unique }}"
+
+- block:
+
+    - include_role:
+        name: logging/roles/pcp
+
+  when: metrics_collector|default(pcp) == 'pcp'

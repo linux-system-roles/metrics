@@ -1,0 +1,12 @@
+LoadPlugin write_http
+
+<Plugin write_http>
+  <Node "collectd">
+    URL "{{ collectd_write_http_url }}"
+    Format "JSON"
+    StoreRates true
+    Timeout {{ collectd_write_http_timeout }}
+    BufferSize {{ collectd_write_http_buffersize }}
+    LogHttpError true
+  </Node>
+</Plugin>

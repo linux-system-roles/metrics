@@ -1,0 +1,3 @@
+---
+# pcp setup variables
+pcp2elasticsearch-service: "pcp2elasticsearch"

@@ -1,0 +1,33 @@
+---
+- name: Install pcp package
+  yum:
+    name: pcp-zeroconf
+    state: latest
+  when:
+    - manage_packages|default(true)
+    - metrics_collector|default('pcp') == 'pcp'
+    - metrics_output_list is undefind or ('pcp-zeroconf' in metrics_outputs)
+  notify: restart pmcd
+
+- name: Install pcp package
+  yum:
+    name: '{{ pcp_package_name }}'
+    state: latest
+  when: manage_packages|default(true)
+  notify: restart pmcd
+
+- name: Install additional pcp packages
+  yum:
+    name: '{{ item }}'
+    state: latest
+  with_items:
+    - '{{ pcp_packages }}'
+  when:
+    - manage_packages|default(true)
+  notify: restart pmcd
+
+- name: place rhel8 metrics config file
+  copy:
+    src: rhel8.conf
+    dest: /etc/pcp/pmrep/rhel8.conf
+    force: yes
