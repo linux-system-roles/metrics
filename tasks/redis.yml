@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: MIT
+---
+
+- name: Install scalable query packages
+  package:
+    name:
+      - redis
+    state: present
+  become: yes

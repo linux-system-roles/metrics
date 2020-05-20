@@ -1,0 +1,9 @@
+---
+- hosts: analysis
+  roles:
+    - role: linux-system-roles.metrics
+      vars:
+        with_query_service: true
+        with_graph_service: true
+        monitored_hosts: ["shard", "slick"]
+        retention_days: 10

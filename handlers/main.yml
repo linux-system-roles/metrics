@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: MIT
+---
+
+- name: restart grafana
+  service:
+    name: grafana-server
+    state: restarted
+
+- name: restart redis
+  service:
+    name: redis
+    state: restarted

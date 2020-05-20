@@ -1,0 +1,10 @@
+# SPDX-License-Identifier: MIT
+---
+
+#- include_tasks: pcp.yml
+
+- include_tasks: redis.yml
+  when: with_query_service == true
+
+- include_tasks: grafana.yml
+  when: with_graph_service == true
