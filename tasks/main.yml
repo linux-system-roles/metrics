@@ -1,9 +1,0 @@
-- name: Run initial validations sub-role
-  include_role:
-    name: "metrics/roles/initial-validations"
-
-- name: Run collectd sub-role
-  include_role:
-    name: "metrics/roles/collectd"
-  when:
-    - failed_validation is undefined
