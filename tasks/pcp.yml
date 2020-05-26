@@ -5,6 +5,6 @@
   include_role:
     name: performancecopilot.pcp
   vars:
-    pcp_pmlogger_discard: "{{ retention_days }}"
-    pcp_target_hosts: "{{ monitored_hosts }}"
-    pcp_rest_api: "{{ with_query_service }}"
+    pcp_pmlogger_discard: "{{ metrics_retention_days }}"
+    pcp_target_hosts: "{{ metrics_monitored_hosts }}"
+    pcp_rest_api: "{{ metrics_query_service }}"
