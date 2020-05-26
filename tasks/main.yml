@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 ---
 
-#- include_tasks: pcp.yml
+- include_tasks: pcp.yml
 
 - include_tasks: redis.yml
   when: metrics_query_service == true

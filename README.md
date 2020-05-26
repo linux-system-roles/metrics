@@ -39,7 +39,7 @@ Enabling this starts PCP and redis servers for querying recorded PCP metrics.
 
 ## Dependencies
 
-None.
+Uses the performancecopilot.pcp role.
 
 ## Example Playbook
 
