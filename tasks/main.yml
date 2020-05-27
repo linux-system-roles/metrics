@@ -4,7 +4,7 @@
 - include_tasks: pcp.yml
 
 - include_tasks: redis.yml
-  when: metrics_query_service == true
+  when: metrics_query_service == 'true'
 
 - include_tasks: grafana.yml
-  when: metrics_graph_service == true
+  when: metrics_graph_service == 'true'
