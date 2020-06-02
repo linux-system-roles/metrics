@@ -6,7 +6,8 @@ by the local system.
 
 ## Requirements
 
-Uses features of Performance Co-Pilot (PCP) v5+, Grafana v6+, and Redis v5+.
+Uses features of Performance Co-Pilot (PCP) v5+, Redis v5+ and Grafana v6+.
+However, use of Grafana and Redis is optional (disabled by default).
 
 ## Role Variables
 
@@ -37,9 +38,15 @@ Enabling this starts PCP and grafana servers for visualizing PCP metrics.
 Boolean flag allowing host to be setup with time series query services.
 Enabling this starts PCP and redis servers for querying recorded PCP metrics.
 
+    metrics_provider: "pcp"
+
+The metrics collector to use to provide metrics.
+Currently Performance Co-Pilot is the only supported metrics provider.
+
+
 ## Dependencies
 
-Uses the performancecopilot.pcp role.
+None.
 
 ## Example Playbook
 

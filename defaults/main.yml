@@ -1,5 +1,7 @@
 # SPDX-License-Identifier: MIT
 ---
+# Default metrics provider is PCP
+metrics_provider: pcp
 
 # Number of days of historical performance data to keep.
 metrics_retention_days: 7
