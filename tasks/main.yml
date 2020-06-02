@@ -1,9 +1,10 @@
-- name: Run initial validations sub-role
-  include_role:
-    name: "metrics/roles/initial-validations"
+# SPDX-License-Identifier: MIT
+---
 
-- name: Run collectd sub-role
-  include_role:
-    name: "metrics/roles/collectd"
-  when:
-    - failed_validation is undefined
+- include_tasks: pcp.yml
+
+- include_tasks: redis.yml
+  when: metrics_query_service | bool
+
+- include_tasks: grafana.yml
+  when: metrics_graph_service | bool

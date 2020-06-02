@@ -1,39 +1,100 @@
-Metrics
-====================
+# Role Name
 
-The `metrics` role enables you to deploy and configure metrics collectors, trasformators and shippers.
+An ansible role which configures performance analysis services for the local
+system.  This (optionally) includes a list of remote systems to be monitored
+by the local system.
 
-Role Variables
---------------
+## Requirements
 
-### Configure metrics
-In order to run this role you will need set the following variables:
+Uses features of Performance Co-Pilot (PCP) v5+, Redis v5+ and Grafana v6+.
+However, use of Grafana and Redis is optional (disabled by default).
 
-- `env_name:` (required - default: `"engine"`)
+## Role Variables
 
-  Environment name. Is used to identify the source of the collected data.
+    metrics_monitored_hosts: []
 
-- `fluentd_elasticsearch_host:` (required - no default value)
+List of remote hosts to be analysed by the target host.
+These hosts will have metrics recorded on the target host, so care should be
+taken to ensure sufficient disk space exists below /var/log for each host.
 
-  Address or hostname (FQDN) of the Elasticsearch server host.
+Example of setting the variables:
 
-- `env_uuid_metrics:` (required - no default value)
+```yaml
+metrics_monitored_hosts: ["webserver.example.com", "database.example.com"]
+```
 
-  UUID of the project/namespace used to store metrics records.
-  This is used to construct the index name in Elasticsearch.
-  For example, if you have env_name: myenvname,
-  then in logging OpenShift you will have a project named metrics-myenvname.
-  You need to get the UUID of this project like this:
-  oc get project metrics-myenvname -o jsonpath='{.metadata.uid}'
+    metrics_retention_days: 14
+
+Retain historical performance data for the specified number of days; after
+this time it will be removed (day by day).
+
+    metrics_graph_service: false
+
+Boolean flag allowing host to be setup with graphing services.
+Enabling this starts PCP and grafana servers for visualizing PCP metrics.
+
+    metrics_query_service: false
+
+Boolean flag allowing host to be setup with time series query services.
+Enabling this starts PCP and redis servers for querying recorded PCP metrics.
+
+    metrics_provider: "pcp"
+
+The metrics collector to use to provide metrics.
+Currently Performance Co-Pilot is the only supported metrics provider.
 
 
-In order to set these variable add the required variables to the config.yml
-or in the command line.
+## Dependencies
 
-You don't need to update the configuration file if you wish to use default options.
+None.
 
-License
--------
+## Example Playbook
 
-Apache License 2.0
+Basic metric recording setup for the local host only, with one
+weeks worth of data retained before culling.
 
+```yaml
+- hosts: all
+  vars:
+    metrics_retention_days: 7
+  roles:
+    - linux-system-roles.metrics
+```
+
+Scalable metric recording, analysis and visualization setup for
+the local host, providing a REST API server with an OpenMetrics
+endpoint, graphs and scalable querying.
+
+```yaml
+- hosts: all
+  vars:
+    metrics_graph_service: true
+    metrics_query_service: true
+  roles:
+    - linux-system-roles.metrics
+```
+
+Centralized metric recording setup for several remote hosts and
+scalable metric recording, analysis and visualization setup for
+the local host, providing a REST API server with an OpenMetrics
+endpoint, graphs and scalable querying.
+
+```yaml
+- hosts: monitors
+  vars:
+    metrics_monitored_hosts: [app.example.com, db.example.com, nas.example.com]
+    metrics_graph_service: true
+    metrics_query_service: true
+  roles:
+    - linux-system-roles.metrics
+```
+
+
+## License
+
+MIT
+
+## Author Information
+
+Maintained by Shirly Radco <sradco@redhat.com>, Nathan Scott <nathans@redhat.com>,
+Peter Portante <portante@redhat.com> and Andreas Gerstmayr <agerstmayr@redhat.com>

@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: MIT
+---
+
+- name: Setup metric collection service
+  vars:
+    pcp_pmlogger_discard: "{{ metrics_retention_days }}"
+    pcp_target_hosts: "{{ metrics_monitored_hosts }}"
+    pcp_rest_api: "{{ metrics_query_service }}"
+  include_role:
+    name: "{{ role_path }}/roles/performancecopilot.pcp"
+  when: metrics_provider == 'pcp'

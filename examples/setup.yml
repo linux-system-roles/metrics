@@ -1,0 +1,9 @@
+---
+- hosts: analysis
+  roles:
+    - role: linux-system-roles.metrics
+      vars:
+        metrics_query_service: true
+        metrics_graph_service: true
+        metrics_monitored_hosts: ["app.example.com", "db.example.com"]
+        metrics_retention_days: 10

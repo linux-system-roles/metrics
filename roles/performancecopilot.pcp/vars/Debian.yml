@@ -1,0 +1,5 @@
+---
+pcp_pmcd_defaults_path: /etc/default/pmcd
+pcp_pmproxy_defaults_path: /etc/default/pmproxy
+pcp_pmlogger_defaults_path: /etc/default/pmlogger
+pcp_pmlogger_timers_path: /etc/default/pmlogger_timers
