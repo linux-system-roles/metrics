@@ -20,7 +20,7 @@ taken to ensure sufficient disk space exists below /var/log for each host.
 Example of setting the variables:
 
 ```yaml
-metrics_monitored_hosts: ["webserver.acme.com", "database.acme.com"]
+metrics_monitored_hosts: ["webserver.example.com", "database.example.com"]
 ```
 
     metrics_retention_days: 14
@@ -82,7 +82,7 @@ endpoint, graphs and scalable querying.
 ```yaml
 - hosts: monitors
   vars:
-    metrics_monitored_hosts: [app.acme.com, db.acme.com, nas.acme.com]
+    metrics_monitored_hosts: [app.example.com, db.example.com, nas.example.com]
     metrics_graph_service: true
     metrics_query_service: true
   roles:
