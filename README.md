@@ -1,8 +1,8 @@
-# Role Name
+# metrics
 
-An ansible role which configures performance analysis services for the local
-system.  This (optionally) includes a list of remote systems to be monitored
-by the local system.
+An ansible role which configures performance analysis services for the managed
+host.  This (optionally) includes a list of remote systems to be monitored
+by the managed host.
 
 ## Requirements
 
@@ -13,11 +13,11 @@ However, use of Grafana and Redis is optional (disabled by default).
 
     metrics_monitored_hosts: []
 
-List of remote hosts to be analysed by the target host.
-These hosts will have metrics recorded on the target host, so care should be
+List of remote hosts to be analysed by the managed host.
+These hosts will have metrics recorded on the managed host, so care should be
 taken to ensure sufficient disk space exists below /var/log for each host.
 
-Example of setting the variables:
+Example:
 
 ```yaml
 metrics_monitored_hosts: ["webserver.example.com", "database.example.com"]
@@ -28,17 +28,17 @@ metrics_monitored_hosts: ["webserver.example.com", "database.example.com"]
 Retain historical performance data for the specified number of days; after
 this time it will be removed (day by day).
 
-    metrics_graph_service: false
+    metrics_graph_service: no
 
 Boolean flag allowing host to be setup with graphing services.
 Enabling this starts PCP and grafana servers for visualizing PCP metrics.
 
-    metrics_query_service: false
+    metrics_query_service: no
 
 Boolean flag allowing host to be setup with time series query services.
 Enabling this starts PCP and redis servers for querying recorded PCP metrics.
 
-    metrics_provider: "pcp"
+    metrics_provider: pcp
 
 The metrics collector to use to provide metrics.
 Currently Performance Co-Pilot is the only supported metrics provider.
@@ -50,7 +50,7 @@ None.
 
 ## Example Playbook
 
-Basic metric recording setup for the local host only, with one
+Basic metric recording setup for each managed host only, with one
 weeks worth of data retained before culling.
 
 ```yaml
@@ -62,14 +62,14 @@ weeks worth of data retained before culling.
 ```
 
 Scalable metric recording, analysis and visualization setup for
-the local host, providing a REST API server with an OpenMetrics
+the managed hosts, providing a REST API server with an OpenMetrics
 endpoint, graphs and scalable querying.
 
 ```yaml
 - hosts: all
   vars:
-    metrics_graph_service: true
-    metrics_query_service: true
+    metrics_graph_service: yes
+    metrics_query_service: yes
   roles:
     - linux-system-roles.metrics
 ```
@@ -83,8 +83,8 @@ endpoint, graphs and scalable querying.
 - hosts: monitors
   vars:
     metrics_monitored_hosts: [app.example.com, db.example.com, nas.example.com]
-    metrics_graph_service: true
-    metrics_query_service: true
+    metrics_graph_service: yes
+    metrics_query_service: yes
   roles:
     - linux-system-roles.metrics
 ```
