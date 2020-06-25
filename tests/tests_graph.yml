@@ -1,0 +1,9 @@
+# SPDX-License-Identifier: MIT
+---
+- name: Ensure that the role runs with graph service enabled
+  hosts: all
+
+  roles:
+    - role: linux-system-roles.metrics
+      vars:
+        metrics_graph_service: yes

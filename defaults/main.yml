@@ -14,9 +14,9 @@ metrics_monitored_hosts: []
 # Provide a scalable query language (using Redis) and the
 # PMWEBAPI(3) REST API for metrics at localhost:44322
 # OpenMetrics endpoint at localhost:44322/metrics
-metrics_query_service: false
+metrics_query_service: no
 
 # Provide a Graphing server (Grafana) with enabled plugins
 # for the available metrics services.
 # Graphing service at localhost:3000
-metrics_graph_service: false
+metrics_graph_service: no

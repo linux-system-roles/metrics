@@ -1,11 +1,18 @@
 # SPDX-License-Identifier: MIT
 ---
 
-- name: Install graphing packages
+- name: Ensure graphing packages are installed
   package:
     name:
       - grafana
       - grafana-pcp
     state: present
-  notify: restart grafana-server
+  become: yes
+  notify: restart grafana
+
+- name: Ensure graphing service is running and enabled on boot
+  service:
+    name: grafana-server
+    state: started
+    enabled: yes
   become: yes

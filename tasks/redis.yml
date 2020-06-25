@@ -1,9 +1,16 @@
 # SPDX-License-Identifier: MIT
 ---
 
-- name: Install scalable query packages
+- name: Ensure scalable query packages are installed
   package:
     name:
       - redis
     state: present
+  become: yes
+
+- name: Ensure scalable query service is running and enabled on boot
+  service:
+    name: redis
+    state: started
+    enabled: yes
   become: yes
