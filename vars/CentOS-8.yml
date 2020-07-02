@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: MIT
+---
+# Put internal variables here with CentOS 8 specific values.
+
+__metrics_packages_extra:
+  - pcp-zeroconf
+
+__metrics_packages_graph:
+  - grafana
+  - grafana-pcp
+
+__metrics_packages_query:
+  - redis

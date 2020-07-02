@@ -1,6 +1,13 @@
 # SPDX-License-Identifier: MIT
 ---
 
+__metrics_packages:
+  - pcp
+
+__metrics_packages_extra: []
+__metrics_packages_graph: []
+__metrics_packages_query: []
+
 __metrics_grafana_user: admin
 __metrics_grafana_password: admin
 __metrics_grafana_server: localhost:3000

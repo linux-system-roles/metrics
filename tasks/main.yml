@@ -1,6 +1,36 @@
 # SPDX-License-Identifier: MIT
 ---
 
+- name: Set platform/version specific variables
+  include_vars: "{{ item }}"
+  loop:
+    - "{{ role_path }}/vars/{{ ansible_os_family }}.yml"
+    - "{{ role_path }}/vars/{{ ansible_distribution }}.yml"
+    - "{{ role_path }}/vars/{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ role_path }}/vars/{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
+  when: item is file
+
+- name: Install base packages
+  package:
+    name: "{{ __metrics_packages + __metrics_packages_extra }}"
+    state: present
+
+- name: Install graph packages
+  package:
+    name: "{{ __metrics_packages_graph }}"
+    state: present
+  when:
+    - metrics_graph_service | bool
+    - __metrics_packages_graph | d([])
+
+- name: Install query packages
+  package:
+    name: "{{ __metrics_packages_query }}"
+    state: present
+  when:
+    - metrics_query_service | bool
+    - __metrics_packages_query | d([])
+
 - include_tasks: pcp.yml
 
 - include_tasks: redis.yml
