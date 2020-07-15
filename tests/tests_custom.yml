@@ -10,3 +10,6 @@
         metrics_retention_days: 5
         metrics_graph_service: yes
         metrics_query_service: yes
+  when:
+    - __metrics_packages_query | d([])
+    - __metrics_packages_graph | d([])

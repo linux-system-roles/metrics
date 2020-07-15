@@ -7,3 +7,5 @@
     - role: linux-system-roles.metrics
       vars:
         metrics_graph_service: yes
+  when:
+    - __metrics_packages_graph | d([])
