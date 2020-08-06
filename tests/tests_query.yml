@@ -7,5 +7,3 @@
     - role: linux-system-roles.metrics
       vars:
         metrics_query_service: yes
-  when:
-    - __metrics_packages_query | d([])
