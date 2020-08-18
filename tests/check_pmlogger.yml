@@ -2,4 +2,3 @@
 ---
 - name: Check if pmlogger works
   shell: echo -ne 'status\nquit\n' | pmlc -P | grep -E "PMCD host\s+$(hostname)"
-

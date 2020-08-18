@@ -2,4 +2,3 @@
 ---
 - name: Check if Redis works
   shell: redis-cli incr mycounter
-

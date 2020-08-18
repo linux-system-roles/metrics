@@ -6,8 +6,8 @@
   roles:
     - role: linux-system-roles.metrics
       vars:
-        metrics_query_service: yes
-        metrics_graph_service: yes
+        metrics_query_service: true
+        metrics_graph_service: true
       when:
         - ansible_distribution in ['RedHat', 'CentOS']
         - ansible_distribution_major_version >= '8'
@@ -18,13 +18,14 @@
 
   tasks:
     - name: Check if the whole stack works
-      import_tasks: check_pcp.yml
-      import_tasks: check_pmlogger.yml
-      import_tasks: check_pmie.yml
-      import_tasks: check_redis.yml
-      import_tasks: check_pmproxy.yml
-      import_tasks: check_grafana.yml
-      import_tasks: check_grafanapcp.yml
+      import_tasks:
+        - check_pcp.yml
+        - check_pmlogger.yml
+        - check_pmie.yml
+        - check_redis.yml
+        - check_pmproxy.yml
+        - check_grafana.yml
+        - check_grafanapcp.yml
       when:
         - ansible_distribution in ['RedHat', 'CentOS']
         - ansible_distribution_major_version >= '8'
@@ -32,4 +33,3 @@
   post_tasks:
     - name: Restore state of services
       import_tasks: restore_services_state.yml
-

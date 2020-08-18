@@ -3,7 +3,7 @@
 - name: Check if BPF trace datasource is configured
   uri:
     url: "http://{{ __metrics_grafana_user }}:{{ __metrics_grafana_password }}@{{ __metrics_grafana_server }}/api/datasources/name/PCP%20{{ item }}"
-    force_basic_auth: yes
+    force_basic_auth: true
     headers:
       Content-Type: application/json
       Accept: application/json

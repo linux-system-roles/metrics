@@ -5,4 +5,3 @@
     url: http://{{ __metrics_pmproxy_server }}/pmapi/metric?names=kernel.all.load
     method: GET
     status_code: 200
-

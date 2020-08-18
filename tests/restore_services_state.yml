@@ -1,3 +1,5 @@
+# SPDX-License-Identifier: MIT
+---
 - name: Get final state of services
   tags: tests::cleanup
   service_facts:
@@ -9,8 +11,8 @@
     name: "{{ item }}"
     state: "{{ 'started' if initial_state.ansible_facts.services[item + '.service']['state'] == 'running' else 'stopped' }}"
   when:
-     - item + '.service' in final_state.ansible_facts.services
-     - item + '.service' in initial_state.ansible_facts.services
+    - item + '.service' in final_state.ansible_facts.services
+    - item + '.service' in initial_state.ansible_facts.services
   with_items:
     - pmcd
     - pmlogger
