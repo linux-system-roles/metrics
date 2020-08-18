@@ -6,7 +6,7 @@
   roles:
     - role: linux-system-roles.metrics
       vars:
-        metrics_graph_service: true
+        metrics_graph_service: yes
       when:
         - ansible_distribution in ['RedHat', 'CentOS']
         - ansible_distribution_major_version >= '8'
@@ -17,7 +17,8 @@
 
   tasks:
     - name: Check if Grafana works
-      import_tasks:
+      include_tasks: "{{ item }}"
+      loop:
         - check_grafana.yml
         - check_grafanapcp.yml
       when:

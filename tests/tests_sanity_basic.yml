@@ -11,8 +11,9 @@
       import_tasks: get_services_state.yml
 
   tasks:
-    - name: Check if basic metrics role setup  works
-      import_tasks:
+    - name: Check if basic metrics role setup works
+      include_tasks: "{{ item }}"
+      loop:
         - check_pcp.yml
         - check_pmlogger.yml
         - check_pmie.yml

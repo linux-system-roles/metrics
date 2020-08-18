@@ -6,8 +6,8 @@
   roles:
     - role: linux-system-roles.metrics
       vars:
-        metrics_query_service: true
-        metrics_graph_service: true
+        metrics_query_service: yes
+        metrics_graph_service: yes
       when:
         - ansible_distribution in ['RedHat', 'CentOS']
         - ansible_distribution_major_version >= '8'
