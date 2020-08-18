@@ -1,0 +1,29 @@
+# SPDX-License-Identifier: MIT
+---
+- name: Ensure that the role runs with graph service enabled
+  hosts: all
+
+  roles:
+    - role: linux-system-roles.metrics
+      vars:
+        metrics_graph_service: yes
+      when:
+        - ansible_distribution in ['RedHat', 'CentOS']
+        - ansible_distribution_major_version >= '8'
+
+  pre_tasks:
+    - name: Save state of services
+      import_tasks: get_services_state.yml
+
+  tasks:
+    - name: Check if Grafana works
+      import_tasks: check_grafana.yml
+      import_tasks: check_grafanapcp.yml
+      when:
+        - ansible_distribution in ['RedHat', 'CentOS']
+        - ansible_distribution_major_version >= '8'
+
+  post_tasks:
+    - name: Restore state of services
+      import_tasks: restore_services_state.yml
+

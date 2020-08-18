@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: MIT
+---
+- name: Ensure that the role runs with query service enabled
+  hosts: all
+
+  roles:
+    - role: linux-system-roles.metrics
+      vars:
+        metrics_query_service: yes
+      when:
+        - ansible_distribution in ['RedHat', 'CentOS']
+        - ansible_distribution_major_version >= '8'
+
+  pre_tasks:
+    - name: Save state of services
+      import_tasks: get_services_state.yml
+
+  tasks:
+    - name: Check the set of all query services
+      import_tasks: check_pcp.yml
+      import_tasks: check_pmlogger.yml
+      import_tasks: check_pmie.yml
+      import_tasks: check_redis.yml
+      import_tasks: check_pmproxy.yml
+      when:
+        - ansible_distribution in ['RedHat', 'CentOS']
+        - ansible_distribution_major_version >= '8'
+
+  post_tasks:
+    - name: Restore state of services
+      import_tasks: restore_services_state.yml
+

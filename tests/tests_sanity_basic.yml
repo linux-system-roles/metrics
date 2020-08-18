@@ -1,0 +1,22 @@
+# SPDX-License-Identifier: MIT
+---
+- name: Ensure that the role runs
+  hosts: all
+
+  roles:
+    - role: linux-system-roles.metrics
+
+  pre_tasks:
+    - name: Save state of services
+      import_tasks: get_services_state.yml
+
+  tasks:
+    - name: Check if basic metrics role setup  works
+      import_tasks: check_pcp.yml
+      import_tasks: check_pmlogger.yml
+      import_tasks: check_pmie.yml
+
+  post_tasks:
+    - name: Restore state of services
+      import_tasks: restore_services_state.yml
+
