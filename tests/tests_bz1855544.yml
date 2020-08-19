@@ -8,9 +8,9 @@
       vars:
         metrics_query_service: yes
         metrics_graph_service: yes
-      when:
-        - ansible_distribution in ['RedHat', 'CentOS']
-        - ansible_distribution_major_version >= '8'
+      when: (ansible_distribution in ['RedHat', 'CentOS'] and
+             ansible_distribution_major_version >= '8') or
+             ansible_distribution in ['Fedora']
 
   pre_tasks:
     - name: Save state of services
@@ -19,16 +19,16 @@
   tasks:
     - name: Check if all default datasources are configured
       import_tasks: check_default_datasources.yml
-      when:
-        - ansible_distribution in ['RedHat', 'CentOS']
-        - ansible_distribution_major_version >= '8'
+      when: (ansible_distribution in ['RedHat', 'CentOS'] and
+             ansible_distribution_major_version >= '8') or
+             ansible_distribution in ['Fedora']
 
     - name: Check if relevant PMDAs are installed
       import_tasks: check_fullstack_pmdas.yml
-      when:
-        - ansible_distribution in ['RedHat', 'CentOS']
-        - ansible_distribution_major_version >= '8'
-        - ansible_distribution_version not in ['8.0', '8.1', '8.2', '8.3']
+      when: (ansible_distribution in ['RedHat', 'CentOS'] and
+             ansible_distribution_major_version >= '8' and
+             ansible_distribution_version not in ['8.0', '8.1', '8.2', '8.3']) or
+             ansible_distribution in ['Fedora']
 
   post_tasks:
     - name: Restore state of services
