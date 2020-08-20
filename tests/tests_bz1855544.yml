@@ -25,7 +25,7 @@
     - name: Check if relevant PMDAs are installed
       import_tasks: check_fullstack_pmdas.yml
       when: (ansible_distribution in ['RedHat', 'CentOS'] and
-             ansible_distribution_version is version('8.3', '>')) or
+             ansible_distribution_version is version('8.4', '>=')) or
             (ansible_distribution in ['Fedora'] and
              ansible_distribution_major_version is version('32', '>'))
 
