@@ -1,4 +1,4 @@
 # SPDX-License-Identifier: MIT
 ---
 - name: Check if PCP works
-  shell: pcp
+  command: pcp

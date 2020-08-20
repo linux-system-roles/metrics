@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 ---
 - name: Check if PMDA packages are installed
-  shell: rpm -q pcp-pmda-{{ item }}
+  command: rpm -q pcp-pmda-{{ item }}
   loop:
     - bcc
     - bpftrace

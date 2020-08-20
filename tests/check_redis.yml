@@ -1,4 +1,4 @@
 # SPDX-License-Identifier: MIT
 ---
 - name: Check if Redis works
-  shell: redis-cli incr mycounter
+  command: redis-cli incr mycounter
