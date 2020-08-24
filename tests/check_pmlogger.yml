@@ -1,0 +1,6 @@
+# SPDX-License-Identifier: MIT
+---
+- name: Check if pmlogger works
+  shell: pcp | grep -E '^\s*pmlogger.*primary\s+logger'
+  when: ansible_distribution in ['RedHat', 'CentOS'] and
+        ansible_distribution_major_version|int > 6

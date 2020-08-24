@@ -1,0 +1,4 @@
+# SPDX-License-Identifier: MIT
+---
+- name: Check if pmie works
+  shell: echo 'hinv.ncpu > 0 -> print "OK";' | pmie -q -f -T 1sec | grep ' OK$'
