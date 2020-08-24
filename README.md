@@ -6,17 +6,13 @@ by the managed host.
 
 ## Requirements
 
-Uses features of Performance Co-Pilot (PCP) v5+, Redis v5+ and Grafana v6+.
-However, use of Grafana and Redis is optional (disabled by default).
-The `metrics_graph_service` and `metrics_query_service` options are thus
-supported on RHEL/CentOS starting from major version 8, because
-earlier versions do not have the Grafana and Redis packages. (On
-earlier versions you may enable EPEL repositories as a workaround, but
-the role is not guaranteed to work with EPEL packages, as this case is
-not tested enough.)
+Performance Co-Pilot (PCP) v5+. All of the packages are available
+from the standard repositories on Fedora, CentOS 8, and RHEL 8.  On RHEL
+7 and RHEL 6, you will need to enable the Optional repository/channel
+on the managed host.
 
-On RHEL 7 and RHEL 6 it is needed to have the Optional repository
-enabled on the managed host.
+The role can optionally use Grafana v6+ (`metrics_graph_service`) and
+Redis v5+ (`metrics_query_service`) on Fedora, CentOS 8, and RHEL 8.
 
 ## Role Variables
 
