@@ -11,7 +11,7 @@
   when: metrics_provider == 'pcp'
 
 - name: Setup metric querying service
-- include_role:
+  include_role:
     name: "{{ role_path }}/roles/redis"
   when: "{{ metrics_query_service|d(false)|bool }}"
 
