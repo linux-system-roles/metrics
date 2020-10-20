@@ -28,7 +28,7 @@
     elasticsearch_export_metrics: "{{ metrics_into_elasticsearch|d(false)|bool }}"
   include_role:
     name: "{{ role_path }}/roles/elasticsearch"
-  when: - "{{ metrics_from_elasticsearch|d(false)|bool or metrics_into_elasticsearch|d(false)|bool }}"
+  when: "{{ metrics_from_elasticsearch|d(false)|bool or metrics_into_elasticsearch|d(false)|bool }}"
 
 - name: Setup SQL Server metrics
   include_role:
