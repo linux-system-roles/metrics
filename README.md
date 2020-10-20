@@ -116,12 +116,6 @@ endpoint, graphs and scalable querying.
     - linux-system-roles.metrics
 ```
 
-
 ## License
 
 MIT
-
-## Author Information
-
-Maintained by Shirly Radco <sradco@redhat.com>, Nathan Scott <nathans@redhat.com>,
-Peter Portante <portante@redhat.com> and Andreas Gerstmayr <agerstmayr@redhat.com>
