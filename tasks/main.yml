@@ -1,40 +1,44 @@
 # SPDX-License-Identifier: MIT
 ---
 
-- name: Set platform/version specific variables
-  include_vars: "{{ item }}"
-  loop:
-    - "{{ role_path }}/vars/{{ ansible_os_family }}.yml"
-    - "{{ role_path }}/vars/{{ ansible_distribution }}.yml"
-    - "{{ role_path }}/vars/{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
-    - "{{ role_path }}/vars/{{ ansible_distribution }}-{{ ansible_distribution_version }}.yml"
-  when: item is file
+- name: Setup metric collection service
+  vars:
+    pcp_pmlogger_discard: "{{ metrics_retention_days }}"
+    pcp_target_hosts: "{{ metrics_monitored_hosts }}"
+    pcp_rest_api: "{{ metrics_query_service|d(false)|bool or metrics_graph_service|d(false)|bool }}"
+  include_role:
+    name: "{{ role_path }}/roles/pcp"
+  when: metrics_provider == 'pcp'
 
-- name: Install base packages
-  package:
-    name: "{{ __metrics_packages + __metrics_packages_extra }}"
-    state: present
+- name: Setup metric querying service
+- include_role:
+    name: "{{ role_path }}/roles/redis"
+  when: "{{ metrics_query_service|d(false)|bool }}"
 
-- name: Install graph packages
-  package:
-    name: "{{ __metrics_packages_graph }}"
-    state: present
-  when:
-    - metrics_graph_service | bool
-    - __metrics_packages_graph | d([])
+- name: Setup metric graphing service
+  include_role:
+    name: "{{ role_path }}/roles/grafana"
+  when: "{{ metrics_graph_service|d(false)|bool }}"
 
-- name: Install query packages
-  package:
-    name: "{{ __metrics_packages_query }}"
-    state: present
-  when:
-    - metrics_query_service | bool
-    - __metrics_packages_query | d([])
+- name: Setup Elasticsearch metrics
+  vars:
+    elasticsearch_agent: "{{ metrics_from_elasticsearch|d(false)|bool }}"
+    elasticsearch_export_type: "{{ metrics_provider }}-{{ role_name }}"
+    elasticsearch_export_index: "{{ metrics_provider }}"
+    elasticsearch_export_metrics: "{{ metrics_into_elasticsearch|d(false)|bool }}"
+  include_role:
+    name: "{{ role_path }}/roles/elasticsearch"
+  when: - "{{ metrics_from_elasticsearch|d(false)|bool or metrics_into_elasticsearch|d(false)|bool }}"
 
-- include_tasks: pcp.yml
+- name: Setup SQL Server metrics
+  include_role:
+    name: "{{ role_path }}/roles/mssql"
+  when: "{{ metrics_from_mssql|d(false)|bool }}"
 
-- include_tasks: redis.yml
-  when: metrics_query_service | bool
-
-- include_tasks: grafana.yml
-  when: metrics_graph_service | bool
+- name: Setup bpftrace metrics
+  vars:
+    bpftrace_users:
+      - { user: "{{ role_name }}", sasluser: "{{ metrics_username }}", saslpassword: "{{ metrics_password }}" }
+  include_role:
+    name: "{{ role_path }}/roles/bpftrace"
+  when: "{{ metrics_from_bpftrace|d(false)|bool }}"

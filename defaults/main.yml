@@ -1,7 +1,5 @@
 # SPDX-License-Identifier: MIT
 ---
-# Default metrics provider is PCP
-metrics_provider: pcp
 
 # Number of days of historical performance data to keep.
 metrics_retention_days: 7
@@ -20,3 +18,22 @@ metrics_query_service: no
 # for the available metrics services.
 # Graphing service at localhost:3000
 metrics_graph_service: no
+
+# Export metrics to an Elasticsearch cluster for analysis
+metrics_into_elasticsearch: no
+
+# Make metrics available from an Elasticsearch instance
+metrics_from_elasticsearch: no
+
+# Make metrics available from a SQL Server database
+metrics_from_mssql: no
+
+# Make metrics available from bpftrace scripts
+metrics_from_bpftrace: no
+
+# Mandatory authentication for bpftrace
+metrics_username: metrics
+metrics_password: metrics
+
+# Default metrics provider is PCP
+metrics_provider: pcp

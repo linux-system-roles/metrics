@@ -1,0 +1,16 @@
+# SPDX-License-Identifier: MIT
+---
+
+pcp_rest_api: no
+pcp_pmlogger_discard: 14
+pcp_pmlogger_interval: 60
+pcp_archive_dir: /var/log/pcp/pmlogger
+pcp_pmcd_localonly: 0
+pcp_pmproxy_localonly: 0
+pcp_pmlogger_localonly: 1
+pcp_optional_packages: []
+pcp_optional_agents: []
+pcp_explicit_labels: {}
+pcp_implicit_labels: {}
+pcp_target_hosts: []
+pcp_accounts: []

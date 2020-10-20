@@ -43,6 +43,28 @@ Enabling this starts PCP and grafana servers for visualizing PCP metrics.
 Boolean flag allowing host to be setup with time series query services.
 Enabling this starts PCP and redis servers for querying recorded PCP metrics.
 
+    metrics_with_elasticsearch: no
+
+Boolean flag allowing metric values to be exported to Elasticsearch.
+
+    metrics_from_elasticsearch: no
+
+Boolean flag allowing metrics from Elasticsearch to be made available.
+
+    metrics_from_mssql: no
+
+Boolean flag allowing metrics from SQL Server to be made available.
+Enabling this flag requires a 'trusted' connection to SQL Server.
+
+    metrics_from_bpftrace: no
+
+Boolean flag allowing metrics from bpftrace to be made available.
+
+    metrics_username: metrics
+    metrics_password: metrics
+
+Mandatory authentication for executing dynamic bpftrace scripts.
+
     metrics_provider: pcp
 
 The metrics collector to use to provide metrics.

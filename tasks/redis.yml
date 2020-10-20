@@ -1,9 +1,0 @@
-# SPDX-License-Identifier: MIT
----
-
-- name: Ensure scalable query service is running and enabled on boot
-  service:
-    name: redis
-    state: started
-    enabled: yes
-  become: yes
