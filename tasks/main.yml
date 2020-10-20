@@ -13,12 +13,12 @@
 - name: Setup metric querying service
   include_role:
     name: "{{ role_path }}/roles/redis"
-  when: "{{ metrics_query_service|d(false)|bool }}"
+  when: metrics_query_service|d(false)|bool
 
 - name: Setup metric graphing service
   include_role:
     name: "{{ role_path }}/roles/grafana"
-  when: "{{ metrics_graph_service|d(false)|bool }}"
+  when: metrics_graph_service|d(false)|bool
 
 - name: Setup Elasticsearch metrics
   vars:
@@ -28,12 +28,12 @@
     elasticsearch_export_metrics: "{{ metrics_into_elasticsearch|d(false)|bool }}"
   include_role:
     name: "{{ role_path }}/roles/elasticsearch"
-  when: "{{ metrics_from_elasticsearch|d(false)|bool or metrics_into_elasticsearch|d(false)|bool }}"
+  when: metrics_from_elasticsearch|d(false)|bool or metrics_into_elasticsearch|d(false)|bool
 
 - name: Setup SQL Server metrics
   include_role:
     name: "{{ role_path }}/roles/mssql"
-  when: "{{ metrics_from_mssql|d(false)|bool }}"
+  when: metrics_from_mssql|d(false)|bool
 
 - name: Setup bpftrace metrics
   vars:
@@ -41,4 +41,4 @@
       - { user: "{{ role_name }}", sasluser: "{{ metrics_username }}", saslpassword: "{{ metrics_password }}" }
   include_role:
     name: "{{ role_path }}/roles/bpftrace"
-  when: "{{ metrics_from_bpftrace|d(false)|bool }}"
+  when: metrics_from_bpftrace|d(false)|bool
