@@ -7,17 +7,17 @@
     pcp_target_hosts: "{{ metrics_monitored_hosts }}"
     pcp_rest_api: "{{ metrics_query_service|d(false)|bool or metrics_graph_service|d(false)|bool }}"
   include_role:
-    name: "{{ role_path }}/roles/pcp"
+    name: "{{ role_path }}/roles/performancecopilot_metrics_pcp"
   when: metrics_provider == 'pcp'
 
 - name: Setup metric querying service
   include_role:
-    name: "{{ role_path }}/roles/redis"
+    name: "{{ role_path }}/roles/performancecopilot_metrics_redis"
   when: metrics_query_service|d(false)|bool
 
 - name: Setup metric graphing service
   include_role:
-    name: "{{ role_path }}/roles/grafana"
+    name: "{{ role_path }}/roles/performancecopilot_metrics_grafana"
   when: metrics_graph_service|d(false)|bool
 
 - name: Setup Elasticsearch metrics
@@ -27,12 +27,12 @@
     elasticsearch_export_index: "{{ metrics_provider }}"
     elasticsearch_export_metrics: "{{ metrics_into_elasticsearch|d(false)|bool }}"
   include_role:
-    name: "{{ role_path }}/roles/elasticsearch"
+    name: "{{ role_path }}/roles/performancecopilot_metrics_elasticsearch"
   when: metrics_from_elasticsearch|d(false)|bool or metrics_into_elasticsearch|d(false)|bool
 
 - name: Setup SQL Server metrics
   include_role:
-    name: "{{ role_path }}/roles/mssql"
+    name: "{{ role_path }}/roles/performancecopilot_metrics_mssql"
   when: metrics_from_mssql|d(false)|bool
 
 - name: Setup bpftrace metrics
@@ -40,5 +40,5 @@
     bpftrace_users:
       - { user: "{{ role_name }}", sasluser: "{{ metrics_username }}", saslpassword: "{{ metrics_password }}" }
   include_role:
-    name: "{{ role_path }}/roles/bpftrace"
+    name: "{{ role_path }}/roles/performancecopilot_metrics_bpftrace"
   when: metrics_from_bpftrace|d(false)|bool
