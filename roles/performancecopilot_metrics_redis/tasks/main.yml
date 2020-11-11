@@ -1,0 +1,37 @@
+# SPDX-License-Identifier: MIT
+---
+
+- name: Set platform/version specific variables
+  include_vars: "{{ item }}"
+  loop:
+    - "{{ role_path }}/vars/{{ ansible_facts['os_family'] }}.yml"
+    - "{{ role_path }}/vars/{{ ansible_facts['distribution'] }}.yml"
+    - "{{ role_path }}/vars/{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_major_version'] }}.yml"
+    - "{{ role_path }}/vars/{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_version'] }}.yml"
+  when: item is file
+
+- name: Install Redis packages
+  package:
+    name: "{{ __redis_packages + __redis_packages_extra }}"
+    state: present
+
+- name: Ensure Redis service is configured
+  template:
+    src: "{{ item }}"
+    dest: "{{ __redis_conf }}"
+    mode: 0640
+    owner: redis
+    group: root
+  with_first_found:
+    - "{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_major_version'] }}_redis.conf.j2"
+    - "{{ ansible_facts['distribution'] }}_redis.conf.j2"
+    - "redis.conf.j2"
+  become: yes
+  notify: restart redis
+
+- name: Ensure Redis service is running and enabled on boot
+  service:
+    name: redis
+    state: started
+    enabled: yes
+  become: yes

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 ---
-- name: Check if pmproxy works
+- name: Check if pmproxy responds
   uri:
-    url: http://{{ __metrics_pmproxy_server }}/pmapi/metric?names=kernel.all.load
+    url: http://localhost:44322/series/ping
     method: GET
     status_code: 200
