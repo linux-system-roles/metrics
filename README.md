@@ -68,8 +68,15 @@ Mandatory authentication for executing dynamic bpftrace scripts.
     metrics_provider: pcp
 
 The metrics collector to use to provide metrics.
-Currently Performance Co-Pilot is the only supported metrics provider.
 
+Currently Performance Co-Pilot is the only supported metrics provider.
+When using the PCP provider these TCP ports will be used - 44321 (pmcd,
+live metric value sampling), 44322 (pmproxy, with metrics_query_service
+or metrics_graph_service), 6379 (redis-server for metrics_query_service)
+and 3000 (grafana-server for metrics_graph_service).
+
+This role does not configure for remote access to these services such as
+through a firewall.  See https://github.com/linux-system-roles/firewall
 
 ## Dependencies
 
