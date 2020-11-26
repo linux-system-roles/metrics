@@ -78,6 +78,15 @@ and 3000 (grafana-server for metrics_graph_service).
 This role does not configure for remote access to these services such as
 through a firewall.  See https://github.com/linux-system-roles/firewall
 
+This role does not configure SELinux for remote access to these services
+either.  However, the pmcd and pmproxy services are in the "ephemeral"
+range requiring no special setup and the Grafana port is "unregistered".
+The Redis port is gated by the redis_port_t SELinux type and may need to
+be further configured, if you require direct access (not required if you
+are accessing it from metrics role tools like Grafana and PCP).
+Use https://github.com/linux-system-roles/selinux to manage port access,
+for SELinux contexts.
+
 ## Dependencies
 
 None.
