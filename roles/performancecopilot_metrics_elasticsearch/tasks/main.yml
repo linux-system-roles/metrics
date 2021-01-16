@@ -11,11 +11,10 @@
   when: item is file
 
 - name: Ensure PCP Elasticsearch agent config dir exists
-  ansible.builtin.file:
+  file:
     path: "{{ __elasticsearch_conf_dir }}"
     state: directory
-    mode: '0755'
-  become: yes
+    mode: 0755
 
 - name: Ensure PCP Elasticsearch agent is configured
   template:
