@@ -19,7 +19,7 @@
 
 - name: Ensure PCP SQL Server metrics are available
   import_role:
-    name: pcp
+    name: "{{ role_path }}/../performancecopilot_metrics_pcp"
   vars:
     pcp_optional_agents: [mssql]
     pcp_optional_packages: "{{ __mssql_packages_extra }}"
