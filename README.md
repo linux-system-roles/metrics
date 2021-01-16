@@ -44,7 +44,7 @@ Enabling this starts PCP and grafana servers for visualizing PCP metrics.
 Boolean flag allowing host to be setup with time series query services.
 Enabling this starts PCP and redis servers for querying recorded PCP metrics.
 
-    metrics_with_elasticsearch: no
+    metrics_into_elasticsearch: no
 
 Boolean flag allowing metric values to be exported to Elasticsearch.
 
