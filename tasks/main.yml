@@ -38,7 +38,7 @@
 - name: Setup bpftrace metrics
   vars:
     bpftrace_users:
-      - { user: "{{ role_name }}", sasluser: "{{ metrics_username }}", saslpassword: "{{ metrics_password }}" }
+      - { user: "{{ metrics_username }}", sasluser: "{{ metrics_username }}", saslpassword: "{{ metrics_password }}" }
   include_role:
     name: "{{ role_path }}/roles/performancecopilot_metrics_bpftrace"
   when: metrics_from_bpftrace|d(false)|bool
