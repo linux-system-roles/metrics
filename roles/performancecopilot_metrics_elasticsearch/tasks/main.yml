@@ -11,11 +11,10 @@
   when: item is file
 
 - name: Ensure PCP Elasticsearch agent config dir exists
-  ansible.builtin.file:
+  file:
     path: "{{ __elasticsearch_conf_dir }}"
     state: directory
-    mode: '0755'
-  become: yes
+    mode: 0755
 
 - name: Ensure PCP Elasticsearch agent is configured
   template:
@@ -24,7 +23,7 @@
     mode: 0600
   become: yes
   when:
-    - elasticsearch_agent | bool
+    - elasticsearch_agent | d(false) | bool
 
 - name: Ensure PCP Elasticsearch metrics are available
   import_role:
@@ -33,7 +32,7 @@
     pcp_optional_agents: [elasticsearch]
     pcp_optional_packages: "{{ __elasticsearch_packages_extra }}"
   when:
-    - elasticsearch_agent | bool
+    - elasticsearch_agent | d(false) | bool
 
 - name: Install PCP Elasticsearch export package
   package:

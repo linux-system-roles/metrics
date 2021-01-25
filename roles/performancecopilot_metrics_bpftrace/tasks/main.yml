@@ -19,7 +19,7 @@
   file:
     path: "{{ __bpftrace_conf_dir }}"
     state: directory
-    mode: '0755'
+    mode: 0755
 
 - name: Ensure PCP bpftrace agent is configured
   template:
