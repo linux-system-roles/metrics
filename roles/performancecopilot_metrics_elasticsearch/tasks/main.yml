@@ -28,7 +28,7 @@
 
 - name: Ensure PCP Elasticsearch metrics are available
   import_role:
-    name: "{{ role_path }}/../performancecopilot_metrics_pcp"
+    name: performancecopilot_metrics_pcp
   vars:
     pcp_optional_agents: [elasticsearch]
     pcp_optional_packages: "{{ __elasticsearch_packages_extra }}"
