@@ -30,7 +30,7 @@
 
 - name: Ensure PCP bpftrace metrics are available
   import_role:
-    name: pcp
+    name: performancecopilot_metrics_pcp
   vars:
     pcp_accounts: "{{ bpftrace_users }}"
     pcp_optional_agents: ['bpftrace']
