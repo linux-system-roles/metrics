@@ -21,14 +21,12 @@
 
   tasks:
     - name: Check if all default datasources are configured
-      import_tasks: check_default_datasources.yml
+      include_tasks: check_default_datasources.yml
 
-    - name: Check if relevant PMDAs are installed
-      import_tasks: check_fullstack_pmdas.yml
-      when: (ansible_distribution in ['RedHat', 'CentOS'] and
-             ansible_distribution_version is version('8.4', '>=')) or
-            (ansible_distribution in ['Fedora'] and
-             ansible_distribution_major_version is version('32', '>'))
+    - name: Check if all required PMDAs are installed
+      shell: pmprobe -I pmcd.agent.name | grep -w "{{ item }}"
+      loop:
+        - bpftrace
 
   post_tasks:
     - name: Restore state of services
