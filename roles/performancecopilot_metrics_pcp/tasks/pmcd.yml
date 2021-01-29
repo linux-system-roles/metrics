@@ -90,5 +90,5 @@
 - name: Ensure performance metric collector is running and enabled on boot
   service:
     name: pmcd
-    state: started
+    state: restarted
     enabled: yes
