@@ -1,44 +1,76 @@
 # SPDX-License-Identifier: MIT
 ---
 
-- name: Setup metric collection service
-  vars:
-    pcp_pmlogger_discard: "{{ metrics_retention_days }}"
-    pcp_target_hosts: "{{ metrics_monitored_hosts }}"
-    pcp_rest_api: "{{ metrics_query_service|d(false)|bool or metrics_graph_service|d(false)|bool }}"
-  include_role:
-    name: "{{ role_path }}/roles/performancecopilot_metrics_pcp"
-  when: metrics_provider == 'pcp'
+- name: Add Elasticsearch to metrics domain list
+  set_fact:
+    __metrics_domains: "{{ __metrics_domains + [ 'elasticsearch' ] }}"
+  when: metrics_from_elasticsearch|d(false)|bool
 
-- name: Setup metric querying service
-  include_role:
-    name: "{{ role_path }}/roles/performancecopilot_metrics_redis"
-  when: metrics_query_service|d(false)|bool
+- name: Add SQL Server to metrics domain list
+  set_fact:
+    __metrics_domains: "{{ __metrics_domains + [ 'mssql' ] }}"
+  when: metrics_from_mssql|d(false)|bool
 
-- name: Setup metric graphing service
-  include_role:
-    name: "{{ role_path }}/roles/performancecopilot_metrics_grafana"
-  when: metrics_graph_service|d(false)|bool
+- name: Add bpftrace to metrics domain list
+  set_fact:
+    __metrics_domains: "{{ __metrics_domains + [ 'bpftrace' ] }}"
+  when: metrics_from_bpftrace|d(false)|bool
 
-- name: Setup Elasticsearch metrics
+- name: Setup metrics access for roles
+  set_fact:
+    __metrics_accounts:
+      - { user: "{{ metrics_username }}", sasluser: "{{ metrics_username }}", saslpassword: "{{ metrics_password }}" }
+  when: (metrics_username is defined) and (metrics_username|length > 0)
+
+- name: Configure Elasticsearch metrics
   vars:
     elasticsearch_agent: "{{ metrics_from_elasticsearch|d(false)|bool }}"
     elasticsearch_export_type: "{{ metrics_provider }}-{{ role_name }}"
     elasticsearch_export_index: "{{ metrics_provider }}"
     elasticsearch_export_metrics: "{{ metrics_into_elasticsearch|d(false)|bool }}"
+    elasticsearch_metrics_provider: "{{ metrics_provider }}"
   include_role:
     name: "{{ role_path }}/roles/performancecopilot_metrics_elasticsearch"
-  when: metrics_from_elasticsearch|d(false)|bool or metrics_into_elasticsearch|d(false)|bool
+  when: >
+    metrics_from_elasticsearch|d(false)|bool or
+    metrics_into_elasticsearch|d(false)|bool
 
-- name: Setup SQL Server metrics
+- name: Configure SQL Server metrics.
+  vars:
+    - mssql_metrics_provider: "{{ metrics_provider }}"
   include_role:
     name: "{{ role_path }}/roles/performancecopilot_metrics_mssql"
   when: metrics_from_mssql|d(false)|bool
 
-- name: Setup bpftrace metrics
+- name: Setup bpftrace metrics.
   vars:
-    bpftrace_users:
-      - { user: "{{ metrics_username }}", sasluser: "{{ metrics_username }}", saslpassword: "{{ metrics_password }}" }
+    bpftrace_users: "{{ __metrics_accounts }}"
+    bpftrace_metrics_provider: "{{ metrics_provider }}"
   include_role:
     name: "{{ role_path }}/roles/performancecopilot_metrics_bpftrace"
   when: metrics_from_bpftrace|d(false)|bool
+
+- name: Setup metric collection service.
+  vars:
+    pcp_pmlogger_discard: "{{ metrics_retention_days }}"
+    pcp_target_hosts: "{{ metrics_monitored_hosts }}"
+    pcp_optional_agents: "{{ __metrics_domains }}"
+    pcp_accounts: "{{ __metrics_accounts }}"
+    pcp_rest_api: "{{ metrics_query_service|d(false)|bool or metrics_graph_service|d(false)|bool }}"
+  include_role:
+    name: "{{ role_path }}/roles/performancecopilot_metrics_pcp"
+  when: metrics_provider == 'pcp'
+
+- name: Setup metric querying service.
+  vars:
+    redis_metrics_provider: "{{ metrics_provider }}"
+  include_role:
+    name: "{{ role_path }}/roles/performancecopilot_metrics_redis"
+  when: metrics_query_service|d(false)|bool
+
+- name: Setup metric graphing service.
+  vars:
+    grafana_metrics_provider: "{{ metrics_provider }}"
+  include_role:
+    name: "{{ role_path }}/roles/performancecopilot_metrics_grafana"
+  when: metrics_graph_service|d(false)|bool
