@@ -8,6 +8,7 @@
       vars:
         metrics_query_service: yes
         metrics_graph_service: yes
+        metrics_from_bpftrace: yes
 
   pre_tasks:
     - meta: end_host

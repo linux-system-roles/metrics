@@ -3,11 +3,9 @@
 - name: Check if PMDA packages are installed
   command: rpm -q pcp-pmda-{{ item }}
   loop:
-    - bcc
     - bpftrace
 
 - name: Check if PMDAs are installed
   shell: pcp | grep -E '^\s*pmda' | grep -w {{ item }}
   loop:
-    - bcc
     - bpftrace
