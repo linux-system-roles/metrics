@@ -18,7 +18,7 @@
     state: touch
   loop: "{{ pcp_optional_agents|default([]) }}"
   when: pmcd_conf.stdout.find(item) == -1
-  notify: restart pmcd
+  register: __metrics_register_changed_coll_agents
 
 - name: Ensure explicit metric label path exists
   file:
@@ -41,21 +41,21 @@
     src: pmcd.explicit.labels.j2
     dest: "{{ __pcp_explicit_labels_path }}/ansible-managed"
     mode: 0644
-  notify: restart pmcd
+  register: __metrics_register_changed_explicit
 
 - name: Ensure any implicit metric labels are configured
   template:
     src: pmcd.implicit.labels.j2
     dest: "{{ __pcp_implicit_labels_path }}/ansible-managed"
     mode: 0644
-  notify: restart pmcd
+  register: __metrics_register_changed_implicit
 
 - name: Ensure performance metric collector is configured
   template:
     src: pmcd.defaults.j2
     dest: "{{ __pcp_pmcd_defaults_path }}"
     mode: 0644
-  notify: restart pmcd
+  register: __metrics_register_changed_coll
 
 - name: Ensure performance metric collector system accounts are configured
   user:
@@ -84,11 +84,29 @@
     src: pmcd.sasl2.conf.j2
     dest: "{{ __pcp_pmcd_saslconf_path }}"
     mode: 0644
-  notify: restart pmcd
+  register: __metrics_register_changed_coll_auth
   when: pcp_accounts|d([])
+
+- name: Set variable to do pmcd restart if needed
+  set_fact:
+    __metrics_restart_pmcd: |
+      __metrics_register_changed_coll_agents is changed or
+      __metrics_register_changed_explicit is changed or
+      __metrics_register_changed_implicit is changed or
+      __metrics_register_changed_coll is changed or
+      (__metrics_register_changed_coll_auth is defined and
+       __metrics_register_changed_coll_auth is changed)
 
 - name: Ensure performance metric collector is running and enabled on boot
   service:
     name: pmcd
     state: started
     enabled: yes
+  when: not __metrics_restart_pmcd
+
+- name: Ensure performance metric collector is restarted and enabled on boot
+  service:
+    name: pmcd
+    state: restarted
+    enabled: yes
+  when: __metrics_restart_pmcd | bool
