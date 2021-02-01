@@ -7,3 +7,4 @@ __elasticsearch_packages_pcp:
   - pcp-pmda-elasticsearch
 __elasticsearch_packages_export_pcp:
   - pcp-export-pcp2elasticsearch
+  - pcp-system-tools
