@@ -1,4 +1,4 @@
 # SPDX-License-Identifier: MIT
 ---
 - name: Check if mssql pmda is registered
-  shell: pmprobe -I pmcd.agent.name | grep -w '"mssql"'
+  shell: pmprobe -I pmcd.agent.status | grep -w '"mssql"'

@@ -1,32 +1,26 @@
 # SPDX-License-Identifier: MIT
 ---
-- name: Test installation and configuration of MSSQL agent
+- name: Test import to Elastic Search
   hosts: all
 
   roles:
     - role: linux-system-roles.metrics
       vars:
-        metrics_from_mssql: yes
+        metrics_into_elasticsearch: yes
 
   pre_tasks:
     - meta: end_host
       when: (ansible_distribution in ['RedHat'] and
              ( ansible_facts['distribution_version'] is version('8.4', '<'))) or
              ansible_distribution not in ['Fedora', 'RedHat']
+             
 
     - name: Save state of services
       import_tasks: get_services_state.yml
 
-    - name: Ensure python3-pyodbc is installed
-      package:
-        name: python3-pyodbc
-        state: present
-
   tasks:
-    - name: Check MSSQL functionality
-      include_tasks: "{{ item }}"
-      loop:
-        - check_mssql.yml
+    - name: Check if import to Elastic Search works
+      include_tasks: check_into_elasticsearch.yml
 
   post_tasks:
     - name: Restore state of services
