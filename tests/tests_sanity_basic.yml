@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 ---
-- name: Ensure that the role runs
+- name: Test basic services of the role are installed and running
   hosts: all
 
   roles:
