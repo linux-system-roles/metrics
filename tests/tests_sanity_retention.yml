@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 ---
-- name: Ensure that retention period is set correctly
+- name: Test configuration of retention period
   hosts: all
   vars:
     __test_retention: 137
@@ -15,7 +15,7 @@
       import_tasks: get_services_state.yml
 
   tasks:
-    - name: Check if basic metrics role setup works
+    - name: Check basic services and the retention
       include_tasks: "{{ item }}"
       loop:
         - check_pcp.yml

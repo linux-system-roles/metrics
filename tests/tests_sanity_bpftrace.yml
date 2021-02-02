@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 ---
-- name: Ensure that BPFTrace with SASL auth is configured
+- name: Test BPFTrace with SASL auth
   hosts: all
   vars:
     __test_uname: pcptest
@@ -15,17 +15,14 @@
 
   pre_tasks:
     - meta: end_host
-      when: (ansible_distribution in ['RedHat'] and
+      when: (ansible_distribution in ['RedHat', 'CentOS'] and
              ansible_distribution_major_version|int < 8) or
-             ansible_distribution not in ['Fedora', 'RedHat']
+             ansible_distribution not in ['Fedora', 'RedHat', 'CentOS']
 
     - name: Save state of services
       import_tasks: get_services_state.yml
 
   tasks:
-    - name: Restart PMCD
-      shell: systemctl restart pmcd && sleep 5
-
     - name: Check if BPFTrace & SASL works
       include_tasks: "{{ item }}"
       loop:
