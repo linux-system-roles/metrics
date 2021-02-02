@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 ---
-- name: Test import from ElasticSearch 
+- name: Test import from ElasticSearch
   hosts: all
 
   roles:
