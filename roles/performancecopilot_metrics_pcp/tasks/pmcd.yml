@@ -89,13 +89,14 @@
 
 - name: Set variable to do pmcd restart if needed
   set_fact:
-    __pcp_restart_pmcd: |
+    __pcp_restart_pmcd: "{{
       __pcp_register_changed_optional_agents is changed or
       __pcp_register_changed_explicit_labels is changed or
       __pcp_register_changed_implicit_labels is changed or
       __pcp_register_changed_defaults_config is changed or
       (__pcp_register_changed_authentication is defined and
        __pcp_register_changed_authentication is changed)
+    }}"
 
 - name: Report performance metric collector restart state
   debug:
