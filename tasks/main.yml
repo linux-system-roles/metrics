@@ -30,7 +30,7 @@
     elasticsearch_export_metrics: "{{ metrics_into_elasticsearch|d(false)|bool }}"
     elasticsearch_metrics_provider: "{{ metrics_provider }}"
   include_role:
-    name: "{{ role_path }}/roles/performancecopilot_metrics_elasticsearch"
+    name: "{{ role_path }}/roles/elasticsearch"
   when: >
     metrics_from_elasticsearch|d(false)|bool or
     metrics_into_elasticsearch|d(false)|bool
@@ -39,7 +39,7 @@
   vars:
     - mssql_metrics_provider: "{{ metrics_provider }}"
   include_role:
-    name: "{{ role_path }}/roles/performancecopilot_metrics_mssql"
+    name: "{{ role_path }}/roles/mssql"
   when: metrics_from_mssql|d(false)|bool
 
 - name: Setup bpftrace metrics.
@@ -47,7 +47,7 @@
     bpftrace_users: "{{ __metrics_accounts }}"
     bpftrace_metrics_provider: "{{ metrics_provider }}"
   include_role:
-    name: "{{ role_path }}/roles/performancecopilot_metrics_bpftrace"
+    name: "{{ role_path }}/roles/bpftrace"
   when: metrics_from_bpftrace|d(false)|bool
 
 - name: Setup metric collection service.
@@ -58,19 +58,19 @@
     pcp_accounts: "{{ __metrics_accounts }}"
     pcp_rest_api: "{{ metrics_query_service|d(false)|bool or metrics_graph_service|d(false)|bool }}"
   include_role:
-    name: "{{ role_path }}/roles/performancecopilot_metrics_pcp"
+    name: "{{ role_path }}/roles/pcp"
   when: metrics_provider == 'pcp'
 
 - name: Setup metric querying service.
   vars:
     redis_metrics_provider: "{{ metrics_provider }}"
   include_role:
-    name: "{{ role_path }}/roles/performancecopilot_metrics_redis"
+    name: "{{ role_path }}/roles/redis"
   when: metrics_query_service|d(false)|bool
 
 - name: Setup metric graphing service.
   vars:
     grafana_metrics_provider: "{{ metrics_provider }}"
   include_role:
-    name: "{{ role_path }}/roles/performancecopilot_metrics_grafana"
+    name: "{{ role_path }}/roles/grafana"
   when: metrics_graph_service|d(false)|bool
