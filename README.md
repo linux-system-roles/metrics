@@ -1,6 +1,8 @@
 # metrics
 ![CI Testing](https://github.com/linux-system-roles/metrics/workflows/tox/badge.svg)
 
+test ci
+
 An ansible role which configures performance analysis services for the managed
 host.  This (optionally) includes a list of remote systems to be monitored
 by the managed host.
