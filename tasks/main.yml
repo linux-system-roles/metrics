@@ -25,7 +25,7 @@
 - name: Configure Elasticsearch metrics
   vars:
     elasticsearch_agent: "{{ metrics_from_elasticsearch|d(false)|bool }}"
-    elasticsearch_export_type: "{{ metrics_provider }}-{{ role_name }}"
+    elasticsearch_export_type: "{{ metrics_provider }}-metrics"
     elasticsearch_export_index: "{{ metrics_provider }}"
     elasticsearch_export_metrics: "{{ metrics_into_elasticsearch|d(false)|bool }}"
     elasticsearch_metrics_provider: "{{ metrics_provider }}"
