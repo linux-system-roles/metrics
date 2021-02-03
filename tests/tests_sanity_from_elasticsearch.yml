@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 ---
-- name: Test import from ElasticSearch
+- name: Test import from Elasticsearch
   hosts: all
 
   roles:
@@ -18,7 +18,7 @@
       import_tasks: get_services_state.yml
 
   tasks:
-    - name: Check if import from Elastic Search works
+    - name: Check if import from Elasticsearch works
       include_tasks: check_from_elasticsearch.yml
 
   post_tasks:
