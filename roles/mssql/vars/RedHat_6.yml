@@ -2,5 +2,4 @@
 ---
 # Put internal variables here with Red Hat Enterprise Linux 6 specific values.
 
-__elasticsearch_conf_dir: /var/lib/pcp/pmdas/elasticsearch
-__elasticsearch_packages_export_pcp: []
+__mssql_conf_dir: /var/lib/pcp/pmdas/mssql
