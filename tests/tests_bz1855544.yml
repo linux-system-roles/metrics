@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: MIT
 ---
-- name: Bug 1855544 - metrics role should automate the setup of Grafana datasources
+- name: "Bug 1855544 - metrics role should automate the setup of
+         Grafana datasources"
   hosts: all
 
   roles:

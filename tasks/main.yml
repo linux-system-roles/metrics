@@ -19,9 +19,11 @@
 - name: Setup metrics access for roles
   set_fact:
     __metrics_accounts:
-      - { user: "{{ metrics_username }}", sasluser: "{{ metrics_username }}", saslpassword: "{{ metrics_password }}" }
+      - { user: "{{ metrics_username }}", sasluser: "{{ metrics_username }}",
+          saslpassword: "{{ metrics_password }}" }
   when: (metrics_username is defined) and (metrics_username|length > 0)
 
+# yamllint disable rule:line-length
 - name: Configure Elasticsearch metrics
   vars:
     elasticsearch_agent: "{{ metrics_from_elasticsearch|d(false)|bool }}"
@@ -34,6 +36,7 @@
   when: >
     metrics_from_elasticsearch|d(false)|bool or
     metrics_into_elasticsearch|d(false)|bool
+# yamllint enable rule:line-length
 
 - name: Configure SQL Server metrics.
   vars:
@@ -56,7 +59,8 @@
     pcp_target_hosts: "{{ metrics_monitored_hosts }}"
     pcp_optional_agents: "{{ __metrics_domains }}"
     pcp_accounts: "{{ __metrics_accounts }}"
-    pcp_rest_api: "{{ metrics_query_service|d(false)|bool or metrics_graph_service|d(false)|bool }}"
+    pcp_rest_api: "{{ metrics_query_service|d(false)|bool or
+                      metrics_graph_service|d(false)|bool }}"
   include_role:
     name: "{{ role_path }}/roles/pcp"
   when: metrics_provider == 'pcp'

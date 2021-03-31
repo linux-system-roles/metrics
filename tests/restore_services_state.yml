@@ -5,11 +5,13 @@
   service_facts:
   register: final_state
 
+# yamllint disable rule:line-length
 - name: Restore state of services
   tags: tests::cleanup
   service:
     name: "{{ item }}"
-    state: "{{ 'started' if initial_state.ansible_facts.services[item + '.service']['state'] == 'running' else 'stopped' }}"
+    state: "{{ 'started' if initial_state.ansible_facts.services[item + '.service']['state'] == 'running'
+               else 'stopped' }}"
   when:
     - item + '.service' in final_state.ansible_facts.services
     - item + '.service' in initial_state.ansible_facts.services
@@ -20,3 +22,4 @@
     - pmproxy
     - redis
     - grafana-server
+# yamllint enable rule:line-length
