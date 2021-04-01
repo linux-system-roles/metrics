@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: MIT
 ---
-- name: Bug 1855539 - metrics role incorrectly sets up multiple primary pmie processes in multi-host mode
+- name: "Bug 1855539 - metrics role incorrectly sets up multiple primary
+         pmie processes in multi-host mode"
   hosts: all
 
   roles:
@@ -20,11 +21,14 @@
 
   tasks:
     - name: Check if pmie configuration file on remote host is the secondary one
-      command: grep -E '^\s*\S+\s+n\s+n\s+'  {{ pcp_pmie_control_path }}/{{ item }}
+      command: |-
+        grep -E '^\s*\S+\s+n\s+n\s+' {{ pcp_pmie_control_path }}/{{ item }}
       loop: "{{ metrics_monitored_hosts }}"
+      changed_when: false
 
     - name: Check if pmie configuration file on local host is the primary one
       command: grep -E '^\s*\S+\s+y\s+n\s+'  {{ pcp_pmie_control_path }}/local
+      changed_when: false
 
   post_tasks:
     - name: Restore state of services

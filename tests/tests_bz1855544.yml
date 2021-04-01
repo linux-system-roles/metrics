@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: MIT
 ---
-- name: Bug 1855544 - metrics role should automate the setup of Grafana datasources
+- name: "Bug 1855544 - metrics role should automate the setup of
+         Grafana datasources"
   hosts: all
 
   roles:
@@ -24,9 +25,12 @@
       include_tasks: check_default_datasources.yml
 
     - name: Check if all required PMDAs are installed
-      shell: pmprobe -I pmcd.agent.status | grep -w "{{ item }}"
+      shell: |-
+        set -euo pipefail
+        pmprobe -I pmcd.agent.status | grep -w "{{ item }}"
       loop:
         - bpftrace
+      changed_when: false
 
   post_tasks:
     - name: Restore state of services
