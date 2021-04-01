@@ -10,6 +10,7 @@ env:
   # LSR_EXTRA_PACKAGES: libdbus-1-dev
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   LSR_ANSIBLE_TEST_DEBUG: true
+  LSR_ANSIBLE_TEST_DOCKER: true
 jobs:
   python:
     runs-on: ubuntu-latest
