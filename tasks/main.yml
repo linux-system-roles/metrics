@@ -53,6 +53,13 @@
     name: "{{ role_path }}/roles/bpftrace"
   when: metrics_from_bpftrace|d(false)|bool
 
+- name: Setup metric querying service.
+  vars:
+    redis_metrics_provider: "{{ metrics_provider }}"
+  include_role:
+    name: "{{ role_path }}/roles/redis"
+  when: metrics_query_service|d(false)|bool
+
 - name: Setup metric collection service.
   vars:
     pcp_pmlogger_discard: "{{ metrics_retention_days }}"
@@ -64,13 +71,6 @@
   include_role:
     name: "{{ role_path }}/roles/pcp"
   when: metrics_provider == 'pcp'
-
-- name: Setup metric querying service.
-  vars:
-    redis_metrics_provider: "{{ metrics_provider }}"
-  include_role:
-    name: "{{ role_path }}/roles/redis"
-  when: metrics_query_service|d(false)|bool
 
 - name: Setup metric graphing service.
   vars:
