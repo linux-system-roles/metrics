@@ -2,11 +2,11 @@
 ---
 galaxy_info:
   author: Nathan Scott <nathans@redhat.com>
-  description: Linux system role for metric collection
+  description: Linux system role for metrics and observability
   company: Red Hat, Inc.
   license: MIT
 
-  min_ansible_version: 2.6
+  min_ansible_version: 2.7
 
   platforms:
     - name: Fedora
@@ -20,12 +20,24 @@ galaxy_info:
         - 9
 
   galaxy_tags:
-    - redis
-    - grafana
     - metrics
-    - graphing
-    - inference
+    - analysis
+    - telemetry
     - monitoring
+    - timeseries
     - performance
+    - lightweight
     - visualization
+    - instrumentation
     - observability
+    - grafana
+    - redis
+    - pcp
+
+dependencies:
+  - performancecopilot.metrics.mssql
+  - performancecopilot.metrics.bpftrace
+  - performancecopilot.metrics.elasticsearch
+  - performancecopilot.metrics.grafana
+  - performancecopilot.metrics.redis
+  - performancecopilot.metrics.pcp
