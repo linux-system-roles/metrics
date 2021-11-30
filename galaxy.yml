@@ -1,0 +1,35 @@
+### REQUIRED
+namespace: performancecopilot
+name: metrics
+version: 2.2.2
+readme: README.md
+authors:
+  - Jan Kurik <jkurik@redhat.com>
+  - Nathan Scott <nathans@redhat.com>
+  - Noriko Hosoi <nhosoi@redhat.com>
+  - Rich Megginson <rmeggins@redhat.com>
+  - Andreas Gerstmayr <agerstmayr@redhat.com>
+
+### OPTIONAL
+description: Performance Co-Pilot Ansible collection
+license_file: 'LICENSE'
+repository: https://github.com/performancecopilot/ansible-pcp
+documentation: https://pcp.readthedocs.io
+homepage: https://pcp.io
+issues: https://github.com/performancecopilot/ansible-pcp/issues
+tags:
+  - metrics
+  - analysis
+  - telemetry
+  - monitoring
+  - timeseries
+  - performance
+  - lightweight
+  - visualization
+  - instrumentation
+  - observability
+  - grafana
+  - redis
+  - pcp
+
+dependencies: {}
