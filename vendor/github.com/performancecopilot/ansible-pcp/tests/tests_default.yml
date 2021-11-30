@@ -1,0 +1,7 @@
+# SPDX-License-Identifier: MIT
+---
+- name: Test the pcp role with default params
+  hosts: all
+
+  roles:
+    - performancecopilot.metrics.pcp

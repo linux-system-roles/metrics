@@ -1,0 +1,40 @@
+# SPDX-License-Identifier: MIT
+---
+- name: Test BPFTrace with SASL auth
+  hosts: all
+  vars:
+    __test_uname: pcptest
+    __test_pswd: t;dlen;dle
+
+  # yamllint disable rule:line-length
+  roles:
+    - role: performancecopilot.metrics.bpftrace
+      vars:
+        bpftrace_users:
+          - { user: "{{ __test_uname }}" }
+    - role: performancecopilot.metrics.pcp
+      vars:
+        pcp_optional_agents: ['bpftrace']
+        pcp_accounts:
+          - { user: "{{ __test_uname }}", sasluser: "{{ __test_uname }}", saslpassword: "{{ __test_pswd }}" }
+  # yamllint enable rule:line-length
+
+  pre_tasks:
+    - meta: end_host
+      when: (ansible_distribution in ['RedHat', 'CentOS'] and
+             ansible_distribution_major_version|int < 8) or
+             ansible_distribution not in ['Fedora', 'RedHat', 'CentOS']
+
+    - name: Save state of services
+      import_tasks: get_services_state.yml
+
+  tasks:
+    - name: Check if BPFTrace & SASL works
+      include_tasks: "{{ item }}"
+      loop:
+        - check_bpftrace.yml
+        - check_sasl.yml
+
+  post_tasks:
+    - name: Restore state of services
+      import_tasks: restore_services_state.yml

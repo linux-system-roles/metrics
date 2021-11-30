@@ -1,0 +1,54 @@
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+- name: Set platform/version specific variables
+  include_vars: "{{ item }}"
+  loop:
+    - "{{ role_path }}/vars/default.yml"
+    - "{{ role_path }}/vars/{{ ansible_facts['os_family'] }}.yml"
+    - "{{ role_path }}/vars/{{ ansible_facts['distribution'] }}.yml"
+    - "{{ role_path }}/vars/{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_major_version'] }}.yml"
+    - "{{ role_path }}/vars/{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_version'] }}.yml"
+  when: item is file
+# yamllint enable rule:line-length
+
+- name: Install Redis packages
+  package:
+    name: "{{ __redis_packages + __redis_packages_extra }}"
+    state: present
+
+- name: Ensure Redis configuration directory exists
+  file:
+    path: "{{ __redis_conf_path }}"
+    state: directory
+    owner: redis
+    group: root
+    mode: 0750
+
+# yamllint disable rule:line-length
+- name: Ensure Redis service is configured
+  template:
+    src: "{{ item }}"
+    dest: "{{ __redis_conf_path }}/{{ __redis_conf_file }}"
+    mode: 0640
+    owner: redis
+    group: root
+  with_first_found:
+    - "{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_major_version'] }}_redis.conf.j2"
+    - "{{ ansible_facts['distribution'] }}_redis.conf.j2"
+    - "redis.conf.j2"
+  notify: restart redis
+# yamllint enable rule:line-length
+
+- name: Ensure Redis configuration symlink exists
+  file:
+    src: "{{ __redis_conf_path }}/{{ __redis_conf_file }}"
+    dest: "{{ __redis_conf_link }}/{{ __redis_conf_file }}"
+    state: link
+    force: yes
+
+- name: Ensure Redis service is running and enabled on boot
+  service:
+    name: redis
+    state: started
+    enabled: yes

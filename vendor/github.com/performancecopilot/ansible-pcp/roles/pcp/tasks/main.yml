@@ -1,0 +1,35 @@
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+- name: Set platform/version specific variables
+  include_vars: "{{ item }}"
+  loop:
+    - "{{ role_path }}/vars/default.yml"
+    - "{{ role_path }}/vars/{{ ansible_facts['os_family'] }}.yml"
+    - "{{ role_path }}/vars/{{ ansible_facts['distribution'] }}.yml"
+    - "{{ role_path }}/vars/{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_major_version'] }}.yml"
+    - "{{ role_path }}/vars/{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_version'] }}.yml"
+  when: item is file
+# yamllint enable rule:line-length
+
+- name: Install Performance Co-Pilot packages
+  package:
+    name: "{{ __pcp_packages + __pcp_packages_extra + pcp_optional_packages }}"
+    state: present
+
+- name: Install authentication packages
+  package:
+    name: "{{ __pcp_sasl_packages }}"
+    state: present
+  when:
+    - __pcp_sasl_packages|d([])
+    - pcp_accounts|d({})
+
+- include_tasks: pmcd.yml
+
+- include_tasks: pmie.yml
+
+- include_tasks: pmlogger.yml
+
+- include_tasks: pmproxy.yml
+  when: pcp_rest_api|d(false)|bool

@@ -1,0 +1,4 @@
+---
+skip_list:
+- '303'  # Using command rather than module for yum/dnf
+- ignore-errors
