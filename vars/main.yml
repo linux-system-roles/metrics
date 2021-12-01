@@ -1,9 +1,5 @@
 # SPDX-License-Identifier: MIT
 ---
 
-# yamllint disable rule:line-length
-__metrics_role_path: "{{ role_path }}/vendor/github.com/performancecopilot/ansible-pcp/roles"
-# yamllint enable rule:line-length
-
 __metrics_domains: []
 __metrics_accounts: {}
