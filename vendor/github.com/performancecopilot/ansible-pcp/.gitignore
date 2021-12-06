@@ -1,0 +1,17 @@
+performancecopilot-metrics-*.tar.gz
+redhat-rhel_metrics-*.tar.gz
+passes.yml
+vault.yml
+*.pyc
+*.retry
+/tests/.coverage
+/tests/htmlcov*
+/.tox
+/venv*/
+/.venv/
+.vscode/
+artifacts/
+__pycache__/
+*~
+.pytest_cache/
+.cache/

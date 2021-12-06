@@ -1,1 +1,1 @@
-../../roles/elasticsearch
+../../vendor/github.com/performancecopilot/ansible-pcp/roles/elasticsearch

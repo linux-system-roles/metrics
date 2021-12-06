@@ -1,1 +1,1 @@
-../../roles/bpftrace
+../../vendor/github.com/performancecopilot/ansible-pcp/roles/bpftrace

@@ -1,0 +1,32 @@
+# SPDX-License-Identifier: MIT
+---
+- name: Ensure that the role runs with scalable timeseries queries enabled
+  hosts: all
+
+  roles:
+    - role: performancecopilot.metrics.pcp
+      vars:
+        pcp_rest_api: yes
+        pcp_pmproxy_localonly: 1
+    - role: performancecopilot.metrics.redis
+
+  pre_tasks:
+    - meta: end_host
+      when: (ansible_facts['distribution'] in ['RedHat', 'CentOS'] and
+             ansible_facts['distribution_major_version']|int < 8) or
+             ansible_facts['distribution'] not in ['Fedora', 'RedHat', 'CentOS']
+
+    - name: Save state of services
+      import_tasks: get_services_state.yml
+
+  tasks:
+    - name: Check the set of all services needed for queryies
+      include_tasks: "{{ item }}"
+      loop:
+        - check_pcp.yml
+        - check_redis.yml
+        - check_pmproxy.yml
+
+  post_tasks:
+    - name: Restore state of services
+      import_tasks: restore_services_state.yml

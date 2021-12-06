@@ -1,1 +1,1 @@
-../../roles/grafana
+../../vendor/github.com/performancecopilot/ansible-pcp/roles/grafana
