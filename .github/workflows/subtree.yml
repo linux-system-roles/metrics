@@ -16,5 +16,5 @@ jobs:
           set -euxo pipefail
           git config --global user.name "github-actions[bot]"
           git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git subtree pull --prefix vendor/github.com/performancecopilot/ansible-pcp https://github.com/performancecopilot/ansible-pcp.git HEAD --squash 2>&1 | grep --quiet "Subtree is already at commit"
-          [ $? -ne 0 ] && git push
+          git subtree pull --prefix vendor/github.com/performancecopilot/ansible-pcp https://github.com/performancecopilot/ansible-pcp.git HEAD --squash
+          git push
