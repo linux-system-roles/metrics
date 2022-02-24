@@ -8,3 +8,8 @@
     set -euo pipefail;
     grep -w '^allowed_users' /var/lib/pcp/pmdas/bpftrace/bpftrace.conf
     | grep -wq '{{ __test_uname }}'
+
+- name: Check the ansible_managed header in the configuration file
+  vars:
+    __test_config_path: /var/lib/pcp/pmdas/bpftrace/bpftrace.conf
+  include_tasks: check_header.yml
