@@ -2,3 +2,8 @@
 ---
 - name: Check if grafana-pcp is installed
   shell: (cd /tmp && /usr/sbin/grafana-cli plugins ls) | grep performancecopilot
+
+- name: Check the ansible_managed header in grafana.ini
+  vars:
+    __test_config_path: /etc/grafana/grafana.ini
+  include_tasks: check_header.yml

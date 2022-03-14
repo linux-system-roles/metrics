@@ -26,6 +26,12 @@
       loop: "{{ metrics_monitored_hosts }}"
       changed_when: false
 
+    - name: Check if pmie configuration file on remote host has the header
+      vars:
+        __test_config_path: "{{ pcp_pmie_control_path }}{{ item }}"
+      include_tasks: check_header.yml
+      loop: "{{ metrics_monitored_hosts }}"
+
     - name: Check if pmie configuration file on local host is the primary one
       command: grep -E '^\s*\S+\s+y\s+n\s+'  {{ pcp_pmie_control_path }}/local
       changed_when: false

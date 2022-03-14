@@ -5,3 +5,11 @@
   when: (ansible_distribution in ['RedHat', 'CentOS'] and
          ansible_distribution_major_version|int > 6) or
          ansible_distribution not in ['Fedora', 'RedHat', 'CentOS']
+
+- name: Check the ansible_managed header in the configuration file
+  vars:
+    __test_config_path: "{{ item }}"
+  include_tasks: check_header.yml
+  loop:
+    - /etc/sysconfig/pmlogger
+    - /etc/sysconfig/pmlogger_timers
