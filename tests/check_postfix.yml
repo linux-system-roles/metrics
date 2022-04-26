@@ -1,0 +1,19 @@
+# SPDX-License-Identifier: MIT
+---
+- name: Check postfix.log file exists
+  shell: cat /var/log/mail.log
+  ignore_errors: yes
+
+- name: Check postfix pmda log file contents
+  shell: cat /var/log/pcp/pmcd/postfix.log
+  ignore_errors: yes
+
+- name: Check whether .NeedInstall exists
+  shell: ls -l /var/lib/pcp/pmdas/postfix
+
+- name: Check pmcd agent status for postfix
+  shell: pcp
+  ignore_errors: yes
+
+- name: Check if postfix pmda is registered
+  shell: pmprobe -I pmcd.agent.status | grep -w '"postfix"'
