@@ -7,11 +7,11 @@
 - name: Set platform/version specific variables
   include_vars: "{{ item }}"
   loop:
-    - roles/linux-system-roles.metrics/roles/elasticsearch/vars/default.yml"
-    - roles/linux-system-roles.metrics/roles/elasticsearch/vars/{{ ansible_facts['os_family'] }}.yml"
-    - roles/linux-system-roles.metrics/roles/elasticsearch/vars/{{ ansible_facts['distribution'] }}.yml"
-    - roles/linux-system-roles.metrics/roles/elasticsearch/vars/{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_major_version'] }}.yml"
-    - roles/linux-system-roles.metrics/roles/elasticsearch/vars/{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_version'] }}.yml"
+    - roles/linux-system-roles.metrics/roles/mssql/vars/default.yml"
+    - roles/linux-system-roles.metrics/roles/mssql/vars/{{ ansible_facts['os_family'] }}.yml"
+    - roles/linux-system-roles.metrics/roles/mssql/vars/{{ ansible_facts['distribution'] }}.yml"
+    - roles/linux-system-roles.metrics/roles/mssql/vars/{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_major_version'] }}.yml"
+    - roles/linux-system-roles.metrics/roles/mssql/vars/{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_version'] }}.yml"
   when: item is file
 # yamllint enable rule:line-length
 
