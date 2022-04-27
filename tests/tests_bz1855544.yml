@@ -25,12 +25,11 @@
       include_tasks: check_default_datasources.yml
 
     - name: Check if all required PMDAs are installed
-      shell: |-
-        set -euo pipefail
-        pmprobe -I pmcd.agent.status | grep -w "{{ item }}"
-      loop:
-        - bpftrace
-      changed_when: false
+      command: pmprobe -I pmcd.agent.status
+      register: status
+      until: status.stdout.find("bpftrace") != -1
+      retries: 10
+      delay: 1
 
   post_tasks:
     - name: Restore state of services
