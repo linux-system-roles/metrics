@@ -2,7 +2,9 @@
 ---
 
 - name: Check if postfix pmda is registered
-  shell: pmprobe -I pmcd.agent.status | grep -w '"postfix"'
+  shell: |-
+    set -euo pipefail
+    pmprobe -I pmcd.agent.status | grep -w '"postfix"'
   register: result
   until: result.stdout.find("postfix") != -1
   retries: 10
