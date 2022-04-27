@@ -11,6 +11,11 @@
     __metrics_domains: "{{ __metrics_domains + [ 'mssql' ] }}"
   when: metrics_from_mssql|d(false)|bool
 
+- name: Add Postfix to metrics domain list
+  set_fact:
+    __metrics_domains: "{{ __metrics_domains + [ 'postfix' ] }}"
+  when: metrics_from_postfix|d(false)|bool
+
 - name: Add bpftrace to metrics domain list
   set_fact:
     __metrics_domains: "{{ __metrics_domains + [ 'bpftrace' ] }}"
@@ -44,6 +49,13 @@
   include_role:
     name: "{{ role_path }}/roles/mssql"
   when: metrics_from_mssql|d(false)|bool
+
+- name: Configure Postfix metrics.
+  vars:
+    - postfix_metrics_provider: "{{ metrics_provider }}"
+  include_role:
+    name: "{{ role_path }}/roles/postfix"
+  when: metrics_from_postfix|d(false)|bool
 
 - name: Setup bpftrace metrics.
   vars:

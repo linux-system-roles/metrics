@@ -46,11 +46,15 @@ Enabling this starts PCP and redis servers for querying recorded PCP metrics.
 
     metrics_into_elasticsearch: no
 
-Boolean flag allowing metric values to be exported to Elasticsearch.
+Boolean flag allowing metric values to be exported into Elasticsearch.
 
     metrics_from_elasticsearch: no
 
 Boolean flag allowing metrics from Elasticsearch to be made available.
+
+    metrics_from_postfix: no
+
+Boolean flag allowing metrics from Postfix to be made available.
 
     metrics_from_mssql: no
 
