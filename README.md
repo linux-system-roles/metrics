@@ -13,7 +13,7 @@ from the standard repositories on Fedora, CentOS 8, and RHEL 8.  On RHEL
 on the managed host.
 
 The role can optionally use Grafana v6+ (`metrics_graph_service`) and
-Redis v5+ (`metrics_query_service`) on Fedora, CentOS 8, and RHEL 8.
+Redis v5+ (`metrics_query_service`) on Fedora, CentOS 8, RHEL 8 and later.
 
 ## Role Variables
 
@@ -37,12 +37,16 @@ this time it will be removed (day by day).
     metrics_graph_service: no
 
 Boolean flag allowing host to be setup with graphing services.
-Enabling this starts PCP and grafana servers for visualizing PCP metrics.
+Enabling this starts PCP and Grafana servers for visualizing PCP metrics.
+This option requires Grafana v6+ which is available on Fedora, CentOS 8,
+RHEL 8, or later versions of these platforms.
 
     metrics_query_service: no
 
 Boolean flag allowing host to be setup with time series query services.
-Enabling this starts PCP and redis servers for querying recorded PCP metrics.
+Enabling this starts PCP and Redis servers for querying recorded PCP metrics.
+This option requires Redis v5+ which is available on Fedora, CentOS 8,
+RHEL 8, or later versions of these platforms.
 
     metrics_into_elasticsearch: no
 
