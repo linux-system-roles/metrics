@@ -1,6 +1,32 @@
 Changelog
 =========
 
+[1.7.3] - 2022-07-19
+--------------------
+
+### New Features
+
+- none
+
+### Bug Fixes
+
+- docs: make minimum redis and grafana versions more clear
+
+Tackles Red Hat BZ #2094483
+
+- restart pmie, pmlogger if changed, do not wait for handler
+
+### Other Changes
+
+- make min_ansible_version a string in meta/main.yml
+
+The Ansible developers say that `min_ansible_version` in meta/main.yml
+must be a `string` value like `"2.9"`, not a `float` value like `2.9`.
+
+- Add changelog_to_tag.yml to .github/workflows
+
+- Add CHANGELOG.md
+
 [1.7.2] - 2022-05-10
 --------------------
 
