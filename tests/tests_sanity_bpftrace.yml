@@ -12,6 +12,9 @@
         metrics_from_bpftrace: yes
         metrics_username: "{{ __test_uname }}"
         metrics_password: "{{ __test_pswd }}"
+        # test not to install selinux and firewall, explicitly
+        metrics_manage_firewall: false
+        metrics_manage_selinux: false
 
   pre_tasks:
     - meta: end_host
@@ -28,6 +31,7 @@
       loop:
         - check_bpftrace.yml
         - check_sasl.yml
+        - check_firewall_selinux.yml
 
   post_tasks:
     - name: Restore state of services

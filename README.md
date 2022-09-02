@@ -15,6 +15,20 @@ on the managed host.
 The role can optionally use Grafana v6+ (`metrics_graph_service`) and
 Redis v5+ (`metrics_query_service`) on Fedora, CentOS 8, RHEL 8 and later.
 
+The role requires the `firewall` role and the `selinux` role from the
+`fedora.linux_system_roles` collection, if `metrics_manage_firewall`
+and `metrics_manage_selinux` is set to true, respectively.
+(Please see also the variables in the [`Role Variables`](#role-variables) section.)
+
+If the `metrics` is a role from the `fedora.linux_system_roles`
+collection or from the Fedora RPM package, the requirement is already
+satisfied.
+
+Otherwise, please run the following command line to install the collection.
+```
+ansible-galaxy collection install -r meta/collection-requirements.yml
+```
+
 ## Role Variables
 
     metrics_monitored_hosts: []
@@ -84,17 +98,41 @@ live metric value sampling), 44322 (pmproxy, with metrics_query_service
 or metrics_graph_service), 6379 (redis-server for metrics_query_service)
 and 3000 (grafana-server for metrics_graph_service).
 
-This role does not configure for remote access to these services such as
-through a firewall.  See https://github.com/linux-system-roles/firewall
+    metrics_manage_firewall: false
 
-This role does not configure SELinux for remote access to these services
-either.  However, the pmcd and pmproxy services are in the "ephemeral"
+Boolean flag allowing to configure firewall using the firewall role.
+Manage the pmcd port, the pmproxy port, the Grafana port and the Redis
+port depending upon the configuration parameters.
+If the variable is set to false, the `metrics role` does not manage the
+firewall.
+
+NOTE: `metrics_manage_firewall` is limited to *adding* ports.
+It cannot be used for *removing* ports.
+If you want to remove ports, you will need to use the firewall system
+role directly.
+
+NOTE: the firewall management is not supported on RHEL 6.
+
+    metrics_manage_selinux: false
+
+Boolean flag allowing to configure selinux using the selinux role.
+Assign the pmcd port, the pmproxy port, the Grafana port and the Redis
+port depending upon the configuration parameters.
+If the variable is set to false, the `metrics role` does not manage the
+selinux.
+
+Please note that the pmcd and pmproxy services are in the "ephemeral"
 range requiring no special setup and the Grafana port is "unregistered".
 The Redis port is gated by the redis_port_t SELinux type and may need to
 be further configured, if you require direct access (not required if you
 are accessing it from metrics role tools like Grafana and PCP).
 Use https://github.com/linux-system-roles/selinux to manage port access,
 for SELinux contexts.
+
+NOTE: `metrics_manage_selinux` is limited to *adding* policy.
+It cannot be used for *removing* policy.
+If you want to remove policy, you will need to use the selinux system
+role directly.
 
 ## Dependencies
 

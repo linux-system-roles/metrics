@@ -22,6 +22,7 @@
         - check_pmlogger.yml
         - check_pmie.yml
         - check_retention.yml
+        - check_firewall_selinux.yml
 
   post_tasks:
     - name: Restore state of services

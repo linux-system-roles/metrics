@@ -11,6 +11,9 @@
       vars:
         metrics_username: "{{ __test_uname }}"
         metrics_password: "{{ __test_pswd }}"
+        # test to install firewall but not selinux
+        metrics_manage_firewall: true
+        metrics_manage_selinux: false
 
   pre_tasks:
     - meta: end_host
@@ -30,6 +33,7 @@
       include_tasks: "{{ item }}"
       loop:
         - check_sasl.yml
+        - check_firewall_selinux.yml
 
   post_tasks:
     - name: Restore state of services
