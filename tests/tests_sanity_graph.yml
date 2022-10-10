@@ -23,6 +23,7 @@
       loop:
         - check_grafana.yml
         - check_grafanapcp.yml
+        - check_firewall_selinux.yml
 
   post_tasks:
     - name: Restore state of services

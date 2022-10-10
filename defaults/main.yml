@@ -37,3 +37,12 @@ metrics_password: metrics
 
 # Default metrics provider is PCP
 metrics_provider: pcp
+
+# If true, manage the pmcd port, pmproxy ports, grafana service and
+# redis service using the firewall role depending upon the configuration
+# parameters.
+metrics_manage_firewall: false
+
+# If true, manage the pmcd port, pmproxy ports using the selinux role
+# depending upon the configuration parameters.
+metrics_manage_selinux: false

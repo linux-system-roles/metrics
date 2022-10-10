@@ -5,6 +5,10 @@
 
   roles:
     - role: linux-system-roles.metrics
+      vars:
+        # test to install selinux but not firewall
+        metrics_manage_firewall: false
+        metrics_manage_selinux: true
 
   pre_tasks:
     - name: Save state of services
@@ -17,6 +21,7 @@
         - check_pcp.yml
         - check_pmlogger.yml
         - check_pmie.yml
+        - check_firewall_selinux.yml
 
   post_tasks:
     - name: Restore state of services

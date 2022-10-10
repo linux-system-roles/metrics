@@ -28,6 +28,7 @@
       include_tasks: "{{ item }}"
       loop:
         - check_mssql.yml
+        - check_firewall_selinux.yml
 
   post_tasks:
     - name: Restore state of services

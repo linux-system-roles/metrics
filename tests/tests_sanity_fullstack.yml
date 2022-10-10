@@ -8,6 +8,8 @@
       vars:
         metrics_query_service: yes
         metrics_graph_service: yes
+        metrics_manage_firewall: true
+        metrics_manage_selinux: true
 
   pre_tasks:
     - meta: end_host
@@ -29,6 +31,7 @@
         - check_pmproxy.yml
         - check_grafana.yml
         - check_grafanapcp.yml
+        - check_firewall_selinux.yml
 
   post_tasks:
     - name: Restore state of services
