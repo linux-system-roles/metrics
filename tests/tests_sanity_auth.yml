@@ -4,13 +4,12 @@
   hosts: all
   vars:
     __test_uname: pcptest
-    __test_pswd: t;dlen;dle
 
   roles:
     - role: linux-system-roles.metrics
       vars:
         metrics_username: "{{ __test_uname }}"
-        metrics_password: "{{ __test_pswd }}"
+        metrics_password: "{{ pcptest_pw }}"
         # test to install firewall but not selinux
         metrics_manage_firewall: true
         metrics_manage_selinux: false
