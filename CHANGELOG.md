@@ -1,6 +1,42 @@
 Changelog
 =========
 
+[1.8.0] - 2022-11-01
+--------------------
+
+### New Features
+
+- Use the firewall role and the selinux role from the metrics role
+
+- Introduce metrics_manage_firewall to use the firewall role to
+  manage the pmcd port, the pmproxy ports, the grafana port and
+  the redis port depending upon the configuration parameters.
+  metrics_manage_firewall is set to false, by default.
+
+- Introduce metrics_manage_selinux to use the selinux role to
+  manage the pmcd port, the pmproxy ports, the grafana port and
+  the redis port depending upon the configuration parameters.
+  metrics_manage_selinux is set to false, by default.
+
+- Add the test check task check_firewall_selinux.yml for verify
+  the ports status.
+
+- Skip calling the firewall role when the managed node is rhel-6.
+
+- When metrics_manage_firewall and metrics_manage_selinux are set
+  to false, the firewall role and the selinux role are not used,
+  respectively.
+
+### Bug Fixes
+
+- grafana: small wording tweak to grafana v8/v9 action names
+- grafana: include config file for Grafana v9
+- grafana: update grafana.ini to permit all grafana-pcp plugin components
+
+### Other Changes
+
+- none
+
 [1.7.3] - 2022-07-19
 --------------------
 
