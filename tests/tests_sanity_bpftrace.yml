@@ -4,14 +4,13 @@
   hosts: all
   vars:
     __test_uname: pcptest
-    __test_pswd: t;dlen;dle
 
   roles:
     - role: linux-system-roles.metrics
       vars:
         metrics_from_bpftrace: yes
         metrics_username: "{{ __test_uname }}"
-        metrics_password: "{{ __test_pswd }}"
+        metrics_password: "{{ pcptest_pw }}"
         # test not to install selinux and firewall, explicitly
         metrics_manage_firewall: false
         metrics_manage_selinux: false

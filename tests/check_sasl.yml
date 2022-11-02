@@ -8,5 +8,5 @@
 
 # yamllint disable rule:line-length
 - name: Check if a client can access metrics
-  command: pminfo -f -h "pcp://127.0.0.1?username={{ __test_uname }}&password={{ __test_pswd }}" disk.dev.read
+  command: pminfo -f -h "pcp://127.0.0.1?username={{ __test_uname }}&password={{ pcptest_pw }}" disk.dev.read
 # yamllint enable rule:line-length
