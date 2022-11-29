@@ -1,7 +1,7 @@
 ### REQUIRED
 namespace: performancecopilot
 name: metrics
-version: 2.2.7
+version: 2.2.8
 readme: README.md
 authors:
   - Jan Kurik <jkurik@redhat.com>
@@ -31,5 +31,19 @@ tags:
   - grafana
   - redis
   - pcp
+build_ignore:
+  - .ansible-lint
+  - .github
+  - .gitignore
+  - .lgtm.yml
+  - .yamllint.yml
+  - .yamllint_defaults.yml
+  - ansible_pytest_extra_requirements.txt
+  - custom_requirements.txt
+  - molecule_extra_requirements.txt
+  - pylint_extra_requirements.txt
+  - pytest_extra_requirements.txt
+  - tests
+  - tox.ini
 
 dependencies: {}
