@@ -319,7 +319,7 @@ must be a `string` value like `"2.9"`, not a `float` value like `2.9`.
 ### Other Changes
 
 - Remove python-26 environment from tox testing
-- update to tox-lsr 2.4.0 - add support for ansible-test sanity with docker
+- update to tox-lsr 2.4.0 - add support for ansible-test with docker
 - CI: Add support for RHEL-9
 
 [1.2.1] - 2021-02-22
@@ -382,8 +382,8 @@ must be a `string` value like `"2.9"`, not a `float` value like `2.9`.
 - use tox for ansible-lint instead of molecule
 - use new tox-lsr plugin
 - use github actions instead of travis
-- tests\_sanity\_into\_elasticsearch fails - \_\_elasticsearch\_packages\_export\_pcp is undefined
-- tests\_sanity\_bpftrace failure in task Check if allowed users of bpftrace are configured
+- tests\_sanity\_into\_elasticsearch fails - \_\_elasticsearch\_packages\_export\_pcp is undefined <!--- wokeignore:rule=sanity -->
+- tests\_sanity\_bpftrace failure in task Check if allowed users of bpftrace are configured <!--- wokeignore:rule=sanity -->
 - Fix a typo in README file
 
 [1.1.1] - 2020-12-04
