@@ -6,12 +6,13 @@
   roles:
     - role: linux-system-roles.metrics
       vars:
-        metrics_from_elasticsearch: yes
+        metrics_from_elasticsearch: true
 
   pre_tasks:
-    - meta: end_host
-      when: (ansible_distribution in ['RedHat', 'CentOS' ] and
-             ansible_distribution_major_version|int < 7) or
+    - name: Stop test
+      meta: end_host
+      when: (ansible_distribution in ['RedHat', 'CentOS'] and
+             ansible_distribution_major_version | int < 7) or
              ansible_distribution not in ['Fedora', 'RedHat', 'CentOS']
 
     - name: Save state of services

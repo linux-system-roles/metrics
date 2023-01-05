@@ -12,24 +12,24 @@ metrics_monitored_hosts: []
 # Provide a scalable query language (using Redis) and the
 # PMWEBAPI(3) REST API for metrics at localhost:44322
 # OpenMetrics endpoint at localhost:44322/metrics
-metrics_query_service: no
+metrics_query_service: false
 
 # Provide a Graphing server (Grafana) with enabled plugins
 # for the available metrics services.
 # Graphing service at localhost:3000
-metrics_graph_service: no
+metrics_graph_service: false
 
 # Export metrics to an Elasticsearch cluster for analysis
-metrics_into_elasticsearch: no
+metrics_into_elasticsearch: false
 
 # Make metrics available from an Elasticsearch instance
-metrics_from_elasticsearch: no
+metrics_from_elasticsearch: false
 
 # Make metrics available from a SQL Server database
-metrics_from_mssql: no
+metrics_from_mssql: false
 
 # Make metrics available from bpftrace scripts
-metrics_from_bpftrace: no
+metrics_from_bpftrace: false
 
 # Mandatory authentication for bpftrace
 metrics_username: metrics

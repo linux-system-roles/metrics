@@ -6,4 +6,4 @@
   roles:
     - role: linux-system-roles.metrics
       vars:
-        metrics_query_service: yes
+        metrics_query_service: true

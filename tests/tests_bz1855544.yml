@@ -7,14 +7,15 @@
   roles:
     - role: linux-system-roles.metrics
       vars:
-        metrics_query_service: yes
-        metrics_graph_service: yes
-        metrics_from_bpftrace: yes
+        metrics_query_service: true
+        metrics_graph_service: true
+        metrics_from_bpftrace: true
 
   pre_tasks:
-    - meta: end_host
+    - name: Stop test
+      meta: end_host
       when: (ansible_distribution in ['RedHat', 'CentOS'] and
-             ansible_distribution_major_version|int < 8) or
+             ansible_distribution_major_version | int < 8) or
              ansible_distribution not in ['Fedora', 'RedHat', 'CentOS']
 
     - name: Save state of services
@@ -30,6 +31,7 @@
       until: status.stdout.find("bpftrace") != -1
       retries: 10
       delay: 1
+      changed_when: false
 
   post_tasks:
     - name: Restore state of services

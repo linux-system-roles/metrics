@@ -1,7 +1,13 @@
 # SPDX-License-Identifier: MIT
 ---
 # Assume firewalld and selinux are not manually configured.
-- block:
+- name: Check firewall
+  when:
+    - metrics_provider == 'pcp'
+    - ansible_facts['os_family'] == 'RedHat'
+    - ansible_facts['distribution_version'] is version('7', '>=')
+    - metrics_manage_firewall | bool
+  block:
     - name: "Check firewall service status for grafana;
              metrics_manage_firewall is true"
       command: firewall-cmd --list-services
@@ -38,11 +44,6 @@
       register: _result
       failed_when: "'44321/tcp' not in _result.stdout"
       changed_when: false
-  when:
-    - metrics_provider == 'pcp'
-    - ansible_facts['os_family'] == 'RedHat'
-    - ansible_facts['distribution_version'] is version('7', '>=')
-    - metrics_manage_firewall | bool
 
 - name: Check associated selinux ports (metrics_manage_selinux is true)
   shell: |-
