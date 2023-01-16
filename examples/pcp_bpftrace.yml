@@ -7,4 +7,4 @@
     - role: linux-system-roles.metrics
       vars:
         metrics_provider: pcp
-        metrics_from_bpftrace: yes
+        metrics_from_bpftrace: true

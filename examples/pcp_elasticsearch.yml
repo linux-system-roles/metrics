@@ -7,5 +7,5 @@
     - role: linux-system-roles.metrics
       vars:
         metrics_provider: pcp
-        metrics_from_elasticsearch: yes
-        metrics_into_elasticsearch: yes
+        metrics_from_elasticsearch: true
+        metrics_into_elasticsearch: true

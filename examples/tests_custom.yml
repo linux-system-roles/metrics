@@ -8,5 +8,5 @@
       vars:
         metrics_monitored_hosts: ["app.example.com", "db.example.com"]
         metrics_retention_days: 5
-        metrics_graph_service: yes
-        metrics_query_service: yes
+        metrics_graph_service: true
+        metrics_query_service: true

@@ -1,7 +1,10 @@
 # SPDX-License-Identifier: MIT
 ---
 - name: Check if grafana-pcp is installed
-  shell: (cd /tmp && /usr/sbin/grafana-cli plugins ls) | grep performancecopilot
+  shell: |
+    set -euo pipefail
+    (cd /tmp && /usr/sbin/grafana-cli plugins ls) | grep performancecopilot
+  changed_when: false
 
 - name: Check the ansible_managed header in grafana.ini
   vars:

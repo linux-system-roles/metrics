@@ -6,4 +6,4 @@
   roles:
     - role: linux-system-roles.metrics
       vars:
-        metrics_graph_service: yes
+        metrics_graph_service: true

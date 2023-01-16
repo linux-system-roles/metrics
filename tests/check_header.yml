@@ -2,3 +2,4 @@
 ---
 - name: Grep the ansible_managed header in {{ __test_config_path }}
   command: grep "^# Ansible managed" "{{ __test_config_path }}"
+  changed_when: false

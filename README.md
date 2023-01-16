@@ -48,43 +48,46 @@ metrics_monitored_hosts: ["webserver.example.com", "database.example.com"]
 Retain historical performance data for the specified number of days; after
 this time it will be removed (day by day).
 
-    metrics_graph_service: no
+    metrics_graph_service: false
 
 Boolean flag allowing host to be setup with graphing services.
 Enabling this starts PCP and Grafana servers for visualizing PCP metrics.
 This option requires Grafana v6+ which is available on Fedora, CentOS 8,
 RHEL 8, or later versions of these platforms.
 
-    metrics_query_service: no
+    metrics_query_service: false
 
 Boolean flag allowing host to be setup with time series query services.
 Enabling this starts PCP and Redis servers for querying recorded PCP metrics.
 This option requires Redis v5+ which is available on Fedora, CentOS 8,
 RHEL 8, or later versions of these platforms.
 
-    metrics_into_elasticsearch: no
+    metrics_into_elasticsearch: false
 
 Boolean flag allowing metric values to be exported into Elasticsearch.
 
-    metrics_from_elasticsearch: no
+    metrics_from_elasticsearch: false
 
 Boolean flag allowing metrics from Elasticsearch to be made available.
 
-    metrics_from_postfix: no
+    metrics_from_postfix: false
 
 Boolean flag allowing metrics from Postfix to be made available.
 
-    metrics_from_mssql: no
+    metrics_from_mssql: false
 
 Boolean flag allowing metrics from SQL Server to be made available.
 Enabling this flag requires a 'trusted' connection to SQL Server.
 
-    metrics_from_bpftrace: no
+    metrics_from_bpftrace: false
 
 Boolean flag allowing metrics from bpftrace to be made available.
 
     metrics_username: metrics
     metrics_password: metrics
+
+Do not use a clear text `metrics_password`.  Use Ansible Vault to
+encrypt the password.
 
 Mandatory authentication for executing dynamic bpftrace scripts.
 
@@ -158,8 +161,8 @@ endpoint, graphs and scalable querying.
 ```yaml
 - hosts: all
   vars:
-    metrics_graph_service: yes
-    metrics_query_service: yes
+    metrics_graph_service: true
+    metrics_query_service: true
   roles:
     - linux-system-roles.metrics
 ```
@@ -173,8 +176,8 @@ endpoint, graphs and scalable querying.
 - hosts: monitors
   vars:
     metrics_monitored_hosts: [app.example.com, db.example.com, nas.example.com]
-    metrics_graph_service: yes
-    metrics_query_service: yes
+    metrics_graph_service: true
+    metrics_query_service: true
   roles:
     - linux-system-roles.metrics
 ```
