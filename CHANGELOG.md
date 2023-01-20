@@ -1,6 +1,23 @@
 Changelog
 =========
 
+[1.8.1] - 2023-01-20
+--------------------
+
+### New Features
+
+- none
+
+### Bug Fixes
+
+- fix pimeconf rule filesys vfs_rules support
+- ansible-lint 6.x fixes (#133)
+
+### Other Changes
+
+- Add check for non-inclusive language
+- Avoid non-inclusive language
+
 [1.8.0] - 2022-11-01
 --------------------
 
