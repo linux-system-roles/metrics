@@ -1,6 +1,14 @@
 Changelog
 =========
 
+[1.8.2] - 2023-04-06
+--------------------
+
+### Other Changes
+
+- Add README-ansible.md to refer Ansible intro page on linux-system-roles.github.io (#146)
+- Fingerprint ansible-pcp managed config files
+
 [1.8.1] - 2023-01-20
 --------------------
 
