@@ -22,3 +22,12 @@ exclude_paths:
   - examples/roles/
 mock_roles:
   - linux-system-roles.metrics
+  - performancecopilot.metrics.bpftrace
+  - performancecopilot.metrics.elasticsearch
+  - performancecopilot.metrics.grafana
+  - performancecopilot.metrics.mssql
+  - performancecopilot.metrics.pcp
+  - performancecopilot.metrics.postfix
+  - performancecopilot.metrics.redis
+  - performancecopilot.metrics.repository
+  - performancecopilot.metrics.spark
