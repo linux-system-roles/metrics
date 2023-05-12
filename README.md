@@ -15,6 +15,8 @@ on the managed host.
 The role can optionally use Grafana v6+ (`metrics_graph_service`) and
 Redis v5+ (`metrics_query_service`) on Fedora, CentOS 8, RHEL 8 and later.
 
+### Collection requirements
+
 The role requires the `firewall` role and the `selinux` role from the
 `fedora.linux_system_roles` collection, if `metrics_manage_firewall`
 and `metrics_manage_selinux` is set to true, respectively.
@@ -129,17 +131,12 @@ range requiring no special setup and the Grafana port is "unregistered".
 The Redis port is gated by the redis_port_t SELinux type and may need to
 be further configured, if you require direct access (not required if you
 are accessing it from metrics role tools like Grafana and PCP).
-Use https://github.com/linux-system-roles/selinux to manage port access,
-for SELinux contexts.
+Use the `selinux` system role to manage port access, for SELinux contexts.
 
 NOTE: `metrics_manage_selinux` is limited to *adding* policy.
 It cannot be used for *removing* policy.
 If you want to remove policy, you will need to use the selinux system
 role directly.
-
-## Dependencies
-
-None.
 
 ## Example Playbook
 
@@ -147,7 +144,9 @@ Basic metric recording setup for each managed host only, with one
 weeks worth of data retained before culling.
 
 ```yaml
-- hosts: all
+---
+- name: Manage metrics service
+  hosts: all
   vars:
     metrics_retention_days: 7
   roles:
@@ -159,7 +158,9 @@ the managed hosts, providing a REST API server with an OpenMetrics
 endpoint, graphs and scalable querying.
 
 ```yaml
-- hosts: all
+---
+- name: Manage metrics with graph and query services
+  hosts: all
   vars:
     metrics_graph_service: true
     metrics_query_service: true
@@ -173,7 +174,9 @@ the local host, providing a REST API server with an OpenMetrics
 endpoint, graphs and scalable querying.
 
 ```yaml
-- hosts: monitors
+---
+- name: Manage centralized metrics gathering
+  hosts: monitors
   vars:
     metrics_monitored_hosts: [app.example.com, db.example.com, nas.example.com]
     metrics_graph_service: true
