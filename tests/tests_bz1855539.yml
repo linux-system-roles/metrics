@@ -3,12 +3,12 @@
 - name: "Bug 1855539 - metrics role incorrectly sets up multiple primary
          pmie processes in multi-host mode"
   hosts: all
-
+  vars:
+    pcp_pmie_control_path: "/etc/pcp/pmie/control.d/"
   roles:
     - role: linux-system-roles.metrics
       vars:
         metrics_monitored_hosts: ["127.0.0.2", "127.0.0.3"]
-        pcp_pmie_control_path: "/etc/pcp/pmie/control.d/"
 
   pre_tasks:
     - name: Stop test
