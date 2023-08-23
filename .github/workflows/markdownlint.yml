@@ -33,8 +33,6 @@ jobs:
         uses: docker://avtodev/markdown-lint:master
         with:
           args: >-
-            --ignore=vendor
             --ignore=CHANGELOG.md
-            --ignore=vendor
-            **/*.md
+            **/*.md --ignore=vendor 
           config: .markdownlint.yaml
