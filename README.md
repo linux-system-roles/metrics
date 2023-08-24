@@ -1,6 +1,8 @@
 # metrics
 
-![CI Testing](https://github.com/linux-system-roles/metrics/workflows/tox/badge.svg)
+[![ansible-lint.yml](https://github.com/linux-system-roles/metrics/actions/workflows/ansible-lint.yml/badge.svg)](https://github.com/linux-system-roles/metrics/actions/workflows/ansible-lint.yml) [![ansible-test.yml](https://github.com/linux-system-roles/metrics/actions/workflows/ansible-test.yml/badge.svg)](https://github.com/linux-system-roles/metrics/actions/workflows/ansible-test.yml) [![shellcheck.yml](https://github.com/linux-system-roles/metrics/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/linux-system-roles/metrics/actions/workflows/shellcheck.yml) [![subtree.yml](https://github.com/linux-system-roles/metrics/actions/workflows/subtree.yml/badge.svg)](https://github.com/linux-system-roles/metrics/actions/workflows/subtree.yml) [![markdownlint.yml](https://github.com/linux-system-roles/metrics/actions/workflows/markdownlint.yml/badge.svg)](https://github.com/linux-system-roles/metrics/actions/workflows/markdownlint.yml) [![woke.yml](https://github.com/linux-system-roles/metrics/actions/workflows/woke.yml/badge.svg)](https://github.com/linux-system-roles/metrics/actions/workflows/woke.yml)
+
+---
 
 An ansible role which configures performance analysis services for the managed
 host.  This (optionally) includes a list of remote systems to be monitored
