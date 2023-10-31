@@ -1,0 +1,6 @@
+cyrus-sasl-scram
+pcp-pmda-elasticsearch
+pcp-pmda-postfix
+pcp-zeroconf
+postfix
+postfix-perl-scripts
