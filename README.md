@@ -27,7 +27,9 @@ If the `metrics` is a role from the `fedora.linux_system_roles`
 collection or from the Fedora RPM package, the requirement is already
 satisfied.
 
-Otherwise, please run the following command line to install the collection.
+The role requires additional collections to manage `rpm-ostree` systems.
+If you need to manage `rpm-ostree` systems, run the below command to
+install the collections.
 
 ```bash
 ansible-galaxy collection install -r meta/collection-requirements.yml
@@ -191,6 +193,10 @@ endpoint, graphs and scalable querying.
   roles:
     - linux-system-roles.metrics
 ```
+
+## rpm-ostree
+
+See README-ostree.md
 
 ## License
 

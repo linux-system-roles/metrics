@@ -1,0 +1,17 @@
+bpftrace
+cyrus-sasl-scram
+grafana
+grafana-pcp
+pcp-export-pcp2elasticsearch
+pcp-pmda-bpftrace
+pcp-pmda-elasticsearch
+pcp-pmda-mssql
+pcp-pmda-postfix
+pcp-system-tools
+pcp-zeroconf
+postfix
+postfix-perl-scripts
+python3-pyodbc
+redis
+redis-doc
+RediSearch

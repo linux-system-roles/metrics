@@ -3,11 +3,6 @@
 - name: Test import from Elasticsearch
   hosts: all
 
-  roles:
-    - role: linux-system-roles.metrics
-      vars:
-        metrics_from_elasticsearch: true
-
   pre_tasks:
     - name: Stop test
       meta: end_host
@@ -19,6 +14,13 @@
       import_tasks: get_services_state.yml
 
   tasks:
+    - name: Run the metrics role to configure Elasticsearch
+      include_role:
+        name: linux-system-roles.metrics
+        public: true
+      vars:
+        metrics_from_elasticsearch: true
+
     - name: Check if import from Elasticsearch works
       include_tasks: check_from_elasticsearch.yml
 
