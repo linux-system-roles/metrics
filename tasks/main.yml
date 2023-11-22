@@ -102,6 +102,7 @@
 
 - name: Setup metric collection service.
   vars:
+    pcp_pmie_endpoint: "{{ metrics_webhook_endpoint }}"
     pcp_pmlogger_discard: "{{ metrics_retention_days }}"
     pcp_target_hosts: "{{ metrics_monitored_hosts }}"
     pcp_optional_agents: "{{ __metrics_domains }}"

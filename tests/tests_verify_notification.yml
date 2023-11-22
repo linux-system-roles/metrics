@@ -1,0 +1,27 @@
+# SPDX-License-Identifier: MIT
+---
+- name: Test configuration of webhook notification
+  hosts: all
+  vars:
+    __test_webhook: https://example.com:4242/endpoint
+
+  roles:
+    - role: linux-system-roles.metrics
+      vars:
+        metrics_webhook_endpoint: "{{ __test_webhook }}"
+
+  pre_tasks:
+    - name: Save state of services
+      import_tasks: get_services_state.yml
+
+  tasks:
+    - name: Check basic services and the webhook endpoint
+      include_tasks: "{{ item }}"
+      loop:
+        - check_pcp.yml
+        - check_pmie.yml
+        - check_notification.yml
+
+  post_tasks:
+    - name: Restore state of services
+      import_tasks: restore_services_state.yml
