@@ -46,3 +46,8 @@ metrics_manage_firewall: false
 # If true, manage the pmcd port, pmproxy ports using the selinux role
 # depending upon the configuration parameters.
 metrics_manage_selinux: false
+
+# Webhook endpoint (URL) where notification about any automatically detected
+# performance issues are to be sent.  By default, these events are logged to the
+# local system log only.
+metrics_webhook_endpoint: ''

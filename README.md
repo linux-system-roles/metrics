@@ -49,6 +49,12 @@ Example:
 metrics_monitored_hosts: ["webserver.example.com", "database.example.com"]
 ```
 
+### metrics_webhook_endpoint: ''
+
+Webhook endpoint (URL) where notification about any automatically detected
+performance issues are to be sent.  By default, these events are logged to
+the local system log only.
+
 ### metrics_retention_days: 14
 
 Retain historical performance data for the specified number of days; after
