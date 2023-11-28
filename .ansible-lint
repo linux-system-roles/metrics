@@ -32,5 +32,3 @@ mock_roles:
   - performancecopilot.metrics.redis
   - performancecopilot.metrics.repository
   - performancecopilot.metrics.spark
-mock_modules:
-  - ansible.utils.update_fact
