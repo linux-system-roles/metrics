@@ -2,6 +2,6 @@
 ---
 # yamllint disable rule:line-length
 - name: Check if webhook notification is set
-  command: grep -e 'webhook_endpoint .* {{ __test_webhook }}' /var/lib/pcp/config/pmie/config.default
+  command: grep -E 'webhook_endpoint .* "?{{ __test_webhook }}"?' /var/lib/pcp/config/pmie/config.default
   changed_when: false
 # yamllint enable rule:line-length
