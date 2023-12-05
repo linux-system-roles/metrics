@@ -4,7 +4,7 @@
   hosts: all
 
   roles:
-    - role: performancecopilot.metrics.pcp
+    - role: linux-system-roles.metrics
       vars:
         pcp_pmie_endpoint: https://example.com:12345/webhook
 

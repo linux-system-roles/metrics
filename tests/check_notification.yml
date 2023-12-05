@@ -4,4 +4,14 @@
 - name: Check if webhook notification is set
   command: grep -E 'webhook_endpoint .* "?{{ __test_webhook }}"?' /var/lib/pcp/config/pmie/config.default
   changed_when: false
+  register: __status
+  ignore_errors: true
 # yamllint enable rule:line-length
+
+- name: Debug failures
+  shell: |
+    cat /var/lib/pcp/config/pmie/config.default
+    echo '############################'
+    grep webhook_endpoint /var/lib/pcp/config/pmie/config.default
+  when: __status is failed
+  failed_when: __status is failed
