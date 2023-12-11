@@ -5,3 +5,19 @@
 
   roles:
     - linux-system-roles.metrics
+  post_tasks:
+    - name: Debug - restart pmlogger and check failure
+      changed_when: false
+      shell: |
+        if systemctl restart pmlogger.service; then
+          echo SUCCESS
+        else
+          echo '##########################'
+          systemctl status pmlogger.service
+          echo '##########################'
+          journalctl -u pmlogger.service
+          echo '##########################'
+          journalctl -ex
+          echo '##########################'
+          grep type=AVC /var/log/audit/audit.log
+        fi

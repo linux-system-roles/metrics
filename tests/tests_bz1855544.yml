@@ -4,13 +4,6 @@
          Grafana datasources"
   hosts: all
 
-  roles:
-    - role: linux-system-roles.metrics
-      vars:
-        metrics_query_service: true
-        metrics_graph_service: true
-        metrics_from_bpftrace: true
-
   pre_tasks:
     - name: Stop test
       meta: end_host
@@ -22,17 +15,37 @@
       import_tasks: get_services_state.yml
 
   tasks:
-    - name: Check if all default datasources are configured
-      include_tasks: check_default_datasources.yml
+    - name: Run test
+      block:
+        - name: Run the role
+          include_role:
+            name: linux-system-roles.metrics
+          vars:
+            metrics_query_service: true
+            metrics_graph_service: true
+            metrics_from_bpftrace: true
 
-    - name: Check if all required PMDAs are installed
-      command: pmprobe -I pmcd.agent.status
-      register: status
-      until: status.stdout.find("bpftrace") != -1
-      retries: 10
-      delay: 1
-      changed_when: false
+        - name: Check if all default datasources are configured
+          include_tasks: check_default_datasources.yml
 
-  post_tasks:
-    - name: Restore state of services
-      import_tasks: restore_services_state.yml
+        - name: Check if all required PMDAs are installed
+          command: pmprobe -I pmcd.agent.status
+          register: status
+          until: status.stdout.find("bpftrace") != -1
+          retries: 10
+          delay: 1
+          changed_when: false
+      rescue:
+        - name: Check logs
+          shell: |
+            journalctl -ex
+            echo '#####################'
+            grep type=AVC /var/log/audit/audit.log
+          changed_when: false
+
+        - name: Fail test
+          fail:
+            msg: "{{ ansible_failed_result }}"
+      always:
+        - name: Restore state of services
+          import_tasks: restore_services_state.yml
