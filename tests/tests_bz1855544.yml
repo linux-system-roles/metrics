@@ -3,6 +3,10 @@
 - name: "Bug 1855544 - metrics role should automate the setup of
          Grafana datasources"
   hosts: all
+  vars:
+    metrics_query_service: true
+    metrics_graph_service: true
+    metrics_from_bpftrace: true
 
   pre_tasks:
     - name: Stop test
@@ -20,10 +24,7 @@
         - name: Run the role
           include_role:
             name: linux-system-roles.metrics
-          vars:
-            metrics_query_service: true
-            metrics_graph_service: true
-            metrics_from_bpftrace: true
+            public: true
 
         - name: Check if all default datasources are configured
           include_tasks: check_default_datasources.yml
@@ -35,17 +36,14 @@
           retries: 10
           delay: 1
           changed_when: false
-      rescue:
-        - name: Check logs
-          shell: |
-            journalctl -ex
-            echo '#####################'
-            grep type=AVC /var/log/audit/audit.log
-          changed_when: false
 
-        - name: Fail test
-          fail:
-            msg: "{{ ansible_failed_result }}"
+        - name: Flush handlers
+          meta: flush_handlers
+
+      rescue:
+        - name: Handle test failure
+          include_tasks: handle_test_failure.yml
+
       always:
         - name: Restore state of services
           import_tasks: restore_services_state.yml

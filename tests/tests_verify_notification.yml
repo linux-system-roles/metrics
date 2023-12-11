@@ -4,11 +4,7 @@
   hosts: all
   vars:
     __test_webhook: https://example.com:4242/endpoint
-
-  roles:
-    - role: linux-system-roles.metrics
-      vars:
-        metrics_webhook_endpoint: "{{ __test_webhook }}"
+    metrics_webhook_endpoint: "{{ __test_webhook }}"
 
   pre_tasks:
     - name: Skip test if not supported by platform
@@ -21,13 +17,27 @@
       import_tasks: get_services_state.yml
 
   tasks:
-    - name: Check basic services and the webhook endpoint
-      include_tasks: "{{ item }}"
-      loop:
-        - check_pcp.yml
-        - check_pmie.yml
-        - check_notification.yml
+    - name: Run test
+      block:
+        - name: Run the role
+          include_role:
+            name: linux-system-roles.metrics
+            public: true
 
-  post_tasks:
-    - name: Restore state of services
-      import_tasks: restore_services_state.yml
+        - name: Check basic services and the webhook endpoint
+          include_tasks: "{{ item }}"
+          loop:
+            - check_pcp.yml
+            - check_pmie.yml
+            - check_notification.yml
+
+        - name: Flush handlers
+          meta: flush_handlers
+
+      rescue:
+        - name: Handle failure case
+          include_tasks: handle_test_failure.yml
+
+      always:
+        - name: Restore state of services
+          import_tasks: restore_services_state.yml

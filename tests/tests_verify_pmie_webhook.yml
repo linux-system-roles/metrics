@@ -2,11 +2,8 @@
 ---
 - name: Test pmie webhook configuration
   hosts: all
-
-  roles:
-    - role: performancecopilot.metrics.pcp
-      vars:
-        pcp_pmie_endpoint: https://example.com:12345/webhook
+  vars:
+    pcp_pmie_endpoint: https://example.com:12345/webhook
 
   pre_tasks:
     - name: Skip test if not supported by platform
@@ -19,9 +16,23 @@
       import_tasks: get_services_state.yml
 
   tasks:
-    - name: Check if configuring pmie webhook works
-      include_tasks: check_pmie_webhook.yml
+    - name: Run test
+      block:
+        - name: Run the role
+          include_role:
+            name: linux-system-roles.metrics
+            public: true
 
-  post_tasks:
-    - name: Restore state of services
-      import_tasks: restore_services_state.yml
+        - name: Check if configuring pmie webhook works
+          include_tasks: check_pmie_webhook.yml
+
+        - name: Flush handlers
+          meta: flush_handlers
+
+      rescue:
+        - name: Handle failure case
+          include_tasks: handle_test_failure.yml
+
+      always:
+        - name: Restore state of services
+          import_tasks: restore_services_state.yml

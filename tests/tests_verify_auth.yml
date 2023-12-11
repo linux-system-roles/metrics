@@ -4,15 +4,11 @@
   hosts: all
   vars:
     __test_uname: pcptest
-
-  roles:
-    - role: linux-system-roles.metrics
-      vars:
-        metrics_username: "{{ __test_uname }}"
-        metrics_password: "{{ pcptest_pw }}"
-        # test to install firewall but not selinux
-        metrics_manage_firewall: true
-        metrics_manage_selinux: false
+    metrics_username: "{{ __test_uname }}"
+    metrics_password: "{{ pcptest_pw }}"
+    # test to install firewall but not selinux
+    metrics_manage_firewall: true
+    metrics_manage_selinux: false
 
   pre_tasks:
     - name: Stop test
@@ -25,17 +21,31 @@
       import_tasks: get_services_state.yml
 
   tasks:
-    - name: Restart PMCD
-      # noqa command-instead-of-module
-      shell: systemctl restart pmcd && sleep 5
-      changed_when: false
+    - name: Run test
+      block:
+        - name: Run role
+          include_role:
+            name: linux-system-roles.metrics
+            public: true
 
-    - name: Check if SASL works
-      include_tasks: "{{ item }}"
-      loop:
-        - check_sasl.yml
-        - check_firewall_selinux.yml
+        - name: Restart PMCD
+          # noqa command-instead-of-module
+          shell: systemctl restart pmcd && sleep 5
+          changed_when: false
 
-  post_tasks:
-    - name: Restore state of services
-      import_tasks: restore_services_state.yml
+        - name: Check if SASL works
+          include_tasks: "{{ item }}"
+          loop:
+            - check_sasl.yml
+            - check_firewall_selinux.yml
+
+        - name: Flush handlers
+          meta: flush_handlers
+
+      rescue:
+        - name: Handle failure case
+          include_tasks: handle_test_failure.yml
+
+      always:
+        - name: Restore state of services
+          import_tasks: restore_services_state.yml

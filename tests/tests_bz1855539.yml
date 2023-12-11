@@ -5,10 +5,7 @@
   hosts: all
   vars:
     pcp_pmie_control_path: "/etc/pcp/pmie/control.d/"
-  roles:
-    - role: linux-system-roles.metrics
-      vars:
-        metrics_monitored_hosts: ["127.0.0.2", "127.0.0.3"]
+    metrics_monitored_hosts: ["127.0.0.2", "127.0.0.3"]
 
   pre_tasks:
     - name: Stop test
@@ -21,22 +18,39 @@
       import_tasks: get_services_state.yml
 
   tasks:
-    - name: Check if pmie configuration file on remote host is the secondary one
-      command: |-
-        grep -E '^\s*\S+\s+n\s+n\s+' {{ pcp_pmie_control_path }}/{{ item }}
-      loop: "{{ metrics_monitored_hosts }}"
-      changed_when: false
+    - name: Run test
+      block:
+        - name: Include role
+          include_role:
+            name: linux-system-roles.metrics
+            public: true
 
-    - name: Check if pmie configuration file on remote host has the header
-      vars:
-        __test_config_path: "{{ pcp_pmie_control_path }}{{ item }}"
-      include_tasks: check_header.yml
-      loop: "{{ metrics_monitored_hosts }}"
+        - name: >-
+            Check if pmie configuration file on remote host is the secondary one
+          command: |-
+            grep -E '^\s*\S+\s+n\s+n\s+' {{ pcp_pmie_control_path }}/{{ item }}
+          loop: "{{ metrics_monitored_hosts }}"
+          changed_when: false
 
-    - name: Check if pmie configuration file on local host is the primary one
-      command: grep -E '^\s*\S+\s+y\s+n\s+'  {{ pcp_pmie_control_path }}/local
-      changed_when: false
+        - name: Check if pmie configuration file on remote host has the header
+          vars:
+            __test_config_path: "{{ pcp_pmie_control_path }}{{ item }}"
+          include_tasks: check_header.yml
+          loop: "{{ metrics_monitored_hosts }}"
 
-  post_tasks:
-    - name: Restore state of services
-      import_tasks: restore_services_state.yml
+        - name: >-
+            Check if pmie configuration file on local host is the primary one
+          command: >-
+            grep -E '^\s*\S+\s+y\s+n\s+' {{ pcp_pmie_control_path }}/local
+          changed_when: false
+
+        - name: Flush handlers
+          meta: flush_handlers
+
+      rescue:
+        - name: Handle failure case
+          include_tasks: handle_test_failure.yml
+
+      always:
+        - name: Restore state of services
+          import_tasks: restore_services_state.yml
