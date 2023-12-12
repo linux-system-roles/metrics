@@ -1,0 +1,11 @@
+---
+- name: Collect logs
+  shell: |
+    journalctl -ex
+    echo '##################'
+    grep type=AVC /var/log/audit/audit.log
+  changed_when: false
+
+- name: Reraise error
+  fail:
+    msg: "{{ ansible_failed_result }}"
