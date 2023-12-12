@@ -2,6 +2,8 @@
 ---
 - name: Test import from Elasticsearch
   hosts: all
+  vars:
+    metrics_from_elasticsearch: true
 
   pre_tasks:
     - name: Stop test
@@ -14,16 +16,23 @@
       import_tasks: get_services_state.yml
 
   tasks:
-    - name: Run the metrics role to configure Elasticsearch
-      include_role:
-        name: linux-system-roles.metrics
-        public: true
-      vars:
-        metrics_from_elasticsearch: true
+    - name: Run test
+      block:
+        - name: Run the metrics role to configure Elasticsearch
+          include_role:
+            name: linux-system-roles.metrics
+            public: true
 
-    - name: Check if import from Elasticsearch works
-      include_tasks: check_from_elasticsearch.yml
+        - name: Check if import from Elasticsearch works
+          include_tasks: check_from_elasticsearch.yml
 
-  post_tasks:
-    - name: Restore state of services
-      import_tasks: restore_services_state.yml
+        - name: Flush handlers
+          meta: flush_handlers
+
+      rescue:
+        - name: Handle failure case
+          include_tasks: handle_test_failure.yml
+
+      always:
+        - name: Restore state of services
+          import_tasks: restore_services_state.yml

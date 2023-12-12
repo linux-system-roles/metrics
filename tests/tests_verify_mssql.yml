@@ -2,11 +2,8 @@
 ---
 - name: Test installation and configuration of MSSQL agent
   hosts: all
-
-  roles:
-    - role: linux-system-roles.metrics
-      vars:
-        metrics_from_mssql: true
+  vars:
+    metrics_from_mssql: true
 
   pre_tasks:
     - name: Stop test
@@ -39,12 +36,26 @@
                 ternary('ansible.posix.rhel_rpm_ostree', omit) }}"
 
   tasks:
-    - name: Check MSSQL functionality
-      include_tasks: "{{ item }}"
-      loop:
-        - check_mssql.yml
-        - check_firewall_selinux.yml
+    - name: Run test
+      block:
+        - name: Run the role
+          include_role:
+            name: linux-system-roles.metrics
+            public: true
 
-  post_tasks:
-    - name: Restore state of services
-      import_tasks: restore_services_state.yml
+        - name: Check MSSQL functionality
+          include_tasks: "{{ item }}"
+          loop:
+            - check_mssql.yml
+            - check_firewall_selinux.yml
+
+        - name: Flush handlers
+          meta: flush_handlers
+
+      rescue:
+        - name: Handle failure case
+          include_tasks: handle_test_failure.yml
+
+      always:
+        - name: Restore state of services
+          import_tasks: restore_services_state.yml

@@ -1,0 +1,19 @@
+---
+- name: Collect logs
+  shell: |
+    journalctl -ex
+    echo '##################'
+    echo List of SELinux AVCs - note list may be empty
+    grep type=AVC /var/log/audit/audit.log
+    echo '##################'
+    ls -alrtF /run
+    if [ -d /run/pcp ]; then
+      ls -alrtF /run/pcp
+    else
+      echo ERROR - /run/pcp does not exist
+    fi
+  changed_when: false
+
+- name: Reraise error
+  fail:
+    msg: "{{ ansible_failed_result }}"

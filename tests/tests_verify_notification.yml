@@ -1,18 +1,16 @@
 # SPDX-License-Identifier: MIT
 ---
-- name: Test the full PCP/Redis/Grafana stack
+- name: Test configuration of webhook notification
   hosts: all
   vars:
-    metrics_query_service: true
-    metrics_graph_service: true
-    metrics_manage_firewall: true
-    metrics_manage_selinux: true
+    __test_webhook: https://example.com:4242/endpoint
+    metrics_webhook_endpoint: "{{ __test_webhook }}"
 
   pre_tasks:
-    - name: Stop test
+    - name: Skip test if not supported by platform
       meta: end_host
       when: (ansible_distribution in ['RedHat', 'CentOS'] and
-             ansible_distribution_major_version | int < 8) or
+             (ansible_facts['distribution_version'] is version('9.3', '<'))) or
              ansible_distribution not in ['Fedora', 'RedHat', 'CentOS']
 
     - name: Save state of services
@@ -26,17 +24,12 @@
             name: linux-system-roles.metrics
             public: true
 
-        - name: Check if all services work
+        - name: Check basic services and the webhook endpoint
           include_tasks: "{{ item }}"
           loop:
             - check_pcp.yml
-            - check_pmlogger.yml
             - check_pmie.yml
-            - check_redis.yml
-            - check_pmproxy.yml
-            - check_grafana.yml
-            - check_grafanapcp.yml
-            - check_firewall_selinux.yml
+            - check_notification.yml
 
         - name: Flush handlers
           meta: flush_handlers

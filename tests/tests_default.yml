@@ -3,5 +3,25 @@
 - name: Test the role with default params
   hosts: all
 
-  roles:
-    - linux-system-roles.metrics
+  pre_tasks:
+    - name: Save state of services
+      import_tasks: get_services_state.yml
+
+  tasks:
+    - name: Run test
+      block:
+        - name: Include role
+          include_role:
+            name: linux-system-roles.metrics
+            public: true
+
+        - name: Flush handlers
+          meta: flush_handlers
+
+      rescue:
+        - name: Handle failure case
+          include_tasks: handle_test_failure.yml
+
+      always:
+        - name: Restore state of services
+          import_tasks: restore_services_state.yml

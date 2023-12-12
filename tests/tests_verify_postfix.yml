@@ -2,11 +2,8 @@
 ---
 - name: Test installation and configuration of Postfix agent
   hosts: all
-
-  roles:
-    - role: linux-system-roles.metrics
-      vars:
-        metrics_from_postfix: true
+  vars:
+    metrics_from_postfix: true
 
   pre_tasks:
     - name: Stop test
@@ -51,16 +48,30 @@
         mode: 0600
 
   tasks:
-    - name: Signal pmcd to ensure above path used by pmdapostfix
-      command: pmstore pmcd.control.sighup 1
-      changed_when: false
+    - name: Run test
+      block:
+        - name: Run the role
+          include_role:
+            name: linux-system-roles.metrics
+            public: true
 
-    - name: Check Postfix functionality
-      include_tasks: "{{ item }}"
-      loop:
-        - check_postfix.yml
-        - check_firewall_selinux.yml
+        - name: Signal pmcd to ensure above path used by pmdapostfix
+          command: pmstore pmcd.control.sighup 1
+          changed_when: false
 
-  post_tasks:
-    - name: Restore state of services
-      import_tasks: restore_services_state.yml
+        - name: Check Postfix functionality
+          include_tasks: "{{ item }}"
+          loop:
+            - check_postfix.yml
+            - check_firewall_selinux.yml
+
+        - name: Flush handlers
+          meta: flush_handlers
+
+      rescue:
+        - name: Handle failure case
+          include_tasks: handle_test_failure.yml
+
+      always:
+        - name: Restore state of services
+          import_tasks: restore_services_state.yml

@@ -3,13 +3,10 @@
 - name: "Bug 1855544 - metrics role should automate the setup of
          Grafana datasources"
   hosts: all
-
-  roles:
-    - role: linux-system-roles.metrics
-      vars:
-        metrics_query_service: true
-        metrics_graph_service: true
-        metrics_from_bpftrace: true
+  vars:
+    metrics_query_service: true
+    metrics_graph_service: true
+    metrics_from_bpftrace: true
 
   pre_tasks:
     - name: Stop test
@@ -22,17 +19,31 @@
       import_tasks: get_services_state.yml
 
   tasks:
-    - name: Check if all default datasources are configured
-      include_tasks: check_default_datasources.yml
+    - name: Run test
+      block:
+        - name: Run the role
+          include_role:
+            name: linux-system-roles.metrics
+            public: true
 
-    - name: Check if all required PMDAs are installed
-      command: pmprobe -I pmcd.agent.status
-      register: status
-      until: status.stdout.find("bpftrace") != -1
-      retries: 10
-      delay: 1
-      changed_when: false
+        - name: Check if all default datasources are configured
+          include_tasks: check_default_datasources.yml
 
-  post_tasks:
-    - name: Restore state of services
-      import_tasks: restore_services_state.yml
+        - name: Check if all required PMDAs are installed
+          command: pmprobe -I pmcd.agent.status
+          register: status
+          until: status.stdout.find("bpftrace") != -1
+          retries: 10
+          delay: 1
+          changed_when: false
+
+        - name: Flush handlers
+          meta: flush_handlers
+
+      rescue:
+        - name: Handle test failure
+          include_tasks: handle_test_failure.yml
+
+      always:
+        - name: Restore state of services
+          import_tasks: restore_services_state.yml
