@@ -1,6 +1,24 @@
 Changelog
 =========
 
+[1.10.0] - 2023-12-12
+--------------------
+
+### New Features
+
+- feat: sync with latest ansible-pcp (#178)
+- feat: support for ostree systems
+
+### Bug Fixes
+
+- fix: add missing pmie webhook action configuration functionality (#183)
+
+### Other Changes
+
+- refactor: improve support for ostree systems (#179)
+- ci: bump actions/github-script from 6 to 7 (#180)
+- refactor: get_ostree_data.sh use env shebang - remove from .sanity* (#182)
+
 [1.9.0] - 2023-11-06
 --------------------
 
