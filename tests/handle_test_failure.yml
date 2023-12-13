@@ -12,6 +12,16 @@
     else
       echo ERROR - /run/pcp does not exist
     fi
+    if [ -d /efi ]; then
+      ls -alrtFZ /efi
+    else
+      echo NO /efi
+    fi
+    if [ -d /boot/efi ]; then
+      ls -alrtFZ /boot/efi
+    else
+      echo NO /boot/efi
+    fi
   changed_when: false
 
 - name: Reraise error
