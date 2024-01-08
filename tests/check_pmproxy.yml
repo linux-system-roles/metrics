@@ -5,8 +5,3 @@
     url: http://localhost:44322/series/ping
     method: GET
     status_code: 200
-
-- name: Check the ansible_managed header in the configuration file
-  vars:
-    __test_config_path: /etc/sysconfig/pmproxy
-  include_tasks: check_header.yml

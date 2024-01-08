@@ -1,0 +1,96 @@
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+- name: Set platform/version specific variables
+  include_vars: "{{ item }}"
+  loop:
+    - "{{ role_path }}/vars/default.yml"
+    - "{{ role_path }}/vars/{{ ansible_facts['os_family'] }}.yml"
+    - "{{ role_path }}/vars/{{ ansible_facts['distribution'] }}.yml"
+    - "{{ role_path }}/vars/{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_major_version'] }}.yml"
+    - "{{ role_path }}/vars/{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_version'] }}.yml"
+  when: item is file
+# yamllint enable rule:line-length
+
+- name: Determine if system is ostree and set flag
+  when: not __ansible_pcp_is_ostree is defined
+  block:
+    - name: Check if system is ostree
+      stat:
+        path: /run/ostree-booted
+      register: __ostree_booted_stat
+
+    - name: Set flag to indicate system is ostree
+      set_fact:
+        __ansible_pcp_is_ostree: "{{ __ostree_booted_stat.stat.exists }}"
+
+- name: Establish Spark metrics package names
+  set_fact:
+    __spark_packages_extra: "{{ __spark_packages_extra +
+                             __spark_packages_pcp }}"
+  when:
+    - spark_metrics_provider == 'pcp'
+    - spark_metrics_agent | d(false) | bool
+
+- name: Establish Spark metrics export package names
+  set_fact:
+    __spark_packages_extra: "{{ __spark_packages_extra +
+                             __spark_packages_export_pcp }}"
+  when:
+    - spark_metrics_provider == 'pcp'
+    - spark_export_metrics | bool
+
+- name: Install needed Spark metrics packages
+  package:
+    name: "{{ __spark_packages_extra }}"
+    state: present
+    use: "{{ (__ansible_pcp_is_ostree | d(false)) |
+             ternary('ansible.posix.rhel_rpm_ostree', omit) }}"
+  when: __spark_packages_extra | d([])
+
+- name: Ensure PCP OpenMetrics agent is configured for Spark
+  template:
+    src: spark.url.j2
+    dest: "{{ __spark_metrics_conf }}"
+    mode: "0600"
+  when:
+    - spark_metrics_provider == 'pcp'
+    - spark_metrics_agent | d(false) | bool
+
+- name: Ensure PCP OpenMetrics agent is enabled with Spark endpoint
+  file:
+    src: "{{ __spark_metrics_conf }}"
+    dest: "{{ __spark_metrics_symlink }}"
+    state: link
+  when:
+    - spark_metrics_provider == 'pcp'
+    - spark_metrics_agent | d(false) | bool
+
+- name: Ensure correct service path for ostree systems
+  when:
+    - __ansible_pcp_is_ostree | d(false)
+    - __spark_service_path != "/etc/systemd/system"
+  set_fact:
+    __spark_service_path: /etc/systemd/system
+
+- name: Ensure PCP Spark export service exists
+  template:
+    src: pcp2spark.service.j2
+    dest: "{{ __spark_service_path }}/pcp2spark.service"
+    mode: "0600"
+  when:
+    - spark_metrics_provider == 'pcp'
+    - spark_export_metrics | d(false) | bool
+
+- name: Ensure PCP Spark export is running and enabled on boot
+  service:
+    name: pcp2spark
+    state: started
+    enabled: true
+  # A given Spark server may be running remotely or presently down
+  # but since a playbook has explicitly asked us for it, we end up
+  # having to install our service ignoring any errors.
+  ignore_errors: true  # noqa ignore-errors
+  when:
+    - spark_metrics_provider == 'pcp'
+    - spark_export_metrics | d(false) | bool

@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MIT
 ---
-- name: Test the role with default params
+- name: Test the pcp role with default params
   hosts: all
 
   roles:
-    - linux-system-roles.metrics
+    - performancecopilot.metrics.pcp

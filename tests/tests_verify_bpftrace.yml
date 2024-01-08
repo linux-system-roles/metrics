@@ -4,19 +4,23 @@
   hosts: all
   vars:
     __test_uname: pcptest
+    __test_pswd: t;dlen;dle
 
+  # yamllint disable rule:line-length
   roles:
-    - role: linux-system-roles.metrics
+    - role: performancecopilot.metrics.bpftrace
       vars:
-        metrics_from_bpftrace: true
-        metrics_username: "{{ __test_uname }}"
-        metrics_password: "{{ pcptest_pw }}"
-        # test not to install selinux and firewall, explicitly
-        metrics_manage_firewall: false
-        metrics_manage_selinux: false
+        bpftrace_users:
+          - {user: "{{ __test_uname }}"}
+    - role: performancecopilot.metrics.pcp
+      vars:
+        pcp_optional_agents: ['bpftrace']
+        pcp_accounts:
+          - {user: "{{ __test_uname }}", sasluser: "{{ __test_uname }}", saslpassword: "{{ __test_pswd }}"}
+  # yamllint enable rule:line-length
 
   pre_tasks:
-    - name: Stop test
+    - name: Skip test if not supported by platform
       meta: end_host
       when: (ansible_distribution in ['RedHat', 'CentOS'] and
              ansible_distribution_major_version | int < 8) or
@@ -31,7 +35,12 @@
       loop:
         - check_bpftrace.yml
         - check_sasl.yml
-        - check_firewall_selinux.yml
+
+    - name: Check headers for ansible_managed, fingerprint
+      include_tasks: check_header.yml
+      vars:
+        __file: "{{ __bpftrace_conf }}"
+        __fingerprint: "performancecopilot:ansible-pcp"
 
   post_tasks:
     - name: Restore state of services

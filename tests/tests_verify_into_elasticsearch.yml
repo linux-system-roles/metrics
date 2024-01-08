@@ -4,12 +4,12 @@
   hosts: all
 
   roles:
-    - role: linux-system-roles.metrics
+    - role: performancecopilot.metrics.elasticsearch
       vars:
-        metrics_into_elasticsearch: true
+        elasticsearch_export_metrics: true
 
   pre_tasks:
-    - name: Stop test
+    - name: Skip test if not supported by platform
       meta: end_host
       when: (ansible_distribution in ['RedHat'] and
              (ansible_facts['distribution_version'] is version('8.4', '<'))) or
@@ -21,6 +21,12 @@
   tasks:
     - name: Check if import to Elasticsearch works
       include_tasks: check_into_elasticsearch.yml
+
+    - name: Check headers for ansible_managed, fingerprint
+      include_tasks: check_header.yml
+      vars:
+        __fingerprint: "performancecopilot:ansible-pcp"
+        __file: "{{ __elasticsearch_service_path }}/pcp2elasticsearch.service"
 
   post_tasks:
     - name: Restore state of services

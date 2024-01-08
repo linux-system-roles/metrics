@@ -4,12 +4,13 @@
   hosts: all
 
   roles:
-    - role: linux-system-roles.metrics
+    - role: performancecopilot.metrics.mssql
+    - role: performancecopilot.metrics.pcp
       vars:
-        metrics_from_mssql: true
+        pcp_optional_agents: ['mssql']
 
   pre_tasks:
-    - name: Stop test
+    - name: Skip test if not supported by platform
       meta: end_host
       when: (ansible_distribution in ['RedHat'] and
              (ansible_facts['distribution_version'] is version('8.4', '<'))) or
@@ -43,7 +44,12 @@
       include_tasks: "{{ item }}"
       loop:
         - check_mssql.yml
-        - check_firewall_selinux.yml
+
+    - name: Check headers for ansible_managed, fingerprint
+      include_tasks: check_header.yml
+      vars:
+        __fingerprint: "performancecopilot:ansible-pcp"
+        __file: "{{ __mssql_conf }}"
 
   post_tasks:
     - name: Restore state of services

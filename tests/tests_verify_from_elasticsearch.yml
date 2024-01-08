@@ -3,8 +3,16 @@
 - name: Test import from Elasticsearch
   hosts: all
 
+  roles:
+    - role: performancecopilot.metrics.elasticsearch
+      vars:
+        elasticsearch_agent: true
+    - role: performancecopilot.metrics.pcp
+      vars:
+        pcp_optional_agents: ['elasticsearch']
+
   pre_tasks:
-    - name: Stop test
+    - name: Skip test if not supported by platform
       meta: end_host
       when: (ansible_distribution in ['RedHat', 'CentOS'] and
              ansible_distribution_major_version | int < 7) or
@@ -14,15 +22,14 @@
       import_tasks: get_services_state.yml
 
   tasks:
-    - name: Run the metrics role to configure Elasticsearch
-      include_role:
-        name: linux-system-roles.metrics
-        public: true
-      vars:
-        metrics_from_elasticsearch: true
-
     - name: Check if import from Elasticsearch works
       include_tasks: check_from_elasticsearch.yml
+
+    - name: Check headers for ansible_managed, fingerprint
+      include_tasks: check_header.yml
+      vars:
+        __fingerprint: "performancecopilot:ansible-pcp"
+        __file: "{{ __elasticsearch_conf }}"
 
   post_tasks:
     - name: Restore state of services

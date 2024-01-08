@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: MIT
 ---
-- name: Check if bpftrace pmda is registered
+- name: Check if bpftrace PMDA is registered
   command: pmprobe -I pmcd.agent.status
   register: status
   until: status.stdout.find("bpftrace") != -1
@@ -9,13 +9,11 @@
   changed_when: false
 
 - name: Check if allowed users of bpftrace are configured
-  shell: >-
-    set -euo pipefail;
-    grep -w '^allowed_users' /var/lib/pcp/pmdas/bpftrace/bpftrace.conf
-    | grep -wq '{{ __test_uname }}'
   changed_when: false
-
-- name: Check the ansible_managed header in the configuration file
-  vars:
-    __test_config_path: /var/lib/pcp/pmdas/bpftrace/bpftrace.conf
-  include_tasks: check_header.yml
+  shell: |
+    set -eu
+    if set -o | grep -q pipefail; then
+      set -o pipefail  # no pipefail on debian, some ubuntu
+    fi
+    grep -w '^allowed_users' /var/lib/pcp/pmdas/bpftrace/bpftrace.conf \
+    | grep -wq '{{ __test_uname }}'

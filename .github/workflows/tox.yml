@@ -1,0 +1,48 @@
+---
+# yamllint disable rule:line-length
+name: tox
+on:  # yamllint disable-line rule:truthy
+  - pull_request
+  - push
+env:
+  TOX_LSR: "git+https://github.com/linux-system-roles/tox-lsr@2.13.1"
+  LSR_ROLE2COLL_NAMESPACE: performancecopilot
+  LSR_ROLE2COLL_NAME: metrics
+  LSR_ANSIBLE_TEST_DOCKER: "true"
+  LSR_ANSIBLES: 'ansible==2.9.*'
+  LSR_MSCENARIOS: default
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+jobs:
+  python:
+    strategy:
+      matrix:
+        pyver_os:
+          - ver: '3.8'
+            os: ubuntu-latest
+          - ver: '3.9'
+            os: ubuntu-latest
+    runs-on: ${{ matrix.pyver_os.os }}
+    steps:
+      - name: checkout PR
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.pyver_os.ver }}
+      - name: Install platform dependencies, python, tox, tox-lsr
+        run: |
+          set -euxo pipefail
+          python -m pip install --upgrade pip
+          sudo apt-get update
+          sudo apt-get install -y git
+          pip install "$TOX_LSR"
+          lsr_ci_preinstall
+      - name: Run tox tests
+        run: |
+          set -euxo pipefail
+          toxpyver=$(echo "${{ matrix.pyver_os.ver }}" | tr -d .)
+          case "$toxpyver" in
+          38) toxenvs="ansible-plugin-scan,collection,ansible-test" ;;
+          39) toxenvs="shellcheck,ansible-managed-var-comment" ;;
+          esac
+          TOXENV="$toxenvs" lsr_ci_runtox

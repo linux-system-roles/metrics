@@ -4,18 +4,18 @@
   hosts: all
   vars:
     __test_uname: pcptest
+    __test_pswd: t;dlen;dle
 
+  # yamllint disable rule:line-length
   roles:
-    - role: linux-system-roles.metrics
+    - role: performancecopilot.metrics.pcp
       vars:
-        metrics_username: "{{ __test_uname }}"
-        metrics_password: "{{ pcptest_pw }}"
-        # test to install firewall but not selinux
-        metrics_manage_firewall: true
-        metrics_manage_selinux: false
+        pcp_accounts:
+          - {user: "{{ __test_uname }}", sasluser: "{{ __test_uname }}", saslpassword: "{{ __test_pswd }}"}
+  # yamllint enable rule:line-length
 
   pre_tasks:
-    - name: Stop test
+    - name: Skip test if not supported by platform
       meta: end_host
       when: (ansible_distribution in ['RedHat', 'CentOS'] and
              ansible_distribution_major_version | int < 8) or
@@ -34,7 +34,18 @@
       include_tasks: "{{ item }}"
       loop:
         - check_sasl.yml
-        - check_firewall_selinux.yml
+
+    - name: Check headers for ansible_managed, fingerprint
+      include_tasks: check_header.yml
+      vars:
+        __fingerprint: "performancecopilot:ansible-pcp"
+      loop:
+        - "{{ __pcp_pmcd_defaults_path }}"
+        - "{{ __pcp_pmcd_saslconf_path }}"
+        - "{{ __pcp_pmlogger_defaults_path }}"
+        - "{{ __pcp_pmlogger_timers_path }}"
+      loop_control:
+        loop_var: __file
 
   post_tasks:
     - name: Restore state of services

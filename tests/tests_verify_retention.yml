@@ -6,9 +6,9 @@
     __test_retention: 137
 
   roles:
-    - role: linux-system-roles.metrics
+    - role: performancecopilot.metrics.pcp
       vars:
-        metrics_retention_days: "{{ __test_retention }}"
+        pcp_pmlogger_discard: "{{ __test_retention }}"
 
   pre_tasks:
     - name: Save state of services
@@ -22,7 +22,6 @@
         - check_pmlogger.yml
         - check_pmie.yml
         - check_retention.yml
-        - check_firewall_selinux.yml
 
   post_tasks:
     - name: Restore state of services
