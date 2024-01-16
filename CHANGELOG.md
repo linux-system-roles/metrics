@@ -1,6 +1,13 @@
 Changelog
 =========
 
+[1.10.1] - 2024-01-16
+--------------------
+
+### Other Changes
+
+- ci: Use supported ansible-lint action; run ansible-lint against the collection (#186)
+
 [1.10.0] - 2023-12-12
 --------------------
 
