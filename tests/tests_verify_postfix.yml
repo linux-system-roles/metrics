@@ -45,7 +45,7 @@
         force: false
         group: postfix
         owner: postfix
-        mode: 0600
+        mode: "0600"
 
   tasks:
     - name: Run test
