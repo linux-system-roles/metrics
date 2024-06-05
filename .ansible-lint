@@ -32,3 +32,5 @@ mock_roles:
   - performancecopilot.metrics.redis
   - performancecopilot.metrics.repository
   - performancecopilot.metrics.spark
+supported_ansible_also:
+  - "2.14.0"
