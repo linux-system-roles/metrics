@@ -1,6 +1,12 @@
 Changelog
 =========
 
+[1.10.5] - 2024-07-23
+
+### Bug Fixes
+
+- fix: Handle undefined item in pmie configuration
+
 [1.10.4] - 2024-07-15
 --------------------
 
