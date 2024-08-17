@@ -25,3 +25,9 @@
     - redis
     - grafana-server
 # yamllint enable rule:line-length
+
+- name: Stop firewall
+  service:
+    name: firewalld
+    state: stopped
+  when: metrics_manage_firewall | bool
