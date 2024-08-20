@@ -14,6 +14,7 @@ Changelog
 - test: stop firewall if used by test (#209)
 
 [1.10.5] - 2024-07-23
+--------------------
 
 ### Bug Fixes
 
