@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: MIT
+---
+- name: Check if Valkey responds
+  shell: |
+    set -euo pipefail
+    valkey-cli PING | grep PONG
+  changed_when: false
+  when: (ansible_distribution in ['RedHat', 'CentOS'] and
+         ansible_distribution_major_version | int >= 10) or
+         ansible_distribution not in ['RedHat', 'CentOS']
+
+- name: Check if Redis responds
+  shell: |
+    set -euo pipefail
+    redis-cli PING | grep PONG
+  changed_when: false
+  when:
+    - ansible_distribution in ['RedHat', 'CentOS']
+    - ansible_distribution_major_version | int > 6
+    - ansible_distribution_major_version | int < 10
