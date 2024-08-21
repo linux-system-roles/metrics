@@ -12,6 +12,4 @@ pcp-zeroconf
 postfix
 postfix-perl-scripts
 python3-pyodbc
-redis
-redis-doc
-RediSearch
+valkey

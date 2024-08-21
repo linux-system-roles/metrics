@@ -23,6 +23,7 @@
     - pmie
     - pmproxy
     - redis
+    - valkey
     - grafana-server
 # yamllint enable rule:line-length
 

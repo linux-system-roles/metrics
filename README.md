@@ -14,7 +14,8 @@ from the standard repositories on Fedora, CentOS 8, and RHEL 8.  On RHEL
 on the managed host.
 
 The role can optionally use Grafana v6+ (`metrics_graph_service`) and
-Redis v5+ (`metrics_query_service`) on Fedora, CentOS 8, RHEL 8 and later.
+Valkey (`metrics_query_service`) on Fedora, CentOS 10, RHEL 10 and later,
+or Redis v5+ (`metrics_query_service`) on CentOS 8 or 9, RHEL 8 or 9.
 
 ### Collection requirements
 
@@ -70,9 +71,11 @@ RHEL 8, or later versions of these platforms.
 ### metrics_query_service: false
 
 Boolean flag allowing host to be setup with time series query services.
-Enabling this starts PCP and Redis servers for querying recorded PCP metrics.
-This option requires Redis v5+ which is available on Fedora, CentOS 8,
-RHEL 8, or later versions of these platforms.
+Enabling this starts PCP and Valkey or Redis servers for querying any
+recorded PCP metrics.
+This option requires either Valkey or Redis v5+ which is available on
+Fedora, CentOS 8, RHEL 8, or later versions of these platforms (Valkey
+is the prefered solution on Fedora, Centos 10, RHEL 10 and later).
 
 ### metrics_into_elasticsearch: false
 
@@ -115,14 +118,14 @@ The metrics collector to use to provide metrics.
 Currently Performance Co-Pilot is the only supported metrics provider.
 When using the PCP provider these TCP ports will be used - 44321 (pmcd,
 live metric value sampling), 44322 (pmproxy, with metrics_query_service
-or metrics_graph_service), 6379 (redis-server for metrics_query_service)
-and 3000 (grafana-server for metrics_graph_service).
+or metrics_graph_service), 6379 (either valkey-server or redis-server for
+metrics_query_service) and 3000 (grafana-server for metrics_graph_service).
 
 ### metrics_manage_firewall: false
 
 Boolean flag allowing to configure firewall using the firewall role.
-Manage the pmcd port, the pmproxy port, the Grafana port and the Redis
-port depending upon the configuration parameters.
+Manage the pmcd port, the pmproxy port, the Grafana port and either the
+Valkey or Redis port depending upon the configuration parameters.
 If the variable is set to false, the `metrics role` does not manage the
 firewall.
 
@@ -136,16 +139,17 @@ NOTE: the firewall management is not supported on RHEL 6.
 ### metrics_manage_selinux: false
 
 Boolean flag allowing to configure selinux using the selinux role.
-Assign the pmcd port, the pmproxy port, the Grafana port and the Redis
-port depending upon the configuration parameters.
+Assign the pmcd port, the pmproxy port, the Grafana port and either the
+Valkey or Redis port depending upon the configuration parameters.
 If the variable is set to false, the `metrics role` does not manage the
 selinux.
 
 Please note that the pmcd and pmproxy services are in the "ephemeral"
 range requiring no special setup and the Grafana port is "unregistered".
-The Redis port is gated by the redis_port_t SELinux type and may need to
-be further configured, if you require direct access (not required if you
-are accessing it from metrics role tools like Grafana and PCP).
+The Valkey or Redis ports are gated by the valkey_port_t or redis_port_t
+SELinux types respectively, and may need to be further configured if you
+require direct access (not required if you are accessing it from metrics
+role tools like Grafana and PCP).
 Use the `selinux` system role to manage port access, for SELinux contexts.
 
 NOTE: `metrics_manage_selinux` is limited to *adding* policy.

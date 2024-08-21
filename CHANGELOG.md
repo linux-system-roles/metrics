@@ -192,13 +192,13 @@ Changelog
 - Use the firewall role and the selinux role from the metrics role
 
 - Introduce metrics_manage_firewall to use the firewall role to
-  manage the pmcd port, the pmproxy ports, the grafana port and
-  the redis port depending upon the configuration parameters.
+  manage the pmcd, pmproxy, grafana and valkey or redis ports,
+  depending on the configuration parameters.
   metrics_manage_firewall is set to false, by default.
 
 - Introduce metrics_manage_selinux to use the selinux role to
-  manage the pmcd port, the pmproxy ports, the grafana port and
-  the redis port depending upon the configuration parameters.
+  manage the pmcd, pmproxy, grafana and valkey or redis ports,
+  depending on the configuration parameters.
   metrics_manage_selinux is set to false, by default.
 
 - Add the test check task check_firewall_selinux.yml for verify
