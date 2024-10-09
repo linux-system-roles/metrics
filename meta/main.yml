@@ -35,5 +35,6 @@ galaxy_info:
     - redis
     - telemetry
     - timeseries
+    - valkey
     - visualization
 dependencies: []

@@ -1,7 +1,0 @@
-# SPDX-License-Identifier: MIT
----
-- name: Check if Redis responds
-  shell: |
-    set -euo pipefail
-    redis-cli PING | grep PONG
-  changed_when: false

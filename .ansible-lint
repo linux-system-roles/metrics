@@ -29,7 +29,7 @@ mock_roles:
   - performancecopilot.metrics.mssql
   - performancecopilot.metrics.pcp
   - performancecopilot.metrics.postfix
-  - performancecopilot.metrics.redis
+  - performancecopilot.metrics.keyserver
   - performancecopilot.metrics.repository
   - performancecopilot.metrics.spark
 supported_ansible_also:

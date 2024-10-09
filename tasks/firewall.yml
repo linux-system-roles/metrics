@@ -21,7 +21,7 @@
         __metrics_firewall: "{{ __metrics_firewall |
             union([{'port': '44322/tcp', 'state': 'enabled'}]) }}"
       when:
-        - metrics_graph_service|bool or metrics_query_service|bool
+        - metrics_graph_service | bool or metrics_query_service | bool
 
     - name: Service for grafana
       set_fact:
@@ -30,12 +30,21 @@
       when:
         - metrics_graph_service|bool
 
+    - name: Service for valkey
+      set_fact:
+        __metrics_firewall: "{{ __metrics_firewall |
+            union([{'service': 'valkey', 'state': 'enabled'}]) }}"
+      when:
+        - metrics_query_service | bool
+        - ansible_facts['distribution_version'] is version('10', '>=')
+
     - name: Service for redis
       set_fact:
         __metrics_firewall: "{{ __metrics_firewall |
             union([{'service': 'redis', 'state': 'enabled'}]) }}"
       when:
-        - metrics_query_service|bool
+        - metrics_query_service | bool
+        - ansible_facts['distribution_version'] is version('10', '<')
 
     - name: Ensure the service and the port status with the firewall role
       include_role:

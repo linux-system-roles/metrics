@@ -9,7 +9,7 @@ metrics_retention_days: 7
 # analysis) and automated rule inference (for alerting).
 metrics_monitored_hosts: []
 
-# Provide a scalable query language (using Redis) and the
+# Provide a scalable query language (using Valkey) and the
 # PMWEBAPI(3) REST API for metrics at localhost:44322
 # OpenMetrics endpoint at localhost:44322/metrics
 metrics_query_service: false
@@ -39,8 +39,8 @@ metrics_password: metrics
 metrics_provider: pcp
 
 # If true, manage the pmcd port, pmproxy ports, grafana service and
-# redis service using the firewall role depending upon the configuration
-# parameters.
+# valkey or redis service using the firewall role depending upon the
+# configuration parameters.
 metrics_manage_firewall: false
 
 # If true, manage the pmcd port, pmproxy ports using the selinux role

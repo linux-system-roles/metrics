@@ -29,7 +29,7 @@
             - check_pcp.yml
             - check_pmlogger.yml
             - check_pmie.yml
-            - check_redis.yml
+            - check_keyserver.yml
             - check_pmproxy.yml
             - check_firewall_selinux.yml
 
