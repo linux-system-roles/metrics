@@ -1,6 +1,21 @@
 Changelog
 =========
 
+[1.10.7] - 2024-10-30
+--------------------
+
+### Bug Fixes
+
+- fix: add support for Valkey (#212)
+- fix: add leading triple-hyphen to all github workflow files (#214)
+
+### Other Changes
+
+- docs: fix missing h2 markdown element (#211)
+- ci: Add tags to TF workflow, allow more [citest bad] formats (#213)
+- ci: ansible-test action now requires ansible-core version (#215)
+- refactor: Use vars/RedHat_N.yml symlink for CentOS, Rocky, Alma wherever possible (#217)
+
 [1.10.6] - 2024-08-19
 --------------------
 
