@@ -33,7 +33,7 @@
     - name: Service for valkey
       set_fact:
         __metrics_firewall: "{{ __metrics_firewall |
-            union([{'ports': 6379, 'state': 'enabled'}]) }}"
+            union([{'port': '6379/tcp', 'state': 'enabled'}]) }}"
       when:
         - metrics_query_service | bool
         - ansible_facts['distribution_version'] is version('10', '>=')
