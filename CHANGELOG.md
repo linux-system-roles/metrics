@@ -1,6 +1,14 @@
 Changelog
 =========
 
+[1.10.8] - 2024-11-19
+--------------------
+
+### Bug Fixes
+
+- fix: use __grafana_keyserver_datasource_type variable instead of its string value
+- fix: Use correct syntax for keyserver port and test check
+
 [1.10.7] - 2024-10-30
 --------------------
 
