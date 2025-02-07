@@ -75,7 +75,7 @@ Enabling this starts PCP and Valkey or Redis servers for querying any
 recorded PCP metrics.
 This option requires either Valkey or Redis v5+ which is available on
 Fedora, CentOS 8, RHEL 8, or later versions of these platforms (Valkey
-is the prefered solution on Fedora, Centos 10, RHEL 10 and later).
+is the preferred solution on Fedora, Centos 10, RHEL 10 and later).
 
 ### metrics_into_elasticsearch: false
 
