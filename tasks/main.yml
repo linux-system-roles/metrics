@@ -49,6 +49,18 @@
     metrics_into_elasticsearch | d(false) | bool
 # yamllint enable rule:line-length
 
+- name: Configure Spark metrics
+  vars:
+    spark_metrics_agent: "{{ metrics_from_spark | d(false) | bool }}"
+    spark_export_metrics: "{{ metrics_into_spark | d(false) | bool }}"
+    spark_metrics_provider: "{{ metrics_provider }}"
+  include_role:
+    # noqa role-name[path]
+    name: "{{ role_path }}/roles/spark"
+  when: >
+    metrics_from_spark | d(false) | bool or
+    metrics_into_spark | d(false) | bool
+
 - name: Configure SQL Server metrics.
   vars:
     mssql_metrics_provider: "{{ metrics_provider }}"
