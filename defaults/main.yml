@@ -25,6 +25,12 @@ metrics_into_elasticsearch: false
 # Make metrics available from an Elasticsearch instance
 metrics_from_elasticsearch: false
 
+# Export metrics to an Apache Spark data analysis setup
+metrics_into_spark: false
+
+# Make metrics available from an Apache Spark instance
+metrics_from_spark: false
+
 # Make metrics available from a SQL Server database
 metrics_from_mssql: false
 

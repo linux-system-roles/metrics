@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: MIT
+---
+- name: Set up Spark for use with PCP
+  hosts: monitoring
+
+  roles:
+    - role: linux-system-roles.metrics
+      vars:
+        metrics_provider: pcp
+        metrics_from_spark: true
+        metrics_into_spark: true

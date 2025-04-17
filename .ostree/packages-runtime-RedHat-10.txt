@@ -2,6 +2,7 @@ bpftrace
 grafana
 grafana-pcp
 pcp-export-pcp2elasticsearch
+pcp-export-pcp2spark
 pcp-pmda-bpftrace
 pcp-pmda-mssql
 pcp-system-tools

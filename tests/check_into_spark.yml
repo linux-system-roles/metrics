@@ -1,0 +1,11 @@
+# SPDX-License-Identifier: MIT
+---
+- name: Check if export to Spark is installed
+  command: test -x /usr/bin/pcp2spark
+  changed_when: false
+
+- name: Check the ansible_managed header in pcp2spark.service
+  vars:
+    __test_config_path: >-
+      {{ __spark_service_path }}/pcp2spark.service
+  include_tasks: check_header.yml
