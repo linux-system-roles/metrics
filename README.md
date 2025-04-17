@@ -85,6 +85,14 @@ Boolean flag allowing metric values to be exported into Elasticsearch.
 
 Boolean flag allowing metrics from Elasticsearch to be made available.
 
+### metrics_into_spark: false
+
+Boolean flag allowing metric values to be exported into Spark.
+
+### metrics_from_spark: false
+
+Boolean flag allowing metrics from Spark to be made available.
+
 ### metrics_from_postfix: false
 
 Boolean flag allowing metrics from Postfix to be made available.
