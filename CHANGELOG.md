@@ -1,6 +1,26 @@
 Changelog
 =========
 
+[1.11.0] - 2025-05-06
+--------------------
+
+### New Features
+
+- feat: add missing Spark import/export support for metrics (#233)
+
+### Other Changes
+
+- ci: ansible-plugin-scan is disabled for now (#224)
+- ci: bump ansible-lint to v25; provide collection requirements for ansible-lint (#227)
+- ci: Check spelling with codespell (#228)
+- ci: Add test plan that runs CI tests and customize it for each role (#229)
+- ci: In test plans, prefix all relate variables with SR_ (#230)
+- ci: Fix bug with ARTIFACTS_URL after prefixing with SR_ (#231)
+- ci: several changes related to new qemu test, ansible-lint, python versions, ubuntu versions (#232)
+- ci: use tox-lsr 3.6.0; improve qemu test logging (#234)
+- ci: skip storage scsi, nvme tests in github qemu ci (#235)
+- ci: bump sclorg/testing-farm-as-github-action from 3 to 4 (#236)
+
 [1.10.9] - 2025-01-09
 --------------------
 
