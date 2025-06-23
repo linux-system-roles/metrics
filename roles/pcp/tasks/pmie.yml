@@ -53,10 +53,10 @@
   loop: "{{ __pcp_global_webhook_action_status.results }}"
   changed_when:
     - pcp_pmie_endpoint | length > 0
-    - item.found | d(-1) == 0
+    - item.found | d(-1) <= 0
   when:
     - pcp_pmie_endpoint | length > 0
-    - item.found | d(-1) == 0
+    - item.found | d(-1) <= 0
   register: __pcp_register_changed_actions_for_hosts
   # yamllint enable rule:line-length
 
@@ -76,10 +76,10 @@
   loop: "{{ __pcp_global_webhook_endpoint_status.results }}"
   changed_when:
     - pcp_pmie_endpoint | length > 0
-    - item.found | d(-1) == 0
+    - item.found | d(-1) <= 0
   when:
     - pcp_pmie_endpoint | length > 0
-    - item.found | d(-1) == 0
+    - item.found | d(-1) <= 0
   register: __pcp_register_changed_actions_for_hosts
   # yamllint enable rule:line-length
 
@@ -101,7 +101,7 @@
   register: __pcp_register_changed_target_hosts_controld
   when:
     - not pcp_single_control | d(false) | bool
-    - pcp_target_hosts | d([])
+    - pcp_target_hosts | d([]) | length > 0
 
 - name: Enable performance metric inference for targeted hosts (single control)
   template:
@@ -111,7 +111,7 @@
   register: __pcp_register_changed_target_hosts_single
   when:
     - pcp_single_control | d(true) | bool
-    - pcp_target_hosts | d([])
+    - pcp_target_hosts | d([]) | length > 0
 
 - name: Set variable to do pmie restart if needed
   set_fact:
