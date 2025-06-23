@@ -8,9 +8,11 @@
       set -o pipefail  # no pipefail on debian, some ubuntu
     fi
     pmprobe -I pmcd.pmie.pmcd_host | grep '"primary"'
-  when: (ansible_facts['distribution'] in ['RedHat', 'CentOS'] and
-         ansible_facts['distribution_major_version'] | int > 6) or
-         ansible_facts['distribution'] not in ['Fedora', 'RedHat', 'CentOS']
+  when:
+    - (ansible_facts['distribution'] in ['RedHat', 'CentOS'] and
+       ansible_facts['distribution_major_version'] | int > 6) or
+       ansible_facts['distribution'] not in ['Fedora', 'RedHat', 'CentOS']
+    - __metrics_is_booted | bool
 
 # yamllint disable rule:line-length
 - name: Check if primary pmie uses webhook
@@ -22,7 +24,10 @@
     fi
     pmieconf -f /var/lib/pcp/config/pmie/config.default list global webhook_endpoint | grep '"example"'
     pmieconf -f /var/lib/pcp/config/pmie/config.default list global webhook_action | grep '"yes"'
-  when: (ansible_distribution in ['RedHat', 'CentOS'] and
-         (ansible_facts['distribution_version'] is version('9.3', '<'))) or
-         ansible_distribution not in ['Fedora', 'RedHat', 'CentOS']
+  when:
+    - (ansible_distribution in ['RedHat', 'CentOS'] and
+       (ansible_facts['distribution_version'] is version('9.3', '<'))) or
+       ansible_distribution not in ['Fedora', 'RedHat', 'CentOS']
+    - __metrics_is_booted | bool
+
 # yamllint enable rule:line-length

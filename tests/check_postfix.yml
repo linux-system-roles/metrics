@@ -7,3 +7,4 @@
   retries: 10
   delay: 1
   changed_when: false
+  when: __metrics_is_booted | bool

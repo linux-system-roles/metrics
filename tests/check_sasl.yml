@@ -14,4 +14,5 @@
 - name: Check if a client can access metrics
   command: pminfo -f -h "pcp://127.0.0.1?username={{ __test_uname }}&password={{ pcptest_pw }}" disk.dev.read
   changed_when: false
+  when: __metrics_is_booted | bool
 # yamllint enable rule:line-length

@@ -32,6 +32,7 @@
           # noqa command-instead-of-module
           shell: systemctl restart pmcd && sleep 5
           changed_when: false
+          when: __metrics_is_booted | bool
 
         - name: Check if SASL works
           include_tasks: "{{ item }}"

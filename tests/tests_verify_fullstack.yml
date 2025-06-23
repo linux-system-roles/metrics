@@ -25,6 +25,20 @@
           include_role:
             name: linux-system-roles.metrics
             public: true
+          when: not __bootc_validation | d(false)
+
+        - name: Create QEMU deployment during bootc end-to-end test
+          delegate_to: localhost
+          command: "{{ lsr_scriptdir }}/bootc-buildah-qcow.sh {{ ansible_host }}"
+          changed_when: true
+          when: ansible_connection == "buildah"
+
+        # role does not run during bootc QEMU validation, thus some vars are undefined
+        - name: Set missing variables for bootc validation tests
+          set_fact:
+            __metrics_is_booted: true
+            metrics_provider: pcp
+          when: __bootc_validation | d(false)
 
         - name: Check if all services work
           include_tasks: "{{ item }}"
@@ -48,3 +62,4 @@
       always:
         - name: Restore state of services
           import_tasks: restore_services_state.yml
+          when: not __bootc_validation | d(false)

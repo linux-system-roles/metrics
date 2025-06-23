@@ -5,6 +5,7 @@
     url: http://localhost:44322/series/ping
     method: GET
     status_code: 200
+  when: __metrics_is_booted | bool
 
 - name: Check the ansible_managed header in the configuration file
   vars:
