@@ -58,6 +58,7 @@
         - name: Signal pmcd to ensure above path used by pmdapostfix
           command: pmstore pmcd.control.sighup 1
           changed_when: false
+          when: __metrics_is_booted | bool
 
         - name: Check Postfix functionality
           include_tasks: "{{ item }}"

@@ -14,6 +14,7 @@
     state: "{{ 'started' if initial_state.ansible_facts.services[item + '.service']['state'] == 'running'
                else 'stopped' }}"
   when:
+    - __metrics_is_booted | bool
     - item + '.service' in final_state.ansible_facts.services
     - item + '.service' in initial_state.ansible_facts.services
     - initial_state.ansible_facts.services[item + '.service']['status'] != 'not-found'
@@ -31,4 +32,6 @@
   service:
     name: firewalld
     state: stopped
-  when: metrics_manage_firewall | bool
+  when:
+    - __metrics_is_booted | bool
+    - metrics_manage_firewall | bool

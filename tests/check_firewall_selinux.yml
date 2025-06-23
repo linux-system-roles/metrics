@@ -10,7 +10,7 @@
   block:
     - name: "Check firewall service status for grafana;
              metrics_manage_firewall is true"
-      command: firewall-cmd --list-services
+      command: firewall-offline-cmd --list-services
       register: _result
       failed_when:
         - "'grafana' not in _result.stdout"
@@ -22,7 +22,7 @@
     # so for now, we are using the port - see below
     # - name: "Check firewall service status for valkey;
     #          metrics_manage_firewall is true"
-    #   command: firewall-cmd --list-services
+    #   command: firewall-offline-cmd --list-services
     #   register: _result
     #   failed_when: "'valkey' not in _result.stdout"
     #   changed_when: false
@@ -34,7 +34,7 @@
 
     - name: "Check firewall service status for redis;
              metrics_manage_firewall is true"
-      command: firewall-cmd --list-services
+      command: firewall-offline-cmd --list-services
       register: _result
       failed_when: "'redis' not in _result.stdout"
       changed_when: false
@@ -46,7 +46,7 @@
 
     - name: "Check firewall port status for pmproxy;
              metrics_manage_firewall is true"
-      command: firewall-cmd --list-ports
+      command: firewall-offline-cmd --list-ports
       register: _result
       failed_when:
         - "'44322/tcp' not in _result.stdout"
@@ -57,14 +57,14 @@
 
     - name: "Check firewall port status for pmcd;
              metrics_manage_firewall is true"
-      command: firewall-cmd --list-ports
+      command: firewall-offline-cmd --list-ports
       register: _result
       failed_when: "'44321/tcp' not in _result.stdout"
       changed_when: false
 
     - name: "Check firewall port status for valkey;
              metrics_manage_firewall is true"
-      command: firewall-cmd --list-ports
+      command: firewall-offline-cmd --list-ports
       register: _result
       failed_when: "'6379/tcp' not in _result.stdout"
       changed_when: false

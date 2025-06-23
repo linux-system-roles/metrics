@@ -5,3 +5,4 @@
     url: http://localhost:3000/login
     method: GET
     status_code: 200
+  when: __metrics_is_booted | bool

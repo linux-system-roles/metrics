@@ -13,3 +13,4 @@
   changed_when: false
   loop:
     - bpftrace
+  when: __metrics_is_booted | bool
