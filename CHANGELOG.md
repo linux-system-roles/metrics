@@ -1,6 +1,20 @@
 Changelog
 =========
 
+[1.12.0] - 2025-07-02
+--------------------
+
+### New Features
+
+- feat: Support this role in container builds (#243)
+
+### Other Changes
+
+- ci: bump tox-lsr to 3.8.0; rename qemu/kvm tests (#238)
+- ci: Add Fedora 42; use tox-lsr 3.9.0; use lsr-report-errors for qemu tests (#239)
+- ci: Add support for bootc end-to-end validation tests (#240)
+- ci: Use ansible 2.19 for fedora 42 testing; support python 3.13 (#241)
+
 [1.11.0] - 2025-05-06
 --------------------
 
