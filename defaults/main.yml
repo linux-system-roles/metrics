@@ -57,3 +57,14 @@ metrics_manage_selinux: false
 # performance issues are to be sent.  By default, these events are logged to the
 # local system log only.
 metrics_webhook_endpoint: ''
+
+# List of optional PCP agents to enable.  The role will enable
+# agents for components you are managing.  For example, if you
+# use metrics_from_elasticsearch, the role will enable the
+# elasticsearch agent automatically.  This variable is for
+# additional agents.
+metrics_optional_domains: []
+
+# Additional metrics packages that should be installed, beyond the default set,
+# to enable additional metrics, export to alternate data sinks, and so on.
+metrics_optional_packages: []

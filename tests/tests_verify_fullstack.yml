@@ -7,6 +7,8 @@
     metrics_graph_service: true
     metrics_manage_firewall: true
     metrics_manage_selinux: true
+    metrics_optional_domains: [apache]
+    metrics_optional_packages: [pcp-pmda-apache]
 
   pre_tasks:
     - name: Stop test
@@ -51,6 +53,12 @@
             - check_grafana.yml
             - check_grafanapcp.yml
             - check_firewall_selinux.yml
+
+        - name: Check if optional apache domain is active
+          command: pminfo -f pmcd.agent.status
+          changed_when: false
+          register: __check
+          failed_when: __check is failed or __check is not search("apache")
 
         - name: Flush handlers
           meta: flush_handlers
