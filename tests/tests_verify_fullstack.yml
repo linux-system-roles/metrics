@@ -7,6 +7,7 @@
     metrics_graph_service: true
     metrics_manage_firewall: true
     metrics_manage_selinux: true
+    metrics_optional_domains: [dm, nfsclient, openmetrics]
 
   pre_tasks:
     - name: Stop test
