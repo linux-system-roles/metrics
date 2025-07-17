@@ -127,7 +127,8 @@
     pcp_pmie_endpoint: "{{ metrics_webhook_endpoint }}"
     pcp_pmlogger_discard: "{{ metrics_retention_days }}"
     pcp_target_hosts: "{{ metrics_monitored_hosts }}"
-    pcp_optional_agents: "{{ __metrics_domains }}"
+    pcp_optional_agents: "{{ (__metrics_domains + metrics_optional_domains) | unique | list }}"
+    pcp_optional_packages: "{{ metrics_optional_packages }}"
     pcp_accounts: "{{ __metrics_accounts }}"
     pcp_rest_api: "{{ metrics_query_service | bool or
                       metrics_graph_service | bool }}"

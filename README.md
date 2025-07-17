@@ -165,6 +165,26 @@ It cannot be used for *removing* policy.
 If you want to remove policy, you will need to use the selinux system
 role directly.
 
+### metrics_optional_domains: []
+
+List of optional metrics domains to enable.  The role will enable the domains
+for components you are managing.  For example, if you use
+`metrics_from_elasticsearch: true`, the role will enable the elasticsearch
+domain automatically.  This variable is for additional domains.
+
+```yaml
+metrics_optional_domains: [apache]
+```
+
+### metrics_optional_packages: []
+
+Additional metrics packages that should be installed, beyond the default set, to
+enable additional metrics, export to alternate data sinks, and so on.
+
+```yaml
+metrics_optional_packages: [pcp-pmda-apache]
+```
+
 ## Example Playbook
 
 Basic metric recording setup for each managed host only, with one
