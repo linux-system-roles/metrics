@@ -31,6 +31,16 @@
     __metrics_domains: "{{ __metrics_domains + ['elasticsearch'] }}"
   when: metrics_from_elasticsearch | d(false) | bool
 
+# from spark not supported in el7
+- name: Add OpenMetrics to metrics domain list
+  set_fact:
+    __metrics_domains: "{{ __metrics_domains + ['openmetrics'] }}"
+  when:
+    - metrics_from_spark | d(false) | bool
+    - ansible_facts["os_family"] != "RedHat" or
+      ansible_facts["distribution"] == "Fedora" or
+      ansible_facts["distribution_major_version"] is version("8", ">=")
+
 - name: Add SQL Server to metrics domain list
   set_fact:
     __metrics_domains: "{{ __metrics_domains + ['mssql'] }}"
