@@ -184,6 +184,11 @@ false</a></li>
 <li><a href="#metrics_manage_selinux-false"
 id="toc-metrics_manage_selinux-false">metrics_manage_selinux:
 false</a></li>
+<li><a href="#metrics_optional_domains-"
+id="toc-metrics_optional_domains-">metrics_optional_domains: []</a></li>
+<li><a href="#metrics_optional_packages-"
+id="toc-metrics_optional_packages-">metrics_optional_packages:
+[]</a></li>
 </ul></li>
 <li><a href="#example-playbook" id="toc-example-playbook">Example
 Playbook</a></li>
@@ -315,43 +320,57 @@ role to manage port access, for SELinux contexts.</p>
 <em>adding</em> policy. It cannot be used for <em>removing</em> policy.
 If you want to remove policy, you will need to use the selinux system
 role directly.</p>
+<h2 id="metrics_optional_domains-">metrics_optional_domains: []</h2>
+<p>List of optional metrics domains to enable. The role will enable the
+domains for components you are managing. For example, if you use
+<code>metrics_from_elasticsearch: true</code>, the role will enable the
+elasticsearch domain automatically. This variable is for additional
+domains.</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">metrics_optional_domains</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">apache</span><span class="kw">]</span></span></code></pre></div>
+<h2 id="metrics_optional_packages-">metrics_optional_packages: []</h2>
+<p>Additional metrics packages that should be installed, beyond the
+default set, to enable additional metrics, export to alternate data
+sinks, and so on.</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">metrics_optional_packages</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">pcp-pmda-apache</span><span class="kw">]</span></span></code></pre></div>
 <h1 id="example-playbook">Example Playbook</h1>
 <p>Basic metric recording setup for each managed host only, with one
 weeks worth of data retained before culling.</p>
-<div class="sourceCode" id="cb3"><pre
-class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Manage metrics service</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hosts</span><span class="kw">:</span><span class="at"> all</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">vars</span><span class="kw">:</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_retention_days</span><span class="kw">:</span><span class="at"> </span><span class="dv">7</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">roles</span><span class="kw">:</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> linux-system-roles.metrics</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Manage metrics service</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hosts</span><span class="kw">:</span><span class="at"> all</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">vars</span><span class="kw">:</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_retention_days</span><span class="kw">:</span><span class="at"> </span><span class="dv">7</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">roles</span><span class="kw">:</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> linux-system-roles.metrics</span></span></code></pre></div>
 <p>Scalable metric recording, analysis and visualization setup for the
 managed hosts, providing a REST API server with an OpenMetrics endpoint,
 graphs and scalable querying.</p>
-<div class="sourceCode" id="cb4"><pre
-class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Manage metrics with graph and query services</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hosts</span><span class="kw">:</span><span class="at"> all</span></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">vars</span><span class="kw">:</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_graph_service</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_query_service</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">roles</span><span class="kw">:</span></span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> linux-system-roles.metrics</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Manage metrics with graph and query services</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hosts</span><span class="kw">:</span><span class="at"> all</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">vars</span><span class="kw">:</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_graph_service</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_query_service</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">roles</span><span class="kw">:</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> linux-system-roles.metrics</span></span></code></pre></div>
 <p>Centralized metric recording setup for several remote hosts and
 scalable metric recording, analysis and visualization setup for the
 local host, providing a REST API server with an OpenMetrics endpoint,
 graphs and scalable querying.</p>
-<div class="sourceCode" id="cb5"><pre
-class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Manage centralized metrics gathering</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hosts</span><span class="kw">:</span><span class="at"> monitors</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">vars</span><span class="kw">:</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_monitored_hosts</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">app.example.com</span><span class="kw">,</span><span class="at"> db.example.com</span><span class="kw">,</span><span class="at"> nas.example.com</span><span class="kw">]</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_graph_service</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_query_service</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">roles</span><span class="kw">:</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> linux-system-roles.metrics</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Manage centralized metrics gathering</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hosts</span><span class="kw">:</span><span class="at"> monitors</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">vars</span><span class="kw">:</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_monitored_hosts</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">app.example.com</span><span class="kw">,</span><span class="at"> db.example.com</span><span class="kw">,</span><span class="at"> nas.example.com</span><span class="kw">]</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_graph_service</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_query_service</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">roles</span><span class="kw">:</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> linux-system-roles.metrics</span></span></code></pre></div>
 <h1 id="rpm-ostree">rpm-ostree</h1>
 <p>See README-ostree.md</p>
 <h1 id="license">License</h1>
