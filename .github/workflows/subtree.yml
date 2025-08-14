@@ -50,5 +50,5 @@ jobs:
           # Wait for PR to be fully created
           sleep 10
 
-          gh pr merge "$PR_URL" --squash --delete-branch
-          echo "PR merged and branch deleted"
+          gh pr merge "$PR_URL" --squash --delete-branch --admin
+          echo "PR merged with admin override and branch deleted"
