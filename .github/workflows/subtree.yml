@@ -41,14 +41,12 @@ jobs:
 
           PR_URL=$(gh pr create \
             --title "Sync ansible-pcp git subtree" \
-            --body "Automated sync of ansible-pcp git subtree from upstream repository. This PR contains the latest changes from https://github.com/performancecopilot/ansible-pcp.git" \
+            --body "Automated sync of ansible-pcp git subtree from upstream repository. This PR contains the latest changes from https://github.com/performancecopilot/ansible-pcp.git
+            
+            You may see a conflict when trying to merge. This is expected as the PR contains a squash commit containing all the changes from the other commits.
+            
+            To successfully merge this PR, it should be merged via the squash and merge option. Click the dropdown next to the merge button to find the merge options. " \
             --base main \
             --head "$BRANCH_NAME")
           
           echo "Created PR: $PR_URL"
-          
-          # Wait for PR to be fully created
-          sleep 10
-
-          gh pr merge "$PR_URL" --squash --delete-branch --admin
-          echo "PR merged with admin override and branch deleted"
