@@ -58,6 +58,7 @@
           command: pminfo -f pmcd.agent.status
           changed_when: false
           register: __check
+          when: __metrics_is_booted
           failed_when: __check is failed or __check is not search("apache")
 
         - name: Flush handlers
