@@ -1,6 +1,24 @@
 Changelog
 =========
 
+[1.13.1] - 2025-10-21
+--------------------
+
+### Other Changes
+
+- Update the subtree.yml workflow file to create a PR and merge (#248)
+- add admin override option to ansible-pcp sync workflow (#250)
+- ci: Do not try to merge the PR in sync ansible-pcp subtree workflow (#257)
+- Sync ansible-pcp git subtree (#258)
+- ci: bump actions/checkout from 4 to 5 (#259)
+- ci: rollout several recent changes to CI testing (#261)
+- ci: support openSUSE Leap in qemu/kvm test matrix (#262)
+- ci: use the new epel feature to enable EPEL for testing farm (#263)
+- ci: use tox-lsr 3.12.0 for osbuild_config.yml feature (#265)
+- test: skip checking pmcd if not booted (#266)
+- ci: use JSON format for __bootc_validation (#267)
+- ci: bump actions/github-script from 7 to 8 (#268)
+
 [1.13.0] - 2025-07-24
 --------------------
 
