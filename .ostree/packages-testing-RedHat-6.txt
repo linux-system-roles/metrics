@@ -1,4 +1,0 @@
-cyrus-sasl-md5
-pcp-pmda-dm
-pcp-pmda-nfsclient
-pcp-system-tools

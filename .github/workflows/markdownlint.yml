@@ -34,5 +34,5 @@ jobs:
         with:
           args: >-
             --ignore=CHANGELOG.md
-            **/*.md --ignore=vendor --ignore=tests/roles
+            **/*.md
           config: .markdownlint.yaml

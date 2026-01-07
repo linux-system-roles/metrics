@@ -2,3 +2,4 @@
 ---
 ignore: |
   /.tox/
+extends: default

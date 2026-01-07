@@ -1,3 +1,5 @@
+performancecopilot-metrics-*.tar.gz
+redhat-rhel_metrics-*.tar.gz
 passes.yml
 vault.yml
 *.pyc
@@ -12,3 +14,4 @@ artifacts/
 __pycache__/
 *~
 .pytest_cache/
+.cache/

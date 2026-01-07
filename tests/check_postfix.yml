@@ -1,10 +1,9 @@
 # SPDX-License-Identifier: MIT
 ---
-- name: Check if postfix pmda is registered
+- name: Check if postfix PMDA is registered
   command: pmprobe -I pmcd.agent.status
   register: status
   until: status.stdout.find("postfix") != -1
   retries: 10
   delay: 1
   changed_when: false
-  when: __metrics_is_booted | bool

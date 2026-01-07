@@ -11,27 +11,16 @@
   service:
     name: "{{ item }}"
     # noqa args[module]
-    state: "{{ 'started' if initial_state.ansible_facts.services[item + '.service']['state'] == 'running'
-               else 'stopped' }}"
+    state: "{{ 'started' if initial_state.ansible_facts.services[item + '.service']['state'] == 'running' else 'stopped' }}"
   when:
-    - __metrics_is_booted | bool
     - item + '.service' in final_state.ansible_facts.services
     - item + '.service' in initial_state.ansible_facts.services
-    - initial_state.ansible_facts.services[item + '.service']['status'] != 'not-found'
+    - initial_state.ansible_facts.services[item + '.service'].status != "not-found"
   with_items:
     - pmcd
     - pmlogger
     - pmie
     - pmproxy
-    - redis
-    - valkey
+    - "{{ __keyserver_name }}"
     - grafana-server
 # yamllint enable rule:line-length
-
-- name: Stop firewall
-  service:
-    name: firewalld
-    state: stopped
-  when:
-    - __metrics_is_booted | bool
-    - metrics_manage_firewall | bool

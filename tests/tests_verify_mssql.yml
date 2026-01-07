@@ -2,16 +2,21 @@
 ---
 - name: Test installation and configuration of MSSQL agent
   hosts: all
-  vars:
-    metrics_from_mssql: true
+
+  roles:
+    - role: performancecopilot.metrics.keyserver
+    - role: performancecopilot.metrics.mssql
+    - role: performancecopilot.metrics.pcp
+      vars:
+        pcp_optional_agents: ['mssql']
 
   pre_tasks:
-    - name: Stop test
+    - name: Skip test if not supported by platform
       meta: end_host
-      when: (ansible_distribution in ['RedHat'] and
+      when: (ansible_facts['distribution'] in ['RedHat'] and
              (ansible_facts['distribution_version'] is version('8.4', '<'))) or
-             ansible_distribution not in ['Fedora', 'RedHat'] or
-             ansible_architecture not in ['x86_64']
+             ansible_facts['distribution'] not in ['Fedora', 'RedHat'] or
+             ansible_facts['architecture'] not in ['x86_64']
 
     - name: Save state of services
       import_tasks: get_services_state.yml
@@ -36,26 +41,17 @@
                 ternary('ansible.posix.rhel_rpm_ostree', omit) }}"
 
   tasks:
-    - name: Run test
-      block:
-        - name: Run the role
-          include_role:
-            name: linux-system-roles.metrics
-            public: true
+    - name: Check MSSQL functionality
+      include_tasks: "{{ item }}"
+      loop:
+        - check_mssql.yml
 
-        - name: Check MSSQL functionality
-          include_tasks: "{{ item }}"
-          loop:
-            - check_mssql.yml
-            - check_firewall_selinux.yml
+    - name: Check headers for ansible_managed, fingerprint
+      include_tasks: check_header.yml
+      vars:
+        __fingerprint: "performancecopilot:ansible-pcp"
+        __file: "{{ __mssql_conf }}"
 
-        - name: Flush handlers
-          meta: flush_handlers
-
-      rescue:
-        - name: Handle failure case
-          include_tasks: handle_test_failure.yml
-
-      always:
-        - name: Restore state of services
-          import_tasks: restore_services_state.yml
+  post_tasks:
+    - name: Restore state of services
+      import_tasks: restore_services_state.yml

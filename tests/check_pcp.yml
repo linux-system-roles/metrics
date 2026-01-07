@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
 ---
 - name: Check if PCP works
-  command: "{{ 'pcp' if __metrics_is_booted else 'pcp --version' }}"
+  command: pcp
   changed_when: false
