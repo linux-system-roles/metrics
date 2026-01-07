@@ -16,9 +16,9 @@
     - bpftrace
   when:
     - __metrics_is_booted | bool
-    - ansible_distribution in ['RedHat', 'CentOS']
-    - ansible_distribution_major_version | int > 6
-    - ansible_distribution_major_version | int < 10
+    - ansible_facts['distribution'] in ['RedHat', 'CentOS']
+    - ansible_facts['distribution_major_version'] | int > 6
+    - ansible_facts['distribution_major_version'] | int < 10
 
 - name: Check if grafana-pcp datasources are configured
   uri:
@@ -35,8 +35,8 @@
     - bpftrace
   when:
     - __metrics_is_booted | bool
-    - (ansible_distribution in ['RedHat', 'CentOS'] and
-       ansible_distribution_major_version | int >= 10) or
-       ansible_distribution not in ['RedHat', 'CentOS']
+    - (ansible_facts['distribution'] in ['RedHat', 'CentOS'] and
+       ansible_facts['distribution_major_version'] | int >= 10) or
+       ansible_facts['distribution'] not in ['RedHat', 'CentOS']
 
 # yamllint enable rule:line-length
