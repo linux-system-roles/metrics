@@ -6,9 +6,9 @@
     valkey-cli PING | grep PONG
   changed_when: false
   when:
-    - (ansible_distribution in ['RedHat', 'CentOS'] and
-       ansible_distribution_major_version | int >= 10) or
-       ansible_distribution not in ['RedHat', 'CentOS']
+    - (ansible_facts['distribution'] in ['RedHat', 'CentOS'] and
+       ansible_facts['distribution_major_version'] | int >= 10) or
+       ansible_facts['distribution'] not in ['RedHat', 'CentOS']
     - __metrics_is_booted | bool
 
 - name: Check if Redis responds
@@ -17,7 +17,7 @@
     redis-cli PING | grep PONG
   changed_when: false
   when:
-    - ansible_distribution in ['RedHat', 'CentOS']
-    - ansible_distribution_major_version | int > 6
-    - ansible_distribution_major_version | int < 10
+    - ansible_facts['distribution'] in ['RedHat', 'CentOS']
+    - ansible_facts['distribution_major_version'] | int > 6
+    - ansible_facts['distribution_major_version'] | int < 10
     - __metrics_is_booted | bool
