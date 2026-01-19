@@ -55,6 +55,9 @@
             name: linux-system-roles.metrics
             public: true
 
+        - name: Flush handlers
+          meta: flush_handlers
+
         - name: Signal pmcd to ensure above path used by pmdapostfix
           command: pmstore pmcd.control.sighup 1
           changed_when: false
@@ -65,9 +68,6 @@
           loop:
             - check_postfix.yml
             - check_firewall_selinux.yml
-
-        - name: Flush handlers
-          meta: flush_handlers
 
       rescue:
         - name: Handle failure case

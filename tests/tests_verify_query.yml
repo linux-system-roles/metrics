@@ -23,6 +23,9 @@
             name: linux-system-roles.metrics
             public: true
 
+        - name: Flush handlers
+          meta: flush_handlers
+
         - name: Check all the required services
           include_tasks: "{{ item }}"
           loop:
@@ -32,9 +35,6 @@
             - check_keyserver.yml
             - check_pmproxy.yml
             - check_firewall_selinux.yml
-
-        - name: Flush handlers
-          meta: flush_handlers
 
       rescue:
         - name: Handle failure case

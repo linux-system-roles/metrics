@@ -19,6 +19,9 @@
             name: linux-system-roles.metrics
             public: true
 
+        - name: Flush handlers
+          meta: flush_handlers
+
         - name: Check if basic metrics role setup works
           include_tasks: "{{ item }}"
           loop:
@@ -26,9 +29,6 @@
             - check_pmlogger.yml
             - check_pmie.yml
             - check_firewall_selinux.yml
-
-        - name: Flush handlers
-          meta: flush_handlers
 
       rescue:
         - name: Handle failure case

@@ -24,26 +24,17 @@
             public: true
             tasks_from: set_vars.yml
 
-        - name: Generate grafana cert and key using the certificate system role
-          include_role:
-            name: fedora.linux_system_roles.certificate
-          vars:
-            certificate_requests:
-              - name: grafana-server
-                dns: ['localhost', 'www.example.com']
-                ca: self-sign
-                group: root
-          when: __metrics_is_booted | bool
-
         - name: Run the role
           include_role:
             name: linux-system-roles.metrics
             public: true
           vars:
-            metrics_grafana_cert: "{{ '/etc/pki/tls/certs/grafana-server.crt'
-              if __metrics_is_booted else '' }}"
-            metrics_grafana_private_key: "{{ '/etc/pki/tls/private/grafana-server.key'
-              if __metrics_is_booted else '' }}"
+            metrics_grafana_certificates: "{{ cert_requests if __metrics_is_booted else [] }}"
+            cert_requests:
+              - name: grafana-server
+                dns: ['localhost', 'www.example.com']
+                ca: self-sign
+                group: root
 
         - name: Flush handlers
           meta: flush_handlers
@@ -63,15 +54,13 @@
 
       always:
         - name: Restore state of services
-          include_tasks: restore_services_state.yml
-          tags: tests::cleanup
+          import_tasks: restore_services_state.yml
 
         - name: Test - clean up tracked certificate
           command: >
             getcert stop-tracking
             -f /etc/pki/tls/certs/grafana-server.crt
           changed_when: false
-          tags: tests::cleanup
           when: __metrics_is_booted | bool
 
         - name: Delete certificates
@@ -81,5 +70,4 @@
           loop:
             - /etc/pki/tls/certs/grafana-server.crt
             - /etc/pki/tls/private/grafana-server.key
-          tags: tests::cleanup
           when: __metrics_is_booted | bool

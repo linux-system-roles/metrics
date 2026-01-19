@@ -43,14 +43,14 @@
             name: linux-system-roles.metrics
             public: true
 
+        - name: Flush handlers
+          meta: flush_handlers
+
         - name: Check MSSQL functionality
           include_tasks: "{{ item }}"
           loop:
             - check_mssql.yml
             - check_firewall_selinux.yml
-
-        - name: Flush handlers
-          meta: flush_handlers
 
       rescue:
         - name: Handle failure case

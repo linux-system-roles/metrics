@@ -23,11 +23,11 @@
             name: linux-system-roles.metrics
             public: true
 
-        - name: Check if import to Elasticsearch works
-          include_tasks: check_into_elasticsearch.yml
-
         - name: Flush handlers
           meta: flush_handlers
+
+        - name: Check if import to Elasticsearch works
+          include_tasks: check_into_elasticsearch.yml
 
       rescue:
         - name: Handle failure case

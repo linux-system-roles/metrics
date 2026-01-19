@@ -24,15 +24,15 @@
             name: linux-system-roles.metrics
             public: true
 
+        - name: Flush handlers
+          meta: flush_handlers
+
         - name: Check basic services and the webhook endpoint
           include_tasks: "{{ item }}"
           loop:
             - check_pcp.yml
             - check_pmie.yml
             - check_notification.yml
-
-        - name: Flush handlers
-          meta: flush_handlers
 
       rescue:
         - name: Handle failure case

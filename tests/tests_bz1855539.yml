@@ -25,6 +25,9 @@
             name: linux-system-roles.metrics
             public: true
 
+        - name: Flush handlers
+          meta: flush_handlers
+
         - name: >-
             Check if pmie configuration file on remote host is the secondary one
           command: |-
@@ -43,9 +46,6 @@
           command: >-
             grep -E '^\s*\S+\s+y\s+n\s+' {{ pcp_pmie_control_path }}/local
           changed_when: false
-
-        - name: Flush handlers
-          meta: flush_handlers
 
       rescue:
         - name: Handle failure case

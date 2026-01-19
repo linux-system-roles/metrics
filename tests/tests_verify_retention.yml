@@ -18,6 +18,9 @@
             name: linux-system-roles.metrics
             public: true
 
+        - name: Flush handlers
+          meta: flush_handlers
+
         - name: Check basic services and the retention
           include_tasks: "{{ item }}"
           loop:
@@ -26,9 +29,6 @@
             - check_pmie.yml
             - check_retention.yml
             - check_firewall_selinux.yml
-
-        - name: Flush handlers
-          meta: flush_handlers
 
       rescue:
         - name: Handle failure case

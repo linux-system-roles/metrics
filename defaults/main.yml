@@ -68,3 +68,10 @@ metrics_optional_domains: []
 # Additional metrics packages that should be installed, beyond the default set,
 # to enable additional metrics, export to alternate data sinks, and so on.
 metrics_optional_packages: []
+
+# Certificate and key for grafana server
+metrics_grafana_certificates: []
+metrics_grafana_cert: ""
+metrics_grafana_private_key: ""
+metrics_grafana_cert_src: ""
+metrics_grafana_private_key_src: ""
