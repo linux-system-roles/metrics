@@ -185,6 +185,88 @@ enable additional metrics, export to alternate data sinks, and so on.
 metrics_optional_packages: [pcp-pmda-apache]
 ```
 
+### metrics_grafana_certificates: []
+
+For generating a new certificate for grafana it is recommended to set the
+`metrics_grafana_certificates` variable.  If you have your own certs/keys, or
+will create them from your own CA provider, see below `metrics_grafana_cert` et
+al. for information about how to pass in and/or use your own certs.
+
+The value of `metrics_grafana_certificates` is passed on to the
+`certificate_requests` variable of the `certificate` role called internally in
+the `metrics` role and it generates the private key and certificate. For the
+supported parameters of `metrics_grafana_certificates`, see the
+[`certificate_requests` role documentation section](https://github.com/linux-system-roles/certificate/#certificate_requests).
+
+When you set `metrics_grafana_certificates`, you must not set
+`metrics_grafana_private_key` and `metrics_grafana_cert` variables because they
+are ignored.
+
+This example installs grafana with an IdM-issued web server certificate assuming
+your machines are joined to a FreeIPA domain.
+
+```yaml
+    - name: Install grafana with server certificate and key
+      include_role:
+        name: linux-system-roles.metrics
+      vars:
+        metrics_graph_service: true
+        metrics_grafana_certificates:
+          - name: grafana-server
+            dns: ['localhost', 'www.example.com']
+            ca: ipa
+```
+
+NOTE: The `certificate` role, unless using IPA and joining the systems to an IPA
+domain, creates self-signed certificates, so you will need to explicitly
+configure trust, which is not currently supported by the system roles. To use
+`ca: self-sign` or `ca: local`, depending on your certmonger usage, see the
+[linux-system-roles.certificate documentation](https://github.com/linux-system-roles/certificate/#cas-and-providers) for details.
+
+NOTE: Creating a self-signed certificate is not supported on RHEL/CentOS-7.
+
+### metrics_grafana_cert: ''
+
+TLS certificate file for the grafana server.  This should be the full absolute path
+on the grafana server machine e.g. `/etc/pki/tls/certs/grafana-server.crt`.  This
+file should already exist.  If you want to copy a local file, see `metrics_grafana_cert_src`.
+
+```yaml
+metrics_grafana_cert: /etc/pki/tls/certs/grafana-server.crt
+```
+
+### metrics_grafana_cert_src: ''
+
+TLS certificate file from the local machine to copy to `metrics_grafana_cert` on
+the grafana server machine.  If `metrics_grafana_cert` is not specified, then
+`metrics_grafana_cert_src` will be copied to `/etc/pki/tls/certs/basename.crt` on
+the grafana server machine, where `basename` is the basename of `metrics_grafana_cert_src`.
+
+```yaml
+metrics_grafana_cert_src: /my/local/grafana-server.crt
+```
+
+### metrics_grafana_private_key: ''
+
+TLS private key file for the grafana server.  This should be the full absolute path
+on the grafana server machine e.g. `/etc/pki/tls/private/grafana-server.key`.  This
+file should already exist.  If you want to copy a local file, see `metrics_grafana_private_key_src`.
+
+```yaml
+metrics_grafana_private_key: /etc/pki/tls/private/grafana-server.key
+```
+
+### metrics_grafana_private_key_src: ''
+
+TLS private key file from the local machine to copy to `metrics_grafana_private_key` on
+the grafana server machine.  If `metrics_grafana_private_key` is not specified, then
+`metrics_grafana_private_key_src` will be copied to `/etc/pki/tls/private/basename.key` on
+the grafana server machine, where `basename` is the basename of `metrics_grafana_private_key_src`.
+
+```yaml
+metrics_grafana_private_key_src: /my/local/grafana-server.key
+```
+
 ## Example Playbook
 
 Basic metric recording setup for each managed host only, with one

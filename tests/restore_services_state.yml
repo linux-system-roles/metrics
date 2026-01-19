@@ -5,7 +5,6 @@
   service_facts:
   register: final_state
 
-# yamllint disable rule:line-length
 - name: Restore state of services
   tags: tests::cleanup
   service:
@@ -26,7 +25,6 @@
     - redis
     - valkey
     - grafana-server
-# yamllint enable rule:line-length
 
 - name: Stop firewall
   service:

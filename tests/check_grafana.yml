@@ -2,7 +2,8 @@
 ---
 - name: Check if Grafana works
   uri:
-    url: http://localhost:3000/login
+    url: "{{ __metrics_grafana_protocol | d('http') }}://localhost:3000/login"
     method: GET
     status_code: 200
+    validate_certs: false
   when: __metrics_is_booted | bool

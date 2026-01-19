@@ -29,15 +29,15 @@
             name: linux-system-roles.metrics
             public: true
 
+        - name: Flush handlers
+          meta: flush_handlers
+
         - name: Check if BPFTrace & SASL works
           include_tasks: "{{ item }}"
           loop:
             - check_bpftrace.yml
             - check_sasl.yml
             - check_firewall_selinux.yml
-
-        - name: Flush handlers
-          meta: flush_handlers
 
       rescue:
         - name: Handle failure case

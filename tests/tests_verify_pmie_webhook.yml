@@ -23,11 +23,11 @@
             name: linux-system-roles.metrics
             public: true
 
-        - name: Check if configuring pmie webhook works
-          include_tasks: check_pmie_webhook.yml
-
         - name: Flush handlers
           meta: flush_handlers
+
+        - name: Check if configuring pmie webhook works
+          include_tasks: check_pmie_webhook.yml
 
       rescue:
         - name: Handle failure case

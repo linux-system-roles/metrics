@@ -23,11 +23,11 @@
             name: linux-system-roles.metrics
             public: true
 
-        - name: Check if import from Spark works
-          include_tasks: check_from_spark.yml
-
         - name: Flush handlers
           meta: flush_handlers
+
+        - name: Check if import from Spark works
+          include_tasks: check_from_spark.yml
 
       rescue:
         - name: Handle failure case
