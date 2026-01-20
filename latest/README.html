@@ -189,6 +189,19 @@ id="toc-metrics_optional_domains-">metrics_optional_domains: []</a></li>
 <li><a href="#metrics_optional_packages-"
 id="toc-metrics_optional_packages-">metrics_optional_packages:
 []</a></li>
+<li><a href="#metrics_grafana_certificates-"
+id="toc-metrics_grafana_certificates-">metrics_grafana_certificates:
+[]</a></li>
+<li><a href="#metrics_grafana_cert-"
+id="toc-metrics_grafana_cert-">metrics_grafana_cert: ''</a></li>
+<li><a href="#metrics_grafana_cert_src-"
+id="toc-metrics_grafana_cert_src-">metrics_grafana_cert_src: ''</a></li>
+<li><a href="#metrics_grafana_private_key-"
+id="toc-metrics_grafana_private_key-">metrics_grafana_private_key:
+''</a></li>
+<li><a href="#metrics_grafana_private_key_src-"
+id="toc-metrics_grafana_private_key_src-">metrics_grafana_private_key_src:
+''</a></li>
 </ul></li>
 <li><a href="#example-playbook" id="toc-example-playbook">Example
 Playbook</a></li>
@@ -334,43 +347,122 @@ default set, to enable additional metrics, export to alternate data
 sinks, and so on.</p>
 <div class="sourceCode" id="cb4"><pre
 class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">metrics_optional_packages</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">pcp-pmda-apache</span><span class="kw">]</span></span></code></pre></div>
+<h2 id="metrics_grafana_certificates-">metrics_grafana_certificates:
+[]</h2>
+<p>For generating a new certificate for grafana it is recommended to set
+the <code>metrics_grafana_certificates</code> variable. If you have your
+own certs/keys, or will create them from your own CA provider, see below
+<code>metrics_grafana_cert</code> et al. for information about how to
+pass in and/or use your own certs.</p>
+<p>The value of <code>metrics_grafana_certificates</code> is passed on
+to the <code>certificate_requests</code> variable of the
+<code>certificate</code> role called internally in the
+<code>metrics</code> role and it generates the private key and
+certificate. For the supported parameters of
+<code>metrics_grafana_certificates</code>, see the <a
+href="https://github.com/linux-system-roles/certificate/#certificate_requests"><code>certificate_requests</code>
+role documentation section</a>.</p>
+<p>When you set <code>metrics_grafana_certificates</code>, you must not
+set <code>metrics_grafana_private_key</code> and
+<code>metrics_grafana_cert</code> variables because they are
+ignored.</p>
+<p>This example installs grafana with an IdM-issued web server
+certificate assuming your machines are joined to a FreeIPA domain.</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Install grafana with server certificate and key</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">include_role</span><span class="kw">:</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">name</span><span class="kw">:</span><span class="at"> linux-system-roles.metrics</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="at">      </span><span class="fu">vars</span><span class="kw">:</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">metrics_graph_service</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="at">        </span><span class="fu">metrics_grafana_certificates</span><span class="kw">:</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="at">          </span><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> grafana-server</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">dns</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="st">&#39;localhost&#39;</span><span class="kw">,</span><span class="at"> </span><span class="st">&#39;www.example.com&#39;</span><span class="kw">]</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="at">            </span><span class="fu">ca</span><span class="kw">:</span><span class="at"> ipa</span></span></code></pre></div>
+<p>NOTE: The <code>certificate</code> role, unless using IPA and joining
+the systems to an IPA domain, creates self-signed certificates, so you
+will need to explicitly configure trust, which is not currently
+supported by the system roles. To use <code>ca: self-sign</code> or
+<code>ca: local</code>, depending on your certmonger usage, see the <a
+href="https://github.com/linux-system-roles/certificate/#cas-and-providers">linux-system-roles.certificate
+documentation</a> for details.</p>
+<p>NOTE: Creating a self-signed certificate is not supported on
+RHEL/CentOS-7.</p>
+<h2 id="metrics_grafana_cert-">metrics_grafana_cert: ''</h2>
+<p>TLS certificate file for the grafana server. This should be the full
+absolute path on the grafana server machine e.g.
+<code>/etc/pki/tls/certs/grafana-server.crt</code>. This file should
+already exist. If you want to copy a local file, see
+<code>metrics_grafana_cert_src</code>.</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">metrics_grafana_cert</span><span class="kw">:</span><span class="at"> /etc/pki/tls/certs/grafana-server.crt</span></span></code></pre></div>
+<h2 id="metrics_grafana_cert_src-">metrics_grafana_cert_src: ''</h2>
+<p>TLS certificate file from the local machine to copy to
+<code>metrics_grafana_cert</code> on the grafana server machine. If
+<code>metrics_grafana_cert</code> is not specified, then
+<code>metrics_grafana_cert_src</code> will be copied to
+<code>/etc/pki/tls/certs/basename.crt</code> on the grafana server
+machine, where <code>basename</code> is the basename of
+<code>metrics_grafana_cert_src</code>.</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">metrics_grafana_cert_src</span><span class="kw">:</span><span class="at"> /my/local/grafana-server.crt</span></span></code></pre></div>
+<h2 id="metrics_grafana_private_key-">metrics_grafana_private_key:
+''</h2>
+<p>TLS private key file for the grafana server. This should be the full
+absolute path on the grafana server machine e.g.
+<code>/etc/pki/tls/private/grafana-server.key</code>. This file should
+already exist. If you want to copy a local file, see
+<code>metrics_grafana_private_key_src</code>.</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">metrics_grafana_private_key</span><span class="kw">:</span><span class="at"> /etc/pki/tls/private/grafana-server.key</span></span></code></pre></div>
+<h2
+id="metrics_grafana_private_key_src-">metrics_grafana_private_key_src:
+''</h2>
+<p>TLS private key file from the local machine to copy to
+<code>metrics_grafana_private_key</code> on the grafana server machine.
+If <code>metrics_grafana_private_key</code> is not specified, then
+<code>metrics_grafana_private_key_src</code> will be copied to
+<code>/etc/pki/tls/private/basename.key</code> on the grafana server
+machine, where <code>basename</code> is the basename of
+<code>metrics_grafana_private_key_src</code>.</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">metrics_grafana_private_key_src</span><span class="kw">:</span><span class="at"> /my/local/grafana-server.key</span></span></code></pre></div>
 <h1 id="example-playbook">Example Playbook</h1>
 <p>Basic metric recording setup for each managed host only, with one
 weeks worth of data retained before culling.</p>
-<div class="sourceCode" id="cb5"><pre
-class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Manage metrics service</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hosts</span><span class="kw">:</span><span class="at"> all</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">vars</span><span class="kw">:</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_retention_days</span><span class="kw">:</span><span class="at"> </span><span class="dv">7</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">roles</span><span class="kw">:</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> linux-system-roles.metrics</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Manage metrics service</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hosts</span><span class="kw">:</span><span class="at"> all</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">vars</span><span class="kw">:</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_retention_days</span><span class="kw">:</span><span class="at"> </span><span class="dv">7</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">roles</span><span class="kw">:</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> linux-system-roles.metrics</span></span></code></pre></div>
 <p>Scalable metric recording, analysis and visualization setup for the
 managed hosts, providing a REST API server with an OpenMetrics endpoint,
 graphs and scalable querying.</p>
-<div class="sourceCode" id="cb6"><pre
-class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Manage metrics with graph and query services</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hosts</span><span class="kw">:</span><span class="at"> all</span></span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">vars</span><span class="kw">:</span></span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_graph_service</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_query_service</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">roles</span><span class="kw">:</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> linux-system-roles.metrics</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Manage metrics with graph and query services</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hosts</span><span class="kw">:</span><span class="at"> all</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">vars</span><span class="kw">:</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_graph_service</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_query_service</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">roles</span><span class="kw">:</span></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> linux-system-roles.metrics</span></span></code></pre></div>
 <p>Centralized metric recording setup for several remote hosts and
 scalable metric recording, analysis and visualization setup for the
 local host, providing a REST API server with an OpenMetrics endpoint,
 graphs and scalable querying.</p>
-<div class="sourceCode" id="cb7"><pre
-class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Manage centralized metrics gathering</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hosts</span><span class="kw">:</span><span class="at"> monitors</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">vars</span><span class="kw">:</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_monitored_hosts</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">app.example.com</span><span class="kw">,</span><span class="at"> db.example.com</span><span class="kw">,</span><span class="at"> nas.example.com</span><span class="kw">]</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_graph_service</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_query_service</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">roles</span><span class="kw">:</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> linux-system-roles.metrics</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode yaml"><code class="sourceCode yaml"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="pp">---</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="kw">-</span><span class="at"> </span><span class="fu">name</span><span class="kw">:</span><span class="at"> Manage centralized metrics gathering</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">hosts</span><span class="kw">:</span><span class="at"> monitors</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">vars</span><span class="kw">:</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_monitored_hosts</span><span class="kw">:</span><span class="at"> </span><span class="kw">[</span><span class="at">app.example.com</span><span class="kw">,</span><span class="at"> db.example.com</span><span class="kw">,</span><span class="at"> nas.example.com</span><span class="kw">]</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_graph_service</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">metrics_query_service</span><span class="kw">:</span><span class="at"> </span><span class="ch">true</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">roles</span><span class="kw">:</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> linux-system-roles.metrics</span></span></code></pre></div>
 <h1 id="rpm-ostree">rpm-ostree</h1>
 <p>See README-ostree.md</p>
 <h1 id="license">License</h1>
