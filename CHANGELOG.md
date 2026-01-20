@@ -1,6 +1,18 @@
 Changelog
 =========
 
+[1.14.0] - 2026-01-20
+--------------------
+
+### New Features
+
+- feat: add TLS certificate and key support for Grafana for HTTPS (#284)
+
+### Other Changes
+
+- ci: use ANSIBLE_INJECT_FACT_VARS=false by default for testing (#282)
+- refactor: Sync ansible-pcp git subtree (#283)
+
 [1.13.3] - 2026-01-07
 --------------------
 
