@@ -1,6 +1,13 @@
 Changelog
 =========
 
+[1.14.1] - 2026-01-22
+--------------------
+
+### Other Changes
+
+- test: do not restore service if final state not-found (#286)
+
 [1.14.0] - 2026-01-20
 --------------------
 
