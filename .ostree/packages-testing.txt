@@ -1,2 +1,3 @@
 cyrus-sasl-lib
 pcp
+pcp-pmda-apache
