@@ -1,6 +1,20 @@
 Changelog
 =========
 
+[1.14.2] - 2026-02-18
+--------------------
+
+### Other Changes
+
+- ci: bump ansible/ansible-lint from 25 to 26 (#288)
+- ci: skip most CI checks if title contains citest skip [citest_skip] (#289)
+- ci: ansible-lint - remove .collection directory from converted collection [citest_skip] (#290)
+- ci: tox-lsr version 3.15.0 [citest_skip] (#291)
+- ci: Update CODEOWNERS (#292)
+- ci: Add Fedora 43, remove Fedora 41 from Testing Farm CI (#293)
+- ci: Ansible version must be string, not float [citest_skip] (#294)
+- test: ostree - add package pcp-pmda-apache, role certificate (#295)
+
 [1.14.1] - 2026-01-22
 --------------------
 
