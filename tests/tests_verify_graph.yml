@@ -36,10 +36,9 @@
           when: __metrics_is_booted | bool
 
         - name: Run the role
-          include_role:
-            name: linux-system-roles.metrics
-            public: true
+          include_tasks: tasks/run_role_with_clear_facts.yml
           vars:
+            __sr_public: true
             metrics_grafana_cert: "{{ '/etc/pki/tls/certs/grafana-server.crt'
               if __metrics_is_booted else '' }}"
             metrics_grafana_private_key: "{{ '/etc/pki/tls/private/grafana-server.key'

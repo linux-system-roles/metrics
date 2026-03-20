@@ -5,6 +5,7 @@ __metrics_domains: []
 __metrics_accounts: {}
 
 __metrics_required_facts:
+  - architecture
   - distribution
   - distribution_major_version
   - distribution_version
