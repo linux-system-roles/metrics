@@ -25,10 +25,9 @@
             tasks_from: set_vars.yml
 
         - name: Run the role
-          include_role:
-            name: linux-system-roles.metrics
-            public: true
+          include_tasks: tasks/run_role_with_clear_facts.yml
           vars:
+            __sr_public: true
             metrics_grafana_certificates: "{{ cert_requests if __metrics_is_booted else [] }}"
             cert_requests:
               - name: grafana-server

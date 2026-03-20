@@ -24,10 +24,10 @@
     - name: Run test
       block:
         - name: Run the role
-          include_role:
-            name: linux-system-roles.metrics
-            public: true
+          include_tasks: tasks/run_role_with_clear_facts.yml
           when: not __bootc_validation | d(false)
+          vars:
+            __sr_public: true
 
         - name: Create QEMU deployment during bootc end-to-end test
           delegate_to: localhost
