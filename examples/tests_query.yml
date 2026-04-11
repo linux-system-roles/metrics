@@ -1,9 +1,0 @@
-# SPDX-License-Identifier: MIT
----
-- name: Ensure that the role runs with query service enabled
-  hosts: all
-
-  roles:
-    - role: linux-system-roles.metrics
-      vars:
-        metrics_query_service: true

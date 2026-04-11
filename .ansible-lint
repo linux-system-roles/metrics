@@ -1,8 +1,16 @@
 ---
-profile: production
+skip_list:
+  - fqcn-builtins
+  - galaxy[no-changelog]
+exclude_paths:
+  - tests/roles/
+  - .github/
+  - examples/roles/
+  - .markdownlint.yaml
+  # downloaded, not ours
+  - .ansible/collections
 kinds:
   - yaml: "**/meta/collection-requirements.yml"
-  - playbook: "**/tests/get_coverage.yml"
   - yaml: "**/tests/collection-requirements.yml"
   - playbook: "**/tests/tests_*.yml"
   - playbook: "**/tests/setup-snapshot.yml"
@@ -12,25 +20,3 @@ kinds:
   - tasks: "**/tests/tasks/*/*.yml"
   - vars: "**/tests/vars/*.yml"
   - playbook: "**/examples/*.yml"
-skip_list:
-  - fqcn-builtins
-  - var-naming[no-role-prefix]
-  - galaxy[no-changelog]
-exclude_paths:
-  - tests/roles/
-  - .github/
-  - .markdownlint.yaml
-  - examples/roles/
-mock_roles:
-  - linux-system-roles.metrics
-  - performancecopilot.metrics.bpftrace
-  - performancecopilot.metrics.elasticsearch
-  - performancecopilot.metrics.grafana
-  - performancecopilot.metrics.mssql
-  - performancecopilot.metrics.pcp
-  - performancecopilot.metrics.postfix
-  - performancecopilot.metrics.keyserver
-  - performancecopilot.metrics.repository
-  - performancecopilot.metrics.spark
-supported_ansible_also:
-  - "2.14.0"
