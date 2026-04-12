@@ -1,6 +1,0 @@
-cyrus-sasl-lib
-cyrus-sasl-scram
-pcp
-pcp-pmda-elasticsearch
-pcp-pmda-postfix
-pcp-zeroconf
