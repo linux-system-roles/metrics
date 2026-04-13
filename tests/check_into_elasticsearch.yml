@@ -3,9 +3,3 @@
 - name: Check if export to Elasticsearch is installed
   command: test -x /usr/bin/pcp2elasticsearch
   changed_when: false
-
-- name: Check the ansible_managed header in pcp2elasticsearch.service
-  vars:
-    __test_config_path: >-
-      {{ __elasticsearch_service_path }}/pcp2elasticsearch.service
-  include_tasks: check_header.yml

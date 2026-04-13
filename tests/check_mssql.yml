@@ -1,27 +1,9 @@
 # SPDX-License-Identifier: MIT
 ---
-- name: Check if mssql pmda is registered
+- name: Check if mssql PMDA is registered
   command: pmprobe -I pmcd.agent.status
   register: status
   until: status.stdout.find("mssql") != -1
   retries: 10
   delay: 1
   changed_when: false
-  when: __metrics_is_booted | bool
-
-# yamllint disable rule:line-length
-- name: Set platform/version specific variables
-  include_vars: "{{ item }}"
-  loop:
-    - roles/linux-system-roles.metrics/roles/mssql/vars/default.yml"
-    - roles/linux-system-roles.metrics/roles/mssql/vars/{{ ansible_facts['os_family'] }}.yml"
-    - roles/linux-system-roles.metrics/roles/mssql/vars/{{ ansible_facts['distribution'] }}.yml"
-    - roles/linux-system-roles.metrics/roles/mssql/vars/{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_major_version'] }}.yml"
-    - roles/linux-system-roles.metrics/roles/mssql/vars/{{ ansible_facts['distribution'] }}_{{ ansible_facts['distribution_version'] }}.yml"
-  when: item is file
-# yamllint enable rule:line-length
-
-- name: Check the ansible_managed header in the configuration file
-  vars:
-    __test_config_path: "{{ __mssql_conf_dir }}/mssql.conf"
-  include_tasks: check_header.yml

@@ -1,2 +1,0 @@
-cyrus-sasl-lib
-pcp
