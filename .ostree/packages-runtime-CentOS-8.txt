@@ -1,5 +1,0 @@
-bpftrace
-grafana
-pcp-pmda-bpftrace
-redis
-redis-doc

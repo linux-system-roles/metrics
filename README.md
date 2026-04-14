@@ -1,241 +1,94 @@
-# metrics
+# Ansible Collection - performancecopilot.metrics
 
-[![ansible-lint.yml](https://github.com/linux-system-roles/metrics/actions/workflows/ansible-lint.yml/badge.svg)](https://github.com/linux-system-roles/metrics/actions/workflows/ansible-lint.yml) [![ansible-test.yml](https://github.com/linux-system-roles/metrics/actions/workflows/ansible-test.yml/badge.svg)](https://github.com/linux-system-roles/metrics/actions/workflows/ansible-test.yml) [![codespell.yml](https://github.com/linux-system-roles/metrics/actions/workflows/codespell.yml/badge.svg)](https://github.com/linux-system-roles/metrics/actions/workflows/codespell.yml) [![markdownlint.yml](https://github.com/linux-system-roles/metrics/actions/workflows/markdownlint.yml/badge.svg)](https://github.com/linux-system-roles/metrics/actions/workflows/markdownlint.yml) [![qemu-kvm-integration-tests.yml](https://github.com/linux-system-roles/metrics/actions/workflows/qemu-kvm-integration-tests.yml/badge.svg)](https://github.com/linux-system-roles/metrics/actions/workflows/qemu-kvm-integration-tests.yml) [![shellcheck.yml](https://github.com/linux-system-roles/metrics/actions/workflows/shellcheck.yml/badge.svg)](https://github.com/linux-system-roles/metrics/actions/workflows/shellcheck.yml) [![subtree.yml](https://github.com/linux-system-roles/metrics/actions/workflows/subtree.yml/badge.svg)](https://github.com/linux-system-roles/metrics/actions/workflows/subtree.yml) [![tft.yml](https://github.com/linux-system-roles/metrics/actions/workflows/tft.yml/badge.svg)](https://github.com/linux-system-roles/metrics/actions/workflows/tft.yml) [![tft_citest_bad.yml](https://github.com/linux-system-roles/metrics/actions/workflows/tft_citest_bad.yml/badge.svg)](https://github.com/linux-system-roles/metrics/actions/workflows/tft_citest_bad.yml) [![woke.yml](https://github.com/linux-system-roles/metrics/actions/workflows/woke.yml/badge.svg)](https://github.com/linux-system-roles/metrics/actions/workflows/woke.yml)
+![CI Testing](https://github.com/performancecopilot/ansible-pcp/workflows/tox/badge.svg)
+[![Mailing List](https://img.shields.io/badge/Mailing%20List-pcp-blue.svg)](https://groups.io/g/pcp)
+[![Slack Team](https://img.shields.io/badge/Slack-pcp-blue.svg)](https://h7zo83mvt1.execute-api.us-west-2.amazonaws.com/Express/)
+[![IRC #pcp](https://img.shields.io/badge/IRC-pcp-blue.svg)](https://web.libera.chat/#pcp)
+[![Github Release](https://img.shields.io/github/release/performancecopilot/ansible-pcp.svg)](https://github.com/performancecopilot/ansible-pcp/releases/latest)
 
-An ansible role which configures performance analysis services for the managed
-host.  This (optionally) includes a list of remote systems to be monitored
-by the managed host.
+A collection containing roles for Performance Co-Pilot (PCP)
+and related software, such as Valkey/Redis and Grafana.
 
-## Requirements
+The collection is arranged as follows:
 
-Performance Co-Pilot (PCP) v5+. All of the packages are available
-from the standard repositories on Fedora, CentOS 8, and RHEL 8.  On RHEL
-7 and RHEL 6, you will need to enable the Optional repository/channel
-on the managed host.
+- performancecopilot.metrics.pcp
 
-The role can optionally use Grafana v6+ (`metrics_graph_service`) and
-Valkey (`metrics_query_service`) on Fedora, CentOS 10, RHEL 10 and later,
-or Redis v5+ (`metrics_query_service`) on CentOS 8 or 9, RHEL 8 or 9.
+  A role for core PCP capabilities, configuring live performance
+  analysis with a large base set of metrics from the kernel and
+  system services, as well as data recording and rule inference.
 
-### Collection requirements
+- performancecopilot.metrics.grafana
 
-The role requires the `firewall` role and the `selinux` role from the
-`fedora.linux_system_roles` collection, if `metrics_manage_firewall`
-and `metrics_manage_selinux` is set to true, respectively.
-(Please see also the variables in the [`Role Variables`](#role-variables) section.)
+  A role for configuring a local Grafana server, providing web
+  frontend visuals for Performance Co-Pilot metrics, both live
+  and historically.
+  Data sources for Vector (live), Valkey/Redis (historical) and
+  interactive bpftrace (eBPF) scripts can be configured by this
+  role.  The PCP REST API service (from the core PCP role) must
+  be configured in order to use this role.
 
-If the `metrics` is a role from the `fedora.linux_system_roles`
-collection or from the Fedora RPM package, the requirement is already
-satisfied.
+- performancecopilot.metrics.keyserver
 
-The role requires additional collections to manage `rpm-ostree` systems.
-If you need to manage `rpm-ostree` systems, run the below command to
-install the collections.
+  A role for configuring a local key server (Valkey/Redis) that
+  is suitable for use with a Performance Co-Pilot installation
+  (for single or many hosts) with fast, scalable metric queries.
 
-```bash
-ansible-galaxy collection install -r meta/collection-requirements.yml
-```
+- performancecopilot.metrics.repository
 
-## Role Variables
+  A role configuring an additional PCP packaging repository -
+  for installation of the latest (upstream) releases of the PCP
+  packages from the Performance Co-Pilot development community.
 
-### metrics_monitored_hosts: []
+- performancecopilot.metrics.bpftrace
 
-List of remote hosts to be analysed by the managed host.
-These hosts will have metrics recorded on the managed host, so care should be
-taken to ensure sufficient disk space exists below /var/log for each host.
+  A role that extends the core PCP role, providing metrics from
+  bpftrace scripts (using the Linux kernel eBPF facilities).
+  Configuring authentication of a local user capable of running
+  bpftrace scripts via the PCP agent is a key task of this role.
 
-Example:
+- performancecopilot.metrics.elasticsearch
 
-```yaml
-metrics_monitored_hosts: ["webserver.example.com", "database.example.com"]
-```
+  A role that extends the core PCP role, providing metrics from
+  a live ElasticSearch instance for PCP analysis - or exporting
+  of PCP metric values (and meta-data) to ElasticSearch for the
+  indexing and querying of performance data.
 
-### metrics_webhook_endpoint: ''
+- performancecopilot.metrics.mssql
 
-Webhook endpoint (URL) where notification about any automatically detected
-performance issues are to be sent.  By default, these events are logged to
-the local system log only.
+  A role that extends the core PCP role, providing metrics from
+  a SQL Server database.  Configuring authentication of the PCP
+  mssql metric agent is a key task of this role.
 
-### metrics_retention_days: 14
+- performancecopilot.metrics.postfix
 
-Retain historical performance data for the specified number of days; after
-this time it will be removed (day by day).
+  A role that extends the core PCP role, providing metrics from
+  a Postfix mail server.
 
-### metrics_graph_service: false
+- performancecopilot.metrics.spark
 
-Boolean flag allowing host to be setup with graphing services.
-Enabling this starts PCP and Grafana servers for visualizing PCP metrics.
-This option requires Grafana v6+ which is available on Fedora, CentOS 8,
-RHEL 8, or later versions of these platforms.
+  A role that extends the core PCP role, exporting metrics from
+  PCP into Apache Spark for further analysis.
 
-### metrics_query_service: false
 
-Boolean flag allowing host to be setup with time series query services.
-Enabling this starts PCP and Valkey or Redis servers for querying any
-recorded PCP metrics.
-This option requires either Valkey or Redis v5+ which is available on
-Fedora, CentOS 8, RHEL 8, or later versions of these platforms (Valkey
-is the preferred solution on Fedora, Centos 10, RHEL 10 and later).
+## Instructions for creating an ansible-pcp release:
 
-### metrics_into_elasticsearch: false
+### On GitHub
 
-Boolean flag allowing metric values to be exported into Elasticsearch.
+1. Pull down the performancecopilot org upstream ansible-pcp repo
+2. Bump the version to X.Y.Z in `galaxy.yml`
+3. `git add galaxy.yml`
+4. `git commit -m "Bump version to X.Y.Z ..."`
+5. `git tag -m vX.Y.Z vX.Y.Z`
+6. `git push && git push --tags`
+7. Navigate to the github web interface
+8. Create a new release for the tag vX.Y.Z and set the title to X.Y.Z
 
-### metrics_from_elasticsearch: false
+### Ansible Galaxy
 
-Boolean flag allowing metrics from Elasticsearch to be made available.
+Still in the performancecopilot ansible-pcp repo:
 
-### metrics_into_spark: false
+1. Remove the old `*.tar.gz` file if present
+2. `ansible-galaxy collection build`
+3. Navigate to https://galaxy.ansible.com/ui/namespaces/performancecopilot/
+4. Click "upload collection" and upload the `tar.gz` file just created with the `ansible-galaxy collection build` command
 
-Boolean flag allowing metric values to be exported into Spark.
-
-### metrics_from_spark: false
-
-Boolean flag allowing metrics from Spark to be made available.
-
-### metrics_from_postfix: false
-
-Boolean flag allowing metrics from Postfix to be made available.
-
-### metrics_from_mssql: false
-
-Boolean flag allowing metrics from SQL Server to be made available.
-Enabling this flag requires a 'trusted' connection to SQL Server.
-
-### metrics_from_bpftrace: false
-
-Boolean flag allowing metrics from bpftrace to be made available.
-
-### metrics_username: metrics
-
-An account to establish authenticated access to remote metrics via the PCP pmcd daemon. For more information, see <https://pcp.readthedocs.io/en/latest/QG/AuthenticatedConnections.html>.
-
-Additionally, if the bpftrace metrics are configured, this user account will be able to register bpftrace scripts.
-
-### metrics_password: metrics
-
-Do not use a clear text `metrics_password`. Use Ansible Vault to
-encrypt the password.
-
-Mandatory authentication for executing dynamic bpftrace scripts.
-
-### metrics_provider: pcp
-
-The metrics collector to use to provide metrics.
-
-Currently Performance Co-Pilot is the only supported metrics provider.
-When using the PCP provider these TCP ports will be used - 44321 (pmcd,
-live metric value sampling), 44322 (pmproxy, with metrics_query_service
-or metrics_graph_service), 6379 (either valkey-server or redis-server for
-metrics_query_service) and 3000 (grafana-server for metrics_graph_service).
-
-### metrics_manage_firewall: false
-
-Boolean flag allowing to configure firewall using the firewall role.
-Manage the pmcd port, the pmproxy port, the Grafana port and either the
-Valkey or Redis port depending upon the configuration parameters.
-If the variable is set to false, the `metrics role` does not manage the
-firewall.
-
-NOTE: `metrics_manage_firewall` is limited to *adding* ports.
-It cannot be used for *removing* ports.
-If you want to remove ports, you will need to use the firewall system
-role directly.
-
-NOTE: the firewall management is not supported on RHEL 6.
-
-### metrics_manage_selinux: false
-
-Boolean flag allowing to configure selinux using the selinux role.
-Assign the pmcd port, the pmproxy port, the Grafana port and either the
-Valkey or Redis port depending upon the configuration parameters.
-If the variable is set to false, the `metrics role` does not manage the
-selinux.
-
-Please note that the pmcd and pmproxy services are in the "ephemeral"
-range requiring no special setup and the Grafana port is "unregistered".
-The Valkey or Redis ports are gated by the valkey_port_t or redis_port_t
-SELinux types respectively, and may need to be further configured if you
-require direct access (not required if you are accessing it from metrics
-role tools like Grafana and PCP).
-Use the `selinux` system role to manage port access, for SELinux contexts.
-
-NOTE: `metrics_manage_selinux` is limited to *adding* policy.
-It cannot be used for *removing* policy.
-If you want to remove policy, you will need to use the selinux system
-role directly.
-
-### metrics_optional_domains: []
-
-List of optional metrics domains to enable.  The role will enable the domains
-for components you are managing.  For example, if you use
-`metrics_from_elasticsearch: true`, the role will enable the elasticsearch
-domain automatically.  This variable is for additional domains.
-
-```yaml
-metrics_optional_domains: [apache]
-```
-
-### metrics_optional_packages: []
-
-Additional metrics packages that should be installed, beyond the default set, to
-enable additional metrics, export to alternate data sinks, and so on.
-
-```yaml
-metrics_optional_packages: [pcp-pmda-apache]
-```
-
-## Example Playbook
-
-Basic metric recording setup for each managed host only, with one
-weeks worth of data retained before culling.
-
-```yaml
----
-- name: Manage metrics service
-  hosts: all
-  vars:
-    metrics_retention_days: 7
-  roles:
-    - linux-system-roles.metrics
-```
-
-Scalable metric recording, analysis and visualization setup for
-the managed hosts, providing a REST API server with an OpenMetrics
-endpoint, graphs and scalable querying.
-
-```yaml
----
-- name: Manage metrics with graph and query services
-  hosts: all
-  vars:
-    metrics_graph_service: true
-    metrics_query_service: true
-  roles:
-    - linux-system-roles.metrics
-```
-
-Centralized metric recording setup for several remote hosts and
-scalable metric recording, analysis and visualization setup for
-the local host, providing a REST API server with an OpenMetrics
-endpoint, graphs and scalable querying.
-
-```yaml
----
-- name: Manage centralized metrics gathering
-  hosts: monitors
-  vars:
-    metrics_monitored_hosts: [app.example.com, db.example.com, nas.example.com]
-    metrics_graph_service: true
-    metrics_query_service: true
-  roles:
-    - linux-system-roles.metrics
-```
-
-## rpm-ostree
-
-See README-ostree.md
-
-## License
-
-MIT
