@@ -267,6 +267,22 @@ the grafana server machine, where `basename` is the basename of `metrics_grafana
 metrics_grafana_private_key_src: /my/local/grafana-server.key
 ```
 
+### metrics_secure_logging: true
+
+If `true`, suppress potentially sensitive output from tasks that handle
+credentials, secrets, and other sensitive data by setting `no_log: true` on
+those tasks. This prevents passwords, API tokens, private keys, and similar
+sensitive information from appearing in Ansible logs and console output.
+
+If you need to debug issues with credential handling or secret management, you
+can temporarily set `metrics_secure_logging: false` to see the full output from
+these tasks. However, be aware that this may expose sensitive information in
+logs, so it should only be used in development or troubleshooting scenarios.
+
+```yaml
+metrics_secure_logging: true
+```
+
 ## Example Playbook
 
 Basic metric recording setup for each managed host only, with one
