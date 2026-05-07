@@ -170,7 +170,7 @@
         owner: root
         group: root
       when: metrics_grafana_private_key_src | length > 0
-      no_log: true
+      no_log: "{{ metrics_secure_logging }}"
 
     - name: Setup metric graphing service.
       vars:

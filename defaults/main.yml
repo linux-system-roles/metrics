@@ -75,3 +75,4 @@ metrics_grafana_cert: ""
 metrics_grafana_private_key: ""
 metrics_grafana_cert_src: ""
 metrics_grafana_private_key_src: ""
+metrics_secure_logging: true
