@@ -1,6 +1,17 @@
 Changelog
 =========
 
+[1.16.0] - 2026-05-07
+--------------------
+
+### New Features
+
+- feat: new variable `metrics_secure_logging` defaulting to `true` (#315)
+
+### Other Changes
+
+- ci: bump actions/github-script from 8 to 9 (#314)
+
 [1.15.0] - 2026-04-28
 --------------------
 
