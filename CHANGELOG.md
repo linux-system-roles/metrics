@@ -1,6 +1,17 @@
 Changelog
 =========
 
+[1.16.1] - 2026-06-24
+--------------------
+
+### Other Changes
+
+- refactor: use ansible.posix 2.1.X for EL7 compatibility [citest_skip] (#317)
+- ci: Add config file for CodeRabbit with custom rules (#318)
+- ci: Skip reviews for PRs with [citest_skip] in the title (#319)
+- refactor: sync latest changes from ansible-pcp (#320)
+- test: remove unused files [citest_skip] (#321)
+
 [1.16.0] - 2026-05-07
 --------------------
 
