@@ -1,6 +1,17 @@
 Changelog
 =========
 
+[1.16.2] - 2026-07-27
+--------------------
+
+### Other Changes
+
+- refactor: sync latest changes from ansible-pcp (#323)
+- ci: bump actions/checkout from 6 to 7 (#326)
+- ci: Use our own pr_title_lint.py instead of NPM commitlint [citest_skip] (#327)
+- ci: bump tox-lsr version to 3.20.0 to fix tox 4.58 api breakage [citest_skip] (#328)
+- ci: Add support for Fedora 44 and drop Fedora 42 - use ansible-core 2.21 [citest_skip] (#330)
+
 [1.16.1] - 2026-06-24
 --------------------
 
