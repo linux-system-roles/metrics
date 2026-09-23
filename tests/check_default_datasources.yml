@@ -3,40 +3,29 @@
 # yamllint disable rule:line-length
 - name: Check if grafana-pcp datasources are configured
   uri:
-    url: "http://admin:admin@localhost:3000/api/datasources/name/PCP%20{{ item }}"
+    url: "http://admin:admin@localhost:3000/api/datasources/name/PCP%20{{ __grafana_pcp_datasource }}"
     force_basic_auth: true
     headers:
       Content-Type: application/json
       Accept: application/json
     method: GET
     status_code: 200
+  register: __grafana_pcp_result
+  until: __grafana_pcp_result is success
+  delay: "{{ __grafana_pcp_delay | d(2) }}"
+  retries: "{{ __grafana_pcp_retries | d(5) }}"
   loop:
-    - Redis
+    - "{{ __redis_valkey }}"
     - Vector
     - bpftrace
-  when:
-    - __metrics_is_booted | bool
-    - ansible_facts['distribution'] in ['RedHat', 'CentOS']
-    - ansible_facts['distribution_major_version'] | int > 6
-    - ansible_facts['distribution_major_version'] | int < 10
-
-- name: Check if grafana-pcp datasources are configured
-  uri:
-    url: "http://admin:admin@localhost:3000/api/datasources/name/PCP%20{{ item }}"
-    force_basic_auth: true
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    method: GET
-    status_code: 200
-  loop:
-    - Valkey
-    - Vector
-    - bpftrace
-  when:
-    - __metrics_is_booted | bool
-    - (ansible_facts['distribution'] in ['RedHat', 'CentOS'] and
-       ansible_facts['distribution_major_version'] | int >= 10) or
-       ansible_facts['distribution'] not in ['RedHat', 'CentOS']
+  loop_control:
+    loop_var: __grafana_pcp_datasource
+  when: __metrics_is_booted | bool
+  vars:
+    __redis_valkey: "{{ 'Valkey'
+      if ((ansible_facts['distribution'] in ['RedHat', 'CentOS'] and
+           ansible_facts['distribution_major_version'] | int >= 10) or
+          ansible_facts['distribution'] not in ['RedHat', 'CentOS'])
+      else 'Redis' }}"
 
 # yamllint enable rule:line-length
