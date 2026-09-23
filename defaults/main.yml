@@ -34,6 +34,9 @@ metrics_from_spark: false
 # Make metrics available from a SQL Server database
 metrics_from_mssql: false
 
+# Make metrics available from Postfix
+metrics_from_postfix: false
+
 # Make metrics available from bpftrace scripts
 metrics_from_bpftrace: false
 

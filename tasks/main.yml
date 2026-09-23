@@ -3,6 +3,9 @@
 - name: Ensure facts and vars used by role are set
   include_tasks: set_vars.yml
 
+- name: Validate role parameters
+  ansible.builtin.include_tasks: assert_role_vars.yml
+
 - name: Add Elasticsearch to metrics domain list
   set_fact:
     __metrics_domains: "{{ __metrics_domains + ['elasticsearch'] }}"
