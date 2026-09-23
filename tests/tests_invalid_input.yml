@@ -1,0 +1,373 @@
+# SPDX-License-Identifier: MIT
+---
+# Verify meta/argument_specs.yml and tasks/assert_role_vars.yml reject bad
+# parameters. Each block runs the role expecting failure; rescue records
+# that outcome.
+- name: Verify invalid parameters are rejected
+  hosts: all
+  tasks:
+    - name: Run invalid input tests
+      block:
+        # ====================================================
+        # Section 1: Verify role works with valid defaults
+        # ====================================================
+        - name: Run role with valid defaults
+          ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+
+        - name: Mark valid defaults succeeded
+          ansible.builtin.set_fact:
+            __valid_defaults_succeeded: true
+
+        - name: Assert role completed with valid defaults
+          ansible.builtin.assert:
+            that:
+              - __valid_defaults_succeeded | default(false)
+            fail_msg: >-
+              Role should succeed with default parameters
+
+        # ====================================================
+        # Section 2: argument_specs validation (Ansible 2.11+)
+        # ====================================================
+        - name: Run argument specs validation tests
+          when: ansible_version.full is version("2.11", ">=")
+          block:
+            - name: Argument specs reject non-bool metrics_query_service
+              block:
+                - name: Run role with non-boolean metrics_query_service
+                  ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+                  vars:
+                    metrics_query_service: not_a_bool
+              rescue:
+                - name: Mark invalid metrics_query_service rejected
+                  ansible.builtin.set_fact:
+                    __invalid_input_query_service_type_failed: true
+
+            - name: Assert invalid metrics_query_service type was rejected
+              ansible.builtin.assert:
+                that:
+                  - __invalid_input_query_service_type_failed | default(false)
+                fail_msg: >-
+                  argument_specs should reject metrics_query_service with
+                  a non-boolean type
+
+            - name: Argument specs reject non-int metrics_retention_days
+              block:
+                - name: Run role with non-integer metrics_retention_days
+                  ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+                  vars:
+                    metrics_retention_days: not_an_int
+              rescue:
+                - name: Mark invalid metrics_retention_days rejected
+                  ansible.builtin.set_fact:
+                    __invalid_input_retention_days_type_failed: true
+
+            - name: Assert invalid metrics_retention_days type was rejected
+              ansible.builtin.assert:
+                that:
+                  - __invalid_input_retention_days_type_failed | default(false)
+                fail_msg: >-
+                  argument_specs should reject metrics_retention_days with
+                  a non-integer type
+
+            - name: Argument specs reject non-list metrics_monitored_hosts
+              block:
+                - name: Run role with non-list metrics_monitored_hosts
+                  ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+                  vars:
+                    metrics_monitored_hosts: not_a_list
+              rescue:
+                - name: Mark invalid metrics_monitored_hosts rejected
+                  ansible.builtin.set_fact:
+                    __invalid_input_monitored_hosts_type_failed: true
+
+            - name: Assert invalid metrics_monitored_hosts type was rejected
+              ansible.builtin.assert:
+                that:
+                  - __invalid_input_monitored_hosts_type_failed | default(false)
+                fail_msg: >-
+                  argument_specs should reject metrics_monitored_hosts with
+                  a non-list type
+
+            - name: Argument specs reject invalid metrics_provider choice
+              block:
+                - name: Run role with invalid metrics_provider value
+                  ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+                  vars:
+                    metrics_provider: invalid_provider
+              rescue:
+                - name: Mark invalid metrics_provider choice rejected
+                  ansible.builtin.set_fact:
+                    __invalid_input_provider_choice_failed: true
+
+            - name: Assert invalid metrics_provider choice was rejected
+              ansible.builtin.assert:
+                that:
+                  - __invalid_input_provider_choice_failed | default(false)
+                fail_msg: >-
+                  argument_specs should reject metrics_provider value
+                  'invalid_provider'
+
+            - name: Argument specs reject missing name in metrics_grafana_certificates
+              block:
+                - name: Run role without required name in certificates
+                  ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+                  vars:
+                    metrics_grafana_certificates:
+                      - ca: self-sign
+                        dns: www.example.com
+              rescue:
+                - name: Mark missing name rejected
+                  ansible.builtin.set_fact:
+                    __invalid_input_missing_name_failed: true
+                  when: >-
+                    'missing required arguments' in
+                    (ansible_failed_result | default({}) | to_json)
+
+            - name: Assert missing name was rejected
+              ansible.builtin.assert:
+                that:
+                  - __invalid_input_missing_name_failed | default(false)
+                fail_msg: >-
+                  argument_specs should reject metrics_grafana_certificates
+                  entries missing the required name field
+
+            - name: Argument specs reject missing ca in metrics_grafana_certificates
+              block:
+                - name: Run role without required ca in certificates
+                  ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+                  vars:
+                    metrics_grafana_certificates:
+                      - name: grafana-server
+                        dns: www.example.com
+              rescue:
+                - name: Mark missing ca rejected
+                  ansible.builtin.set_fact:
+                    __invalid_input_missing_ca_failed: true
+                  when: >-
+                    'missing required arguments' in
+                    (ansible_failed_result | default({}) | to_json)
+
+            - name: Assert missing ca was rejected
+              ansible.builtin.assert:
+                that:
+                  - __invalid_input_missing_ca_failed | default(false)
+                fail_msg: >-
+                  argument_specs should reject metrics_grafana_certificates
+                  entries missing the required ca field
+
+            - name: Argument specs reject invalid key_usage choice
+              block:
+                - name: Run role with invalid key_usage value
+                  ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+                  vars:
+                    metrics_grafana_certificates:
+                      - name: grafana-server
+                        ca: self-sign
+                        key_usage:
+                          - invalidUsage
+              rescue:
+                - name: Mark invalid key_usage rejected
+                  ansible.builtin.set_fact:
+                    __invalid_input_key_usage_choice_failed: true
+
+            - name: Assert invalid key_usage choice was rejected
+              ansible.builtin.assert:
+                that:
+                  - __invalid_input_key_usage_choice_failed | default(false)
+                fail_msg: >-
+                  argument_specs should reject metrics_grafana_certificates
+                  key_usage values outside the allowed set
+
+            - name: Argument specs reject non-bool metrics_secure_logging
+              block:
+                - name: Run role with non-boolean metrics_secure_logging
+                  ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+                  vars:
+                    metrics_secure_logging: not_a_bool
+              rescue:
+                - name: Mark invalid metrics_secure_logging rejected
+                  ansible.builtin.set_fact:
+                    __invalid_input_secure_logging_type_failed: true
+
+            - name: Assert invalid metrics_secure_logging type was rejected
+              ansible.builtin.assert:
+                that:
+                  - __invalid_input_secure_logging_type_failed | default(false)
+                fail_msg: >-
+                  argument_specs should reject metrics_secure_logging with
+                  a non-boolean type
+
+        # ====================================================
+        # Section 3: assert_role_vars validation (all versions)
+        # ====================================================
+        - name: Assert rejects dns as integer
+          block:
+            - name: Run role with dns as integer
+              ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+              vars:
+                metrics_grafana_certificates:
+                  - name: grafana-server
+                    ca: self-sign
+                    dns: 12345
+          rescue:
+            - name: Mark dns as integer rejected
+              ansible.builtin.set_fact:
+                __invalid_input_dns_int_failed: true
+              when: >-
+                'dns must be a string' in
+                (ansible_failed_result | default({}) | to_json)
+
+        - name: Assert dns as integer was rejected
+          ansible.builtin.assert:
+            that:
+              - __invalid_input_dns_int_failed | default(false)
+            fail_msg: >-
+              assert_role_vars should reject metrics_grafana_certificates
+              dns when given an integer value
+
+        - name: Assert rejects dns list with non-string element
+          block:
+            - name: Run role with dns list containing integer
+              ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+              vars:
+                metrics_grafana_certificates:
+                  - name: grafana-server
+                    ca: self-sign
+                    dns:
+                      - www.example.com
+                      - 12345
+          rescue:
+            - name: Mark dns list element rejected
+              ansible.builtin.set_fact:
+                __invalid_input_dns_element_failed: true
+              when: >-
+                'dns must be a string' in
+                (ansible_failed_result | default({}) | to_json)
+
+        - name: Assert dns list with non-string element was rejected
+          ansible.builtin.assert:
+            that:
+              - __invalid_input_dns_element_failed | default(false)
+            fail_msg: >-
+              assert_role_vars should reject metrics_grafana_certificates
+              dns lists containing non-string elements
+
+        - name: Assert rejects ip as integer
+          block:
+            - name: Run role with ip as integer
+              ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+              vars:
+                metrics_grafana_certificates:
+                  - name: grafana-server
+                    ca: self-sign
+                    ip: 12345
+          rescue:
+            - name: Mark ip as integer rejected
+              ansible.builtin.set_fact:
+                __invalid_input_ip_int_failed: true
+              when: >-
+                'ip must be a string' in
+                (ansible_failed_result | default({}) | to_json)
+
+        - name: Assert ip as integer was rejected
+          ansible.builtin.assert:
+            that:
+              - __invalid_input_ip_int_failed | default(false)
+            fail_msg: >-
+              assert_role_vars should reject metrics_grafana_certificates
+              ip when given an integer value
+
+        - name: Assert rejects mode as boolean
+          block:
+            - name: Run role with mode as boolean
+              ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+              vars:
+                metrics_grafana_certificates:
+                  - name: grafana-server
+                    ca: self-sign
+                    mode: true
+          rescue:
+            - name: Mark mode as boolean rejected
+              ansible.builtin.set_fact:
+                __invalid_input_mode_bool_failed: true
+              when: >-
+                'mode must be a string' in
+                (ansible_failed_result | default({}) | to_json)
+
+        - name: Assert mode as boolean was rejected
+          ansible.builtin.assert:
+            that:
+              - __invalid_input_mode_bool_failed | default(false)
+            fail_msg: >-
+              assert_role_vars should reject metrics_grafana_certificates
+              mode when given a boolean value
+
+        - name: Assert rejects email as integer
+          block:
+            - name: Run role with email as integer
+              ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+              vars:
+                metrics_grafana_certificates:
+                  - name: grafana-server
+                    ca: self-sign
+                    email: 12345
+          rescue:
+            - name: Mark email as integer rejected
+              ansible.builtin.set_fact:
+                __invalid_input_email_int_failed: true
+              when: >-
+                'email must be a string' in
+                (ansible_failed_result | default({}) | to_json)
+
+        - name: Assert email as integer was rejected
+          ansible.builtin.assert:
+            that:
+              - __invalid_input_email_int_failed | default(false)
+            fail_msg: >-
+              assert_role_vars should reject metrics_grafana_certificates
+              email when given an integer value
+
+        - name: Assert rejects principal as integer
+          block:
+            - name: Run role with principal as integer
+              ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+              vars:
+                metrics_grafana_certificates:
+                  - name: grafana-server
+                    ca: self-sign
+                    principal: 12345
+          rescue:
+            - name: Mark principal as integer rejected
+              ansible.builtin.set_fact:
+                __invalid_input_principal_int_failed: true
+              when: >-
+                'principal must be a string' in
+                (ansible_failed_result | default({}) | to_json)
+
+        - name: Assert principal as integer was rejected
+          ansible.builtin.assert:
+            that:
+              - __invalid_input_principal_int_failed | default(false)
+            fail_msg: >-
+              assert_role_vars should reject metrics_grafana_certificates
+              principal when given an integer value
+
+      always:
+        - name: Clear test facts
+          ansible.builtin.set_fact:
+            __valid_defaults_succeeded:
+            __invalid_input_query_service_type_failed:
+            __invalid_input_retention_days_type_failed:
+            __invalid_input_monitored_hosts_type_failed:
+            __invalid_input_provider_choice_failed:
+            __invalid_input_missing_name_failed:
+            __invalid_input_missing_ca_failed:
+            __invalid_input_key_usage_choice_failed:
+            __invalid_input_secure_logging_type_failed:
+            __invalid_input_dns_int_failed:
+            __invalid_input_dns_element_failed:
+            __invalid_input_ip_int_failed:
+            __invalid_input_mode_bool_failed:
+            __invalid_input_email_int_failed:
+            __invalid_input_principal_int_failed:
+          tags: tests::cleanup
