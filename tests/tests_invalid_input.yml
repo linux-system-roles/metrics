@@ -41,6 +41,9 @@
                 - name: Mark invalid metrics_query_service rejected
                   ansible.builtin.set_fact:
                     __invalid_input_query_service_type_failed: true
+                  when: >-
+                    'metrics_query_service' in
+                    (ansible_failed_result | default({}) | to_json)
 
             - name: Assert invalid metrics_query_service type was rejected
               ansible.builtin.assert:
@@ -60,6 +63,9 @@
                 - name: Mark invalid metrics_retention_days rejected
                   ansible.builtin.set_fact:
                     __invalid_input_retention_days_type_failed: true
+                  when: >-
+                    'metrics_retention_days' in
+                    (ansible_failed_result | default({}) | to_json)
 
             - name: Assert invalid metrics_retention_days type was rejected
               ansible.builtin.assert:
@@ -74,11 +80,17 @@
                 - name: Run role with non-list metrics_monitored_hosts
                   ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
                   vars:
-                    metrics_monitored_hosts: not_a_list
+                    metrics_monitored_hosts:
+                      invalid: true
               rescue:
                 - name: Mark invalid metrics_monitored_hosts rejected
                   ansible.builtin.set_fact:
                     __invalid_input_monitored_hosts_type_failed: true
+                  when: >-
+                    'metrics_monitored_hosts' in
+                    (ansible_failed_result | default({}) | to_json)
+                    and 'argument_errors' in
+                    (ansible_failed_result | default({}) | to_json)
 
             - name: Assert invalid metrics_monitored_hosts type was rejected
               ansible.builtin.assert:
@@ -98,6 +110,9 @@
                 - name: Mark invalid metrics_provider choice rejected
                   ansible.builtin.set_fact:
                     __invalid_input_provider_choice_failed: true
+                  when: >-
+                    'metrics_provider' in
+                    (ansible_failed_result | default({}) | to_json)
 
             - name: Assert invalid metrics_provider choice was rejected
               ansible.builtin.assert:
@@ -169,6 +184,9 @@
                 - name: Mark invalid key_usage rejected
                   ansible.builtin.set_fact:
                     __invalid_input_key_usage_choice_failed: true
+                  when: >-
+                    'key_usage' in
+                    (ansible_failed_result | default({}) | to_json)
 
             - name: Assert invalid key_usage choice was rejected
               ansible.builtin.assert:
@@ -188,6 +206,9 @@
                 - name: Mark invalid metrics_secure_logging rejected
                   ansible.builtin.set_fact:
                     __invalid_input_secure_logging_type_failed: true
+                  when: >-
+                    'metrics_secure_logging' in
+                    (ansible_failed_result | default({}) | to_json)
 
             - name: Assert invalid metrics_secure_logging type was rejected
               ansible.builtin.assert:
@@ -200,6 +221,101 @@
         # ====================================================
         # Section 3: assert_role_vars validation (all versions)
         # ====================================================
+        - name: Assert rejects metrics_username as a dict
+          block:
+            - name: Run role with metrics_username as a dict
+              ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+              vars:
+                metrics_username:
+                  not: a_string
+          rescue:
+            - name: Mark metrics_username dict rejected
+              ansible.builtin.set_fact:
+                __invalid_input_username_type_failed: true
+              when: >-
+                'metrics_username must be a string' in
+                (ansible_failed_result | default({}) | to_json)
+
+        - name: Assert metrics_username as dict was rejected
+          ansible.builtin.assert:
+            that:
+              - __invalid_input_username_type_failed | default(false)
+            fail_msg: >-
+              assert_role_vars should reject metrics_username when given
+              a dictionary value
+
+        - name: Assert rejects metrics_monitored_hosts as a string
+          block:
+            - name: Run role with metrics_monitored_hosts as a string
+              ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+              vars:
+                metrics_monitored_hosts: hostname.example.com
+          rescue:
+            - name: Mark metrics_monitored_hosts string rejected
+              ansible.builtin.set_fact:
+                __invalid_input_monitored_hosts_string_failed: true
+              when: >-
+                'metrics_monitored_hosts must be a list of strings' in
+                (ansible_failed_result | default({}) | to_json)
+
+        - name: Assert metrics_monitored_hosts as string was rejected
+          ansible.builtin.assert:
+            that:
+              - >-
+                __invalid_input_monitored_hosts_string_failed
+                | default(false)
+            fail_msg: >-
+              assert_role_vars should reject metrics_monitored_hosts
+              when given a string value
+
+        - name: Assert rejects metrics_optional_domains as a string
+          block:
+            - name: Run role with metrics_optional_domains as a string
+              ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+              vars:
+                metrics_optional_domains: apache
+          rescue:
+            - name: Mark metrics_optional_domains string rejected
+              ansible.builtin.set_fact:
+                __invalid_input_optional_domains_string_failed: true
+              when: >-
+                'metrics_optional_domains must be a list of strings' in
+                (ansible_failed_result | default({}) | to_json)
+
+        - name: Assert metrics_optional_domains as string was rejected
+          ansible.builtin.assert:
+            that:
+              - >-
+                __invalid_input_optional_domains_string_failed
+                | default(false)
+            fail_msg: >-
+              assert_role_vars should reject metrics_optional_domains
+              when given a string value
+
+        - name: Assert rejects metrics_optional_packages as a string
+          block:
+            - name: Run role with metrics_optional_packages as a string
+              ansible.builtin.include_tasks: tasks/run_role_with_clear_facts.yml
+              vars:
+                metrics_optional_packages: pcp-pmda-apache
+          rescue:
+            - name: Mark metrics_optional_packages string rejected
+              ansible.builtin.set_fact:
+                __invalid_input_optional_packages_string_failed: true
+              when: >-
+                'metrics_optional_packages must be a list of strings' in
+                (ansible_failed_result | default({}) | to_json)
+
+        - name: Assert metrics_optional_packages as string was rejected
+          ansible.builtin.assert:
+            that:
+              - >-
+                __invalid_input_optional_packages_string_failed
+                | default(false)
+            fail_msg: >-
+              assert_role_vars should reject metrics_optional_packages
+              when given a string value
+
         - name: Assert rejects dns as integer
           block:
             - name: Run role with dns as integer
@@ -364,6 +480,10 @@
             __invalid_input_missing_ca_failed:
             __invalid_input_key_usage_choice_failed:
             __invalid_input_secure_logging_type_failed:
+            __invalid_input_username_type_failed:
+            __invalid_input_monitored_hosts_string_failed:
+            __invalid_input_optional_domains_string_failed:
+            __invalid_input_optional_packages_string_failed:
             __invalid_input_dns_int_failed:
             __invalid_input_dns_element_failed:
             __invalid_input_ip_int_failed:
