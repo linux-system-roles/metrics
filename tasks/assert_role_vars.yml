@@ -1,5 +1,53 @@
 # SPDX-License-Identifier: MIT
 ---
+- name: Assert metrics_username is a string
+  ansible.builtin.assert:
+    that:
+      - metrics_username is string
+    fail_msg: >-
+      metrics_username must be a string,
+      got {{ metrics_username | type_debug }}
+  when: metrics_username is defined
+
+- name: Assert metrics_monitored_hosts is a list of strings
+  ansible.builtin.assert:
+    that:
+      - >-
+        metrics_monitored_hosts is sequence
+        and metrics_monitored_hosts is not mapping
+        and metrics_monitored_hosts is not string
+        and metrics_monitored_hosts | reject('string') | list | length == 0
+    fail_msg: >-
+      metrics_monitored_hosts must be a list of strings,
+      got {{ metrics_monitored_hosts | type_debug }}
+  when: metrics_monitored_hosts is defined
+
+- name: Assert metrics_optional_domains is a list of strings
+  ansible.builtin.assert:
+    that:
+      - >-
+        metrics_optional_domains is sequence
+        and metrics_optional_domains is not mapping
+        and metrics_optional_domains is not string
+        and metrics_optional_domains | reject('string') | list | length == 0
+    fail_msg: >-
+      metrics_optional_domains must be a list of strings,
+      got {{ metrics_optional_domains | type_debug }}
+  when: metrics_optional_domains is defined
+
+- name: Assert metrics_optional_packages is a list of strings
+  ansible.builtin.assert:
+    that:
+      - >-
+        metrics_optional_packages is sequence
+        and metrics_optional_packages is not mapping
+        and metrics_optional_packages is not string
+        and metrics_optional_packages | reject('string') | list | length == 0
+    fail_msg: >-
+      metrics_optional_packages must be a list of strings,
+      got {{ metrics_optional_packages | type_debug }}
+  when: metrics_optional_packages is defined
+
 - name: Assert dns in metrics_grafana_certificates is a string or list of strings
   ansible.builtin.assert:
     that:
