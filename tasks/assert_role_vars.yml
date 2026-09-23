@@ -1,0 +1,126 @@
+# SPDX-License-Identifier: MIT
+---
+- name: Assert metrics_username is a string
+  ansible.builtin.assert:
+    that:
+      - metrics_username is string
+    fail_msg: >-
+      metrics_username must be a string,
+      got {{ metrics_username | type_debug }}
+  when: metrics_username is defined
+
+- name: Assert metrics_monitored_hosts is a list of strings
+  ansible.builtin.assert:
+    that:
+      - >-
+        metrics_monitored_hosts is sequence
+        and metrics_monitored_hosts is not mapping
+        and metrics_monitored_hosts is not string
+        and metrics_monitored_hosts | reject('string') | list | length == 0
+    fail_msg: >-
+      metrics_monitored_hosts must be a list of strings,
+      got {{ metrics_monitored_hosts | type_debug }}
+  when: metrics_monitored_hosts is defined
+
+- name: Assert metrics_optional_domains is a list of strings
+  ansible.builtin.assert:
+    that:
+      - >-
+        metrics_optional_domains is sequence
+        and metrics_optional_domains is not mapping
+        and metrics_optional_domains is not string
+        and metrics_optional_domains | reject('string') | list | length == 0
+    fail_msg: >-
+      metrics_optional_domains must be a list of strings,
+      got {{ metrics_optional_domains | type_debug }}
+  when: metrics_optional_domains is defined
+
+- name: Assert metrics_optional_packages is a list of strings
+  ansible.builtin.assert:
+    that:
+      - >-
+        metrics_optional_packages is sequence
+        and metrics_optional_packages is not mapping
+        and metrics_optional_packages is not string
+        and metrics_optional_packages | reject('string') | list | length == 0
+    fail_msg: >-
+      metrics_optional_packages must be a list of strings,
+      got {{ metrics_optional_packages | type_debug }}
+  when: metrics_optional_packages is defined
+
+- name: Assert dns in metrics_grafana_certificates is a string or list of strings
+  ansible.builtin.assert:
+    that:
+      - >-
+        item.dns is string
+        or (item.dns is sequence and item.dns is not mapping
+            and item.dns | reject('string') | list | length == 0)
+    fail_msg: >-
+      metrics_grafana_certificates[{{ idx }}].dns must be a string or list of
+      strings, got {{ item.dns | type_debug }}
+  loop: "{{ metrics_grafana_certificates }}"
+  loop_control:
+    index_var: idx
+    label: "{{ item.name | d('unnamed') }}"
+  when: item.dns is defined
+
+- name: Assert email in metrics_grafana_certificates is a string or list of strings
+  ansible.builtin.assert:
+    that:
+      - >-
+        item.email is string
+        or (item.email is sequence and item.email is not mapping
+            and item.email | reject('string') | list | length == 0)
+    fail_msg: >-
+      metrics_grafana_certificates[{{ idx }}].email must be a string or list of
+      strings, got {{ item.email | type_debug }}
+  loop: "{{ metrics_grafana_certificates }}"
+  loop_control:
+    index_var: idx
+    label: "{{ item.name | d('unnamed') }}"
+  when: item.email is defined
+
+- name: Assert ip in metrics_grafana_certificates is a string or list of strings
+  ansible.builtin.assert:
+    that:
+      - >-
+        item.ip is string
+        or (item.ip is sequence and item.ip is not mapping
+            and item.ip | reject('string') | list | length == 0)
+    fail_msg: >-
+      metrics_grafana_certificates[{{ idx }}].ip must be a string or list of
+      strings, got {{ item.ip | type_debug }}
+  loop: "{{ metrics_grafana_certificates }}"
+  loop_control:
+    index_var: idx
+    label: "{{ item.name | d('unnamed') }}"
+  when: item.ip is defined
+
+- name: Assert principal in metrics_grafana_certificates is a string or list of strings
+  ansible.builtin.assert:
+    that:
+      - >-
+        item.principal is string
+        or (item.principal is sequence and item.principal is not mapping
+            and item.principal | reject('string') | list | length == 0)
+    fail_msg: >-
+      metrics_grafana_certificates[{{ idx }}].principal must be a string or
+      list of strings, got {{ item.principal | type_debug }}
+  loop: "{{ metrics_grafana_certificates }}"
+  loop_control:
+    index_var: idx
+    label: "{{ item.name | d('unnamed') }}"
+  when: item.principal is defined
+
+- name: Assert mode in metrics_grafana_certificates is a string or integer
+  ansible.builtin.assert:
+    that:
+      - (item.mode | type_debug) in ['str', 'int', 'unicode']
+    fail_msg: >-
+      metrics_grafana_certificates[{{ idx }}].mode must be a string or
+      integer, got {{ item.mode | type_debug }}
+  loop: "{{ metrics_grafana_certificates }}"
+  loop_control:
+    index_var: idx
+    label: "{{ item.name | d('unnamed') }}"
+  when: item.mode is defined

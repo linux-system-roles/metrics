@@ -1,0 +1,314 @@
+# SPDX-License-Identifier: MIT
+---
+argument_specs:
+  main:
+    short_description: The metrics role.
+    description: >
+      The metrics role configures performance analysis services for the
+      managed host. It optionally monitors a list of remote systems,
+      provides query and graphing services, and integrates with
+      Elasticsearch, Spark, SQL Server, Postfix, and bpftrace.
+    options:
+      metrics_retention_days:
+        type: int
+        default: 7
+        description: >
+          The number of days of historical performance data to retain
+          before it is culled.
+      metrics_monitored_hosts:
+        type: list
+        elements: str
+        default: []
+        description: >
+          List of remote hosts to be analysed by the managed host.
+          These hosts have metrics recorded on the managed host for
+          historical analysis and automated rule inference.
+      metrics_query_service:
+        type: bool
+        default: false
+        description: >
+          Whether to provide a scalable query language using Valkey or
+          Redis and the PMWEBAPI(3) REST API for metrics, including an
+          OpenMetrics endpoint.
+      metrics_graph_service:
+        type: bool
+        default: false
+        description: >
+          Whether to provide a Grafana graphing server with plugins
+          enabled for the available metrics services.
+      metrics_into_elasticsearch:
+        type: bool
+        default: false
+        description: >
+          Whether to export metrics to an Elasticsearch cluster for
+          analysis.
+      metrics_from_elasticsearch:
+        type: bool
+        default: false
+        description: >
+          Whether to make metrics available from an Elasticsearch
+          instance.
+      metrics_into_spark:
+        type: bool
+        default: false
+        description: >
+          Whether to export metrics to an Apache Spark data analysis
+          setup.
+      metrics_from_spark:
+        type: bool
+        default: false
+        description: >
+          Whether to make metrics available from an Apache Spark
+          instance.
+      metrics_from_mssql:
+        type: bool
+        default: false
+        description: >
+          Whether to make metrics available from a SQL Server database.
+          Requires a trusted connection to SQL Server.
+      metrics_from_postfix:
+        type: bool
+        default: false
+        description: >
+          Whether to make metrics available from Postfix.
+      metrics_from_bpftrace:
+        type: bool
+        default: false
+        description: >
+          Whether to make metrics available from bpftrace scripts.
+      metrics_username:
+        type: str
+        default: metrics
+        description: >
+          The account used for authenticated access to remote metrics
+          via the PCP `pmcd` daemon. When bpftrace metrics are
+          configured, this account can also register bpftrace scripts.
+      metrics_password:
+        type: str
+        default: metrics
+        description: >
+          The password for `metrics_username`. Prefer Ansible Vault to
+          encrypt this value rather than using clear text.
+      metrics_provider:
+        type: str
+        default: pcp
+        choices:
+          - pcp
+        description: >
+          The metrics collector used to provide metrics. Currently
+          Performance Co-Pilot (`pcp`) is the only supported provider.
+      metrics_manage_firewall:
+        type: bool
+        default: false
+        description: >
+          Whether to manage the `pmcd` port, `pmproxy` ports, Grafana
+          service, and Valkey or Redis service using the firewall role.
+          Limited to adding ports; use the firewall role directly to
+          remove ports.
+      metrics_manage_selinux:
+        type: bool
+        default: false
+        description: >
+          Whether to manage the `pmcd` and `pmproxy` ports using the
+          selinux role. Limited to adding policy; use the selinux role
+          directly to remove policy.
+      metrics_webhook_endpoint:
+        type: str
+        default: ''
+        description: >
+          The webhook endpoint URL where notifications about
+          automatically detected performance issues are sent. When
+          empty, events are logged to the local system log only.
+      metrics_optional_domains:
+        type: list
+        elements: str
+        default: []
+        description: >
+          List of optional PCP agent domains to enable beyond those
+          enabled automatically for managed components, for example
+          `apache`.
+      metrics_optional_packages:
+        type: list
+        elements: str
+        default: []
+        description: >
+          Additional metrics packages to install beyond the default set,
+          to enable additional metrics or export to alternate data
+          sinks, for example `pcp-pmda-apache`.
+      metrics_grafana_certificates:
+        type: list
+        elements: dict
+        default: []
+        description: >
+          Certificate request specifications passed to the certificate
+          role as `certificate_requests` to generate a private key and
+          certificate for the Grafana server. When set,
+          `metrics_grafana_cert` and `metrics_grafana_private_key` are
+          ignored.
+        options:
+          name:
+            type: str
+            required: true
+            description: >
+              The name of the certificate. A full path can be used to
+              choose the directory where files will be stored.
+          ca:
+            type: str
+            required: true
+            description: >
+              The CA that will issue the certificate, for example
+              `self-sign` or `ipa`.
+          dns:
+            type: raw
+            description: >
+              A domain name or list of domain names to include in the
+              certificate Subject Alternative Name (SAN).
+          email:
+            type: raw
+            description: >
+              An email address or list of email addresses to include in
+              the certificate Subject Alternative Name (SAN).
+          ip:
+            type: raw
+            description: >
+              An IP address or list of IP addresses to include in the
+              certificate Subject Alternative Name (SAN).
+          auto_renew:
+            type: bool
+            default: true
+            description: >
+              Whether the certificate should be renewed automatically
+              before it expires.
+          owner:
+            type: str
+            description: >
+              The user name or user id for the certificate and key
+              files.
+          group:
+            type: str
+            description: >
+              The group name or group id for the certificate and key
+              files.
+          mode:
+            type: raw
+            description: >
+              The file system permissions for the certificate and key
+              files. Accepts a string such as `0644` or an integer.
+          key_size:
+            type: int
+            description: >
+              The key size in bits.
+          common_name:
+            type: str
+            description: >
+              The Common Name requested for the certificate subject.
+          country:
+            type: str
+            description: >
+              The country code requested for the certificate subject.
+          state:
+            type: str
+            description: >
+              The state requested for the certificate subject.
+          locality:
+            type: str
+            description: >
+              The locality requested for the certificate subject.
+          organization:
+            type: str
+            description: >
+              The organization requested for the certificate subject.
+          organizational_unit:
+            type: str
+            description: >
+              The organizational unit requested for the certificate
+              subject.
+          contact_email:
+            type: str
+            description: >
+              The contact email requested for the certificate subject.
+          key_usage:
+            type: list
+            elements: str
+            choices:
+              - digitalSignature
+              - nonRepudiation
+              - keyEncipherment
+              - dataEncipherment
+              - keyAgreement
+              - keyCertSign
+              - cRLSign
+              - encipherOnly
+              - decipherOnly
+            default:
+              - digitalSignature
+              - keyEncipherment
+            description: >
+              The allowed Key Usage extensions for the certificate.
+          extended_key_usage:
+            type: list
+            elements: str
+            default:
+              - id-kp-serverAuth
+              - id-kp-clientAuth
+            description: >
+              The Extended Key Usage attributes for the certificate.
+          run_before:
+            type: str
+            description: >
+              A command to run before saving the certificate.
+          run_after:
+            type: str
+            description: >
+              A command to run after saving the certificate.
+          principal:
+            type: raw
+            description: >
+              A Kerberos principal or list of Kerberos principals.
+          provider:
+            type: str
+            default: certmonger
+            description: >
+              The underlying method used to request and manage the
+              certificate.
+          issuer:
+            type: str
+            description: >
+              The issuer certificate nickname or template name.
+      metrics_grafana_cert:
+        type: str
+        default: ""
+        description: >
+          The absolute path to an existing TLS certificate file for the
+          Grafana server on the managed host, for example
+          `/etc/pki/tls/certs/grafana-server.crt`.
+      metrics_grafana_private_key:
+        type: str
+        default: ""
+        description: >
+          The absolute path to an existing TLS private key file for the
+          Grafana server on the managed host, for example
+          `/etc/pki/tls/private/grafana-server.key`.
+      metrics_grafana_cert_src:
+        type: str
+        default: ""
+        description: >
+          The path on the controller of a TLS certificate file to copy
+          to the Grafana server. When `metrics_grafana_cert` is empty,
+          the file is copied to `/etc/pki/tls/certs/` using the source
+          basename.
+      metrics_grafana_private_key_src:
+        type: str
+        default: ""
+        description: >
+          The path on the controller of a TLS private key file to copy
+          to the Grafana server. When `metrics_grafana_private_key` is
+          empty, the file is copied to `/etc/pki/tls/private/` using
+          the source basename.
+      metrics_secure_logging:
+        type: bool
+        default: true
+        description: >
+          Whether to suppress potentially sensitive output from tasks
+          that handle credentials and secrets by setting `no_log`. Set
+          to `false` only for debugging credential handling.
