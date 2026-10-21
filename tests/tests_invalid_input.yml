@@ -5,6 +5,13 @@
 # that outcome.
 - name: Verify invalid parameters are rejected
   hosts: all
+  vars:
+    __invalid_input_failure_messages: >-
+      {{ ([ansible_failed_result.msg | default('') | string,
+           ansible_failed_result.msg.msg | default('') | string]
+          + (ansible_failed_result.results | default([])
+             | map(attribute='msg') | map('default', '') | list))
+         | join(' ') }}
   tasks:
     - name: Run invalid input tests
       block:
@@ -41,9 +48,13 @@
                 - name: Mark invalid metrics_query_service rejected
                   ansible.builtin.set_fact:
                     __invalid_input_query_service_type_failed: true
-                  when: >-
-                    'metrics_query_service' in
-                    (ansible_failed_result | default({}) | to_json)
+                  when:
+                    - >-
+                      "argument 'metrics_query_service' is of type" in
+                      __invalid_input_failure_messages
+                    - >-
+                      'unable to convert to bool' in
+                      __invalid_input_failure_messages
 
             - name: Assert invalid metrics_query_service type was rejected
               ansible.builtin.assert:
@@ -63,9 +74,13 @@
                 - name: Mark invalid metrics_retention_days rejected
                   ansible.builtin.set_fact:
                     __invalid_input_retention_days_type_failed: true
-                  when: >-
-                    'metrics_retention_days' in
-                    (ansible_failed_result | default({}) | to_json)
+                  when:
+                    - >-
+                      "argument 'metrics_retention_days' is of type" in
+                      __invalid_input_failure_messages
+                    - >-
+                      'unable to convert to int' in
+                      __invalid_input_failure_messages
 
             - name: Assert invalid metrics_retention_days type was rejected
               ansible.builtin.assert:
@@ -86,11 +101,13 @@
                 - name: Mark invalid metrics_monitored_hosts rejected
                   ansible.builtin.set_fact:
                     __invalid_input_monitored_hosts_type_failed: true
-                  when: >-
-                    'metrics_monitored_hosts' in
-                    (ansible_failed_result | default({}) | to_json)
-                    and 'argument_errors' in
-                    (ansible_failed_result | default({}) | to_json)
+                  when:
+                    - >-
+                      "argument 'metrics_monitored_hosts' is of type" in
+                      __invalid_input_failure_messages
+                    - >-
+                      'unable to convert to list' in
+                      __invalid_input_failure_messages
 
             - name: Assert invalid metrics_monitored_hosts type was rejected
               ansible.builtin.assert:
@@ -110,9 +127,10 @@
                 - name: Mark invalid metrics_provider choice rejected
                   ansible.builtin.set_fact:
                     __invalid_input_provider_choice_failed: true
-                  when: >-
-                    'metrics_provider' in
-                    (ansible_failed_result | default({}) | to_json)
+                  when:
+                    - >-
+                      'value of metrics_provider must be one of: pcp, got: invalid_provider' in
+                      __invalid_input_failure_messages
 
             - name: Assert invalid metrics_provider choice was rejected
               ansible.builtin.assert:
@@ -134,9 +152,10 @@
                 - name: Mark missing name rejected
                   ansible.builtin.set_fact:
                     __invalid_input_missing_name_failed: true
-                  when: >-
-                    'missing required arguments' in
-                    (ansible_failed_result | default({}) | to_json)
+                  when:
+                    - >-
+                      'missing required arguments: name found in metrics_grafana_certificates' in
+                      __invalid_input_failure_messages
 
             - name: Assert missing name was rejected
               ansible.builtin.assert:
@@ -158,9 +177,10 @@
                 - name: Mark missing ca rejected
                   ansible.builtin.set_fact:
                     __invalid_input_missing_ca_failed: true
-                  when: >-
-                    'missing required arguments' in
-                    (ansible_failed_result | default({}) | to_json)
+                  when:
+                    - >-
+                      'missing required arguments: ca found in metrics_grafana_certificates' in
+                      __invalid_input_failure_messages
 
             - name: Assert missing ca was rejected
               ansible.builtin.assert:
@@ -184,9 +204,13 @@
                 - name: Mark invalid key_usage rejected
                   ansible.builtin.set_fact:
                     __invalid_input_key_usage_choice_failed: true
-                  when: >-
-                    'key_usage' in
-                    (ansible_failed_result | default({}) | to_json)
+                  when:
+                    - >-
+                      'value of key_usage must be one or more of' in
+                      __invalid_input_failure_messages
+                    - >-
+                      'Got no match for: invalidUsage found in metrics_grafana_certificates' in
+                      __invalid_input_failure_messages
 
             - name: Assert invalid key_usage choice was rejected
               ansible.builtin.assert:
@@ -206,9 +230,13 @@
                 - name: Mark invalid metrics_secure_logging rejected
                   ansible.builtin.set_fact:
                     __invalid_input_secure_logging_type_failed: true
-                  when: >-
-                    'metrics_secure_logging' in
-                    (ansible_failed_result | default({}) | to_json)
+                  when:
+                    - >-
+                      "argument 'metrics_secure_logging' is of type" in
+                      __invalid_input_failure_messages
+                    - >-
+                      'unable to convert to bool' in
+                      __invalid_input_failure_messages
 
             - name: Assert invalid metrics_secure_logging type was rejected
               ansible.builtin.assert:
@@ -232,9 +260,10 @@
             - name: Mark metrics_username dict rejected
               ansible.builtin.set_fact:
                 __invalid_input_username_type_failed: true
-              when: >-
-                'metrics_username must be a string' in
-                (ansible_failed_result | default({}) | to_json)
+              when:
+                - >-
+                  'metrics_username must be a string, got dict' in
+                  __invalid_input_failure_messages
 
         - name: Assert metrics_username as dict was rejected
           ansible.builtin.assert:
@@ -254,9 +283,10 @@
             - name: Mark metrics_monitored_hosts string rejected
               ansible.builtin.set_fact:
                 __invalid_input_monitored_hosts_string_failed: true
-              when: >-
-                'metrics_monitored_hosts must be a list of strings' in
-                (ansible_failed_result | default({}) | to_json)
+              when:
+                - >-
+                  'metrics_monitored_hosts must be a list of strings' in
+                  __invalid_input_failure_messages
 
         - name: Assert metrics_monitored_hosts as string was rejected
           ansible.builtin.assert:
@@ -278,9 +308,10 @@
             - name: Mark metrics_optional_domains string rejected
               ansible.builtin.set_fact:
                 __invalid_input_optional_domains_string_failed: true
-              when: >-
-                'metrics_optional_domains must be a list of strings' in
-                (ansible_failed_result | default({}) | to_json)
+              when:
+                - >-
+                  'metrics_optional_domains must be a list of strings' in
+                  __invalid_input_failure_messages
 
         - name: Assert metrics_optional_domains as string was rejected
           ansible.builtin.assert:
@@ -302,9 +333,10 @@
             - name: Mark metrics_optional_packages string rejected
               ansible.builtin.set_fact:
                 __invalid_input_optional_packages_string_failed: true
-              when: >-
-                'metrics_optional_packages must be a list of strings' in
-                (ansible_failed_result | default({}) | to_json)
+              when:
+                - >-
+                  'metrics_optional_packages must be a list of strings' in
+                  __invalid_input_failure_messages
 
         - name: Assert metrics_optional_packages as string was rejected
           ansible.builtin.assert:
@@ -329,9 +361,10 @@
             - name: Mark dns as integer rejected
               ansible.builtin.set_fact:
                 __invalid_input_dns_int_failed: true
-              when: >-
-                'dns must be a string' in
-                (ansible_failed_result | default({}) | to_json)
+              when:
+                - >-
+                  'metrics_grafana_certificates[0].dns must be a string or list of strings, got int' in
+                  __invalid_input_failure_messages
 
         - name: Assert dns as integer was rejected
           ansible.builtin.assert:
@@ -356,9 +389,10 @@
             - name: Mark dns list element rejected
               ansible.builtin.set_fact:
                 __invalid_input_dns_element_failed: true
-              when: >-
-                'dns must be a string' in
-                (ansible_failed_result | default({}) | to_json)
+              when:
+                - >-
+                  'metrics_grafana_certificates[0].dns must be a string or list of strings, got list' in
+                  __invalid_input_failure_messages
 
         - name: Assert dns list with non-string element was rejected
           ansible.builtin.assert:
@@ -381,9 +415,10 @@
             - name: Mark ip as integer rejected
               ansible.builtin.set_fact:
                 __invalid_input_ip_int_failed: true
-              when: >-
-                'ip must be a string' in
-                (ansible_failed_result | default({}) | to_json)
+              when:
+                - >-
+                  'metrics_grafana_certificates[0].ip must be a string or list of strings, got int' in
+                  __invalid_input_failure_messages
 
         - name: Assert ip as integer was rejected
           ansible.builtin.assert:
@@ -406,9 +441,10 @@
             - name: Mark mode as boolean rejected
               ansible.builtin.set_fact:
                 __invalid_input_mode_bool_failed: true
-              when: >-
-                'mode must be a string' in
-                (ansible_failed_result | default({}) | to_json)
+              when:
+                - >-
+                  'metrics_grafana_certificates[0].mode must be a string or integer, got bool' in
+                  __invalid_input_failure_messages
 
         - name: Assert mode as boolean was rejected
           ansible.builtin.assert:
@@ -431,9 +467,10 @@
             - name: Mark email as integer rejected
               ansible.builtin.set_fact:
                 __invalid_input_email_int_failed: true
-              when: >-
-                'email must be a string' in
-                (ansible_failed_result | default({}) | to_json)
+              when:
+                - >-
+                  'metrics_grafana_certificates[0].email must be a string or list of strings, got int' in
+                  __invalid_input_failure_messages
 
         - name: Assert email as integer was rejected
           ansible.builtin.assert:
@@ -456,9 +493,10 @@
             - name: Mark principal as integer rejected
               ansible.builtin.set_fact:
                 __invalid_input_principal_int_failed: true
-              when: >-
-                'principal must be a string' in
-                (ansible_failed_result | default({}) | to_json)
+              when:
+                - >-
+                  'metrics_grafana_certificates[0].principal must be a string or list of strings, got int' in
+                  __invalid_input_failure_messages
 
         - name: Assert principal as integer was rejected
           ansible.builtin.assert:
