@@ -27,6 +27,7 @@ galaxy_info:
     - fedora
     - grafana
     - instrumentation
+    - leap16
     - lightweight
     - metrics
     - monitoring
@@ -34,6 +35,8 @@ galaxy_info:
     - pcp
     - performance
     - redis
+    - sles
+    - sles16
     - telemetry
     - timeseries
     - valkey

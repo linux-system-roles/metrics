@@ -9,9 +9,9 @@ by the managed host.
 ## Requirements
 
 Performance Co-Pilot (PCP) v5+. All of the packages are available
-from the standard repositories on Fedora, CentOS 8, and RHEL 8.  On RHEL
-7 and RHEL 6, you will need to enable the Optional repository/channel
-on the managed host.
+from the standard repositories on Fedora, CentOS 8, RHEL 8, SLES 16
+and openSUSE Leap 16.  On RHEL 7 and RHEL 6, you will need to enable
+the Optional repository/channel on the managed host.
 
 The role can optionally use Grafana v6+ (`metrics_graph_service`) and
 Valkey (`metrics_query_service`) on Fedora, CentOS 10, RHEL 10 and later,
