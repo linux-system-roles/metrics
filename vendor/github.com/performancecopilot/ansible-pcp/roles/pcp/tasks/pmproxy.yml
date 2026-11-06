@@ -6,10 +6,21 @@
     src: pmproxy.defaults.j2
     dest: "{{ __pcp_pmproxy_defaults_path }}"
     mode: "0644"
-  notify: Restart pmproxy
+  register: __pcp_pmproxy_defaults
+  when: pcp_rest_api | bool
 
-- name: Ensure REST API, proxy and log discovery is running and enabled on boot
-  service:
-    name: pmproxy
-    state: "{{ 'started' if __pcp_is_booted else omit }}"
-    enabled: true
+- name: Set push listener reachability while preserving other defaults
+  lineinfile:
+    path: "{{ __pcp_pmproxy_defaults_path }}"
+    regexp: '^PMPROXY_LOCAL='
+    line: "PMPROXY_LOCAL={{ pcp_pmproxy_localonly }}"
+    create: true
+    mode: "0644"
+  register: __pcp_pmproxy_local
+  when:
+    - not pcp_rest_api | bool
+    - pcp_push_collector.enabled | default(false) | bool
+
+- name: Configure push collection independently of REST queries
+  include_tasks: push_collector.yml
+  when: pcp_push_collector | length > 0
