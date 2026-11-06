@@ -91,7 +91,7 @@
   block:
     - name: Ensure PCP OpenMetrics agent is marked for installation
       include_role:
-        name: performancecopilot.metrics.pcp
+        name: pcp
         tasks_from: pmcd_agents.yml
       vars:
         pcp_optional_agents: [openmetrics]
@@ -106,7 +106,7 @@
 
     - name: Verify PCP OpenMetrics agent is installed
       include_role:
-        name: performancecopilot.metrics.pcp
+        name: pcp
         tasks_from: pmcd_agents_verify.yml
       when:
         - __system_running.stdout != 'offline'
