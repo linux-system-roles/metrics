@@ -1,0 +1,25 @@
+# SPDX-License-Identifier: MIT
+---
+
+- name: List optional metric collection agents to be enabled
+  debug:
+    msg: "NeedInstall agent: {{ item }} from {{ pcp_optional_agents }}"
+  loop: "{{ pcp_optional_agents | default([]) }}"
+
+- name: Reset optional agent installation state
+  set_fact:
+    __pcp_agents_need_restart: false
+    __pcp_agents_to_verify: []
+
+- name: Extract metric collection configuration file content
+  slurp:
+    src: "{{ __pcp_pmcd_conf }}"
+  register: __pcp_pmcd_conf_content
+
+- name: Ensure optional metric collection agents are enabled
+  include_tasks: pmcd_agent.yml
+  loop: "{{ pcp_optional_agents | default([]) }}"
+  loop_control:
+    loop_var: __pcp_agent
+  when: __pcp_pmcd_conf_content.content | b64decode is
+    not search('^[ \\t]*' ~ __pcp_agent ~ '\\s', multiline=True)
