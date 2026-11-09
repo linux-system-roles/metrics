@@ -68,6 +68,51 @@
     - spark_metrics_agent | d(false) | bool
     - __spark_pcp_openmetrics | bool
 
+- name: Determine if host is booted
+  # noqa command-instead-of-module
+  command: systemctl is-system-running
+  register: __system_running
+  changed_when: false
+  check_mode: false
+  failed_when: false
+
+- name: Require installed systemd
+  fail:
+    msg: "Error: This role requires systemd to be installed."
+  when: '"No such file or directory" in __system_running.msg | d("")'
+
+# Not every pcp-zeroconf installs the OpenMetrics agent into pmcd
+- name: Ensure PCP OpenMetrics agent is installed into pmcd
+  when:
+    - spark_metrics_provider == 'pcp'
+    - spark_metrics_agent | d(false) | bool
+    - __spark_pcp_openmetrics | bool
+    - "'pcp-pmda-openmetrics' in __spark_packages_pcp"
+  block:
+    - name: Ensure PCP OpenMetrics agent is marked for installation
+      include_role:
+        name: performancecopilot.metrics.pcp
+        tasks_from: pmcd_agents.yml
+      vars:
+        pcp_optional_agents: [openmetrics]
+
+    - name: Ensure performance metric collector is restarted for the agent
+      service:
+        name: pmcd
+        state: restarted
+      when:
+        - __pcp_agents_need_restart | bool
+        - __system_running.stdout != 'offline'
+
+    - name: Verify PCP OpenMetrics agent is installed
+      include_role:
+        name: performancecopilot.metrics.pcp
+        tasks_from: pmcd_agents_verify.yml
+      when:
+        - __system_running.stdout != 'offline'
+        - not ansible_check_mode
+        - __pcp_agents_to_verify | length > 0
+
 - name: Ensure correct service path for ostree systems
   when:
     - __ansible_pcp_is_ostree | d(false)
@@ -83,19 +128,6 @@
   when:
     - spark_metrics_provider == 'pcp'
     - spark_export_metrics | d(false) | bool
-
-- name: Determine if host is booted
-  # noqa command-instead-of-module
-  command: systemctl is-system-running
-  register: __system_running
-  changed_when: false
-  check_mode: false
-  failed_when: false
-
-- name: Require installed systemd
-  fail:
-    msg: "Error: This role requires systemd to be installed."
-  when: '"No such file or directory" in __system_running.msg | d("")'
 
 - name: Ensure PCP Spark export is running and enabled on boot
   service:
